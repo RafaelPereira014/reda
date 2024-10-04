@@ -1,0 +1,25 @@
+.key-words {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.tag {
+    background-color: #aec03f;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.tag:hover {
+    background-color: #0056b3;
+}
+

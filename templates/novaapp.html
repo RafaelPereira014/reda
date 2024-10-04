@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/newapp.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+
+
+    <title>Nova/Editar aplicação - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}" >
+
+    <!-- Link to TinyMCE CDN -->
+    <script src="https://cdn.tiny.cloud/1/agr3kxwxb5hnsedd9yd0re9bxz0346mtqq1xe1u6ethrlj9a/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    
+    <style>
+        .container2 {
+            background-image: url('static/images/new-form-bg.jpg');
+            background-size: cover; /* Adjust the background size */
+            background-position: center; /* Center the background image */
+            text-align: center; /* Center the text horizontally */
+            padding: 40px 0; /* Add padding for better spacing */
+            color: #fff; /* Change text color to white for better contrast */
+        }
+        .required {
+            position: relative;
+        }
+        
+        .required::after {
+            content: '*';
+            position: absolute;
+            top: 0;
+            right:absolute;
+            color: red;
+            font-size: 1.4rem;
+            line-height: 0.3;
+        }
+        
+    </style>
+
+    
+</head>
+<body>
+    <div class="header-governo">
+        <img src="static/images/logo.GOV-AZORES.2019.png" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+    <header>
+        <div class="container">
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda">
+            </a>
+            <!-- second div , above the header div with background image-->
+            
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                    
+                </ul>
+            </nav>
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container2">
+        <h1>Novo aplicação</h1>
+        <p>Detalhes</p>
+    </div>
+    <main>
+        <div class="container">
+            <form  method="POST" enctype="multipart/form-data">
+                <div class="input-group required">
+                    <h2>Título:</h2>
+                    <textarea id="titulo" name="titulo" rows="1" placeholder="Nome da aplicação" required></textarea>
+                </div>
+                
+                <div class="input-group required">
+                    <h2>Descrição:</h2>
+                    <textarea id="descricao" name="descricao" placeholder="Descreva esta aplicação sucintamente" maxlength="1500" required></textarea>
+                    <div id="counter"></div>
+    
+                    <small class="small-text">
+                        Deve ter no mínimo 20 caracteres e no máximo 1500
+                    </small>
+                </div>
+                <div class="input-group required">
+                    <h2>Endereço</h2>
+                    <input type="text" name="endereco" id="endereco-input" placeholder="Endereço de ligação">
+                </div>
+                
+                
+                <div class="input-group-system required">
+                    <h2>Sistemas:</h2>
+                    <input type="checkbox" id="sistema1" name="sistema" value="Opção 1">
+                    <label for="sistema1">Android</label>
+                    <input type="checkbox" id="sistema2" name="sistema" value="Opção 2">
+                    <label for="sistema2">iOS</label>
+                    <input type="checkbox" id="sistema3" name="sistema" value="Opção 3">
+                    <label for="sistema3">Windows</label>
+                </div>
+                
+                
+                <div class="input-group-fich">
+                    <h2>Imagem de destaque:</h2>
+                    <label class="file-label" for="ficheiro">
+                        <input type="file" id="ficheiro" name="ficheiro" class="file-input" onchange="updateFileName()">
+                        <span class="file-custom-text">Escolha um arquivo</span>
+                        <span class="file-name">Nenhum arquivo selecionado</span>
+                    </label>
+                </div>
+                <small class="small-text">
+                    <span class="text-danger">*</span>
+                    Campo obrigatório
+                </small>
+                
+                <button type="submit">Criar aplicação</button>
+                <button onclick="window.location.href='/'">Cancelar</button>
+    
+            </form>
+            
+        </div>
+    </main>
+     <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+
+            </div>
+            
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            
+            <div class="additional-images">
+                <img src="static/images/dre_transparent.png" alt="Image 1">
+                <img src="static/images/gov_acores_transparent.png" alt="Image 2">
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+
+        </div>
+    </footer>
+
+    <script>
+        function updateFileName() {
+            const fileInput = document.getElementById('ficheiro');
+            const fileNameSpan = document.querySelector('.file-name');
+            const file = fileInput.files[0];
+        
+            if (file) {
+                fileNameSpan.textContent = file.name;
+            } else {
+                fileNameSpan.textContent = 'Nenhum arquivo selecionado';
+            }
+        }
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Number of checkboxes and labels
+            const numberOfCheckboxes = 15;
+            const labels = ["Biologia", "Ciência", "Cultura Geral", "Educação", "Educação Ambiental","Física","Formação","Geologia","Gestão de Trabalho","Língua Portuguesa","Línguas","Literatura","Matemática","Notícias","Química"];
+        
+            for (let i = 0; i < numberOfCheckboxes; i++) {
+                // Create checkbox element
+                const checkbox = document.createElement("input");
+                checkbox.setAttribute("type", "checkbox");
+                checkbox.setAttribute("id", "tema" + (i + 1));
+                checkbox.setAttribute("name", "tema");
+                checkbox.setAttribute("value", "Opção " + (i + 1));
+        
+                // Create label element
+                const label = document.createElement("label");
+                label.setAttribute("for", "tema" + (i + 1));
+                label.textContent = labels[i];
+        
+                // Append checkbox and label to container
+                document.querySelector(".input-group-tema").appendChild(checkbox);
+                document.querySelector(".input-group-tema").appendChild(label);
+            }
+        });
+
+        const messageEle = document.getElementById('descricao');
+        const counterEle = document.getElementById('counter');
+
+        messageEle.addEventListener('input', function (e) {
+            const target = e.target;
+
+            // Get the `maxlength` attribute
+            const maxLength = target.getAttribute('maxlength');
+
+            // Count the current number of characters
+            const currentLength = target.value.length;
+
+            counterEle.innerHTML = `${currentLength}/${maxLength}`;
+        });
+
+        
+        // Get the input element
+        var input = document.getElementById("tags-input");
+
+        // Get the tags container
+        var tagsContainer = document.getElementById("tags-container");
+
+        // Add event listener for keypress
+        input.addEventListener("keypress", function(event) {
+            // Check if the Enter key is pressed
+            if (event.key === "Enter") {
+                // Prevent the default action of the Enter key
+                event.preventDefault();
+
+                // Get the value of the input
+                var tag = input.value.trim();
+
+                // Clear the input
+                input.value = "";
+
+                // Create a span element for the tag
+                var tagElement = document.createElement("span");
+                tagElement.textContent = tag;
+                tagElement.classList.add("tag");
+
+                // Append the tag element to the container
+                tagsContainer.appendChild(tagElement);
+            }
+        });
+
+    </script>
+    
+</body>
+</html>

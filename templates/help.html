@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Meu perfil - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/help.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
+    <link rel="stylesheet" href=
+        "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">    
+    <script src=
+        "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+    </script>
+    <script src=
+        "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f0f0;
+            color: #333;
+        }
+        
+        .container1 {
+            width: 80%; /* Adjust width as needed */
+            margin: auto;
+            text-align: center;
+        }
+        
+        .bs-example {
+            margin: 20px;
+            position: relative;
+        }
+        
+        /* Grid container for video containers */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns */
+            gap: 20px; /* Adjust spacing between videos */
+        }
+        
+        /* Ensure video container is responsive */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        /* Ensure iframe fits within video container */
+        .video-container iframe,
+        .video-container object,
+        .video-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        
+
+    
+    </style>
+   
+    
+   
+</head>
+<body>
+    <div class="header-governo">
+        <img src="static/images/logo.GOV-AZORES.2019.png" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="profile-info">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda">
+                </a>            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                    <li>
+                        <button class="resource-button" onclick="location.href='/resources'">
+                            <i class="fa fa-search"></i> Recursos
+                        </button>
+                    </li>                    
+                    {%if admin%}
+                    <li>
+                        <button class="resource-button" onclick="location.href='/novorecurso'">
+                            <i class="fa fa-plus"></i> Introduzir recurso
+                        </button>
+                    </li>  
+                    {%endif%}
+                </ul>
+            </nav>
+            <!-- Top Right Navigation -->
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container1">
+            <h1> Videos de ajuda </h1>
+            <div class="video-grid">
+                <div class="video-container">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/nkJ4bOIu-lQ?si=27A123ETBG84FAOV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>                </div>
+                <div class="video-container">
+                    <iframe width="400" height="225" src="https://www.youtube.com/embed/WT-Jd07hSBc" title="Registo na Plataforma" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>                </div>
+                <div class="video-container">
+                    <iframe width="568" height="315" src="https://www.youtube.com/embed/oTcmLExOeNI" title="Explorar Recursos" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>                </div>
+                <div class="video-container">
+                    <iframe width="568" height="315" src="https://www.youtube.com/embed/i_8gTRQcqPg" title="Dicas e Utilidades" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>                </div>
+                <div class="video-container">
+                    <iframe width="568" height="315" src="https://www.youtube.com/embed/3ZZhOe-mDCQ" title="Experimenta" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>                </div>
+                <div class="video-container">
+                    <iframe width="568" height="315" src="https://www.youtube.com/embed/P_EiTvcIR6I" title="Como pesquisar" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>                </div>
+                <div class="video-container">
+                    <iframe width="568" height="315" src="https://www.youtube.com/embed/SQlk5j6ws4c" title="Introduzir Recursos" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>                </div>
+                <div class="video-container">
+                    <iframe width="568" height="315" src="https://www.youtube.com/embed/Zmg9fJDraYI" title="Aplicações" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>                </div>
+            </div>
+        </div>
+        
+
+        <div class="container2">
+            <h2>Como utilizar a plataforma</h2>
+        
+            <div class="options-menu">
+                <button id="option1Button">Direitos de autor</button>
+                <button id="option2Button">Plug-ins do navegador</button>
+                <button id="option3Button">Pesquisar</button>
+                <button id="option4Button">Submeter um recurso</button>
+            </div>
+        
+            <!-- Content Sections -->
+            <div id="content1" class="content-section">
+                <h3>Direitos de autor</h3>
+                <p>A pensar nos criadores de recursos, reconhecendo e mantendo o seu direito e os seus direitos conexos, mas permitindo que outras pessoas os utilizem, copiem, distribuam e façam alguns usos do seu trabalho para fins educacionais e não comerciais, os recursos submetidos à plataforma REDA, salvo disposição em contrário, a partir da sua divulgação, ficam sujeitos a uma licença Creative Commons com a Atribuição e Partilha nos Termos da Mesma Licença designada como Atribuição-Não Comercial-Compartilha Igual (CC BY-NC-SA). Sobre esta licença:</p>
+
+                <ul class="a">
+                <li><strong>Atribuição</strong> - Tem de dar o crédito adequado, fornecer um link para a licença e indicar se foram feitas alterações. Poderá fazê-lo de qualquer forma razoável, mas não de forma a sugerir que o licenciante concorda consigo ou com o uso atribuído.
+                </li>
+                <li><strong>Uso Não Comercial</strong>- Não pode usar o material para fins comerciais.</li>
+                <li><strong>Compartilhamento pela mesma licença</strong>- Se alterar, transformar ou construir em cima do material existente, deve distribuir as suas contribuições sob a mesma licença que o original. Para saber mais sobre esta licença, consulte aqui.</li>
+                </ul>
+
+                <p>Ao submeter um recurso, certifique-se de que é o autor ou o proprietário da obra ou que tem permissão do autor/criador para a distribuir e partilhar para fins educativos.
+
+                    <p>Se o recurso que pretende submeter se encontrar na Internet, é da sua responsabilidade ler os "Termos e condições" do sítio, no qual o recurso se encontra e pedir a devida autorização. Nos casos em que o seu autor permita a distribuição e partilha, para fins educativos, dos recursos e estes estejam sujeitos a uma licença Creative Commons, ou outro tipo de licença, deve colocar sempre essa indicação no campo da "Descrição" do recurso.</p>
+                    </p>
+                    
+                    <h3>Exemplo: Resolução gráfica de sistemas de duas equações do 1.º grau</h3>
+                    <p>Descrição: Este recurso apresenta um sistema de duas equações do 1.º grau com duas incógnitas, escrito na forma canónica e a respetiva representação gráfica. Os coeficientes de x e de y, assim como os termos independentes, podem ser alterados. É possível visualizar a classificação do sistema e, quando este é "possível e determinado", são dadas as coordenadas do ponto de interseção das retas. Licença CC-BY-SA
+                    
+                    Para além disso, deve certificar-se que utiliza os créditos exigidos pelo autor do recurso e preencher corretamente os campos existentes para os detalhes desse recurso na plataforma.</p>
+                    
+                    <p>A submissão de recursos e da(s) proposta(s) de operacionalização dos mesmos, pressupõe a aceitação dos "Termos e condições" e a autorização de distribuição sob os termos descritos no ponto anterior. Ao fazê-lo:
+                    </p>
+                    <ul class="a">
+                      <li>mantém os direitos autorais do trabalho submetido;</li>
+                      <li>é o autor ou o proprietário da obra ou tem permissão do autor/criador para a distribuir;
+                      </li>
+                      <li>pretende que o trabalho seja distribuído sob os termos dessa licença (inclusive permitir a sua modificação, sendo-lhe dado o crédito pela sua criação);
+                      leu e concorda com os "Termos e condições" de submissão.</li>
+                    </ul>
+                    
+                    <p>Todos os materiais, descritivos, marcas e, de um modo geral, todos os conteúdos da plataforma REDA, em todas as suas valências, estão sujeitos a estes "Termos e condições" e aos termos gerais de direito pela legislação nacional e internacional de proteção da Propriedade Intelectual. Consequentemente, efetue aqui a leitura completa e atenta dos mesmos.</p>
+                    <p>
+                    Os direitos de autor encontram-se protegidos na ordem jurídica portuguesa pelo Código do Direito de Autor e Direitos Conexos, aprovado pelo Decreto-Lei n.º 63/85, de 14 de março, na redação atual.
+                    O Código, nas sucessivas alterações ao longo dos anos, acolhe a evolução natural dos meios de comunicação e de reprodução e da circulação da informação, caracterizado pela celeridade e pela constante citação e transcrição, seguindo entre outros o Direito Comunitário e as convenções internacionais.
+                    Para aceder à versão integral do Código do Direito de Autor e Direitos Conexos clique aqui.
+                    
+                    Em caso de dúvida, contacte a equipa REDA, utilizando o formulário "Fale connosco".</p>
+            </div>
+        
+            <div id="content2" class="content-section">
+                <h3>Plug-ins do navegador (Browser Plug-ins)</h3>
+                <p>Por favor, certifique-se de que tem a versão mais recente destes plug-ins gratuitos comumente utilizados, não exclusivas, de acordo com os formatos disponíveis na plataforma REDA:
+                </p>
+
+                <ul class="a">
+                <li>Adobe Flash Player 9 ou superior: usado para exibir o conteúdo de Animação/Simulação, Jogo didático e outros conteúdos não-estático. Descarregue
+                </li>
+                <li>Adobe Shockwave Player: usado para exibir o conteúdo de Animação/Simulação, Jogo didático e conteúdo não-estático e interativo. Descarregue.
+
+                </li>
+                <li>Windows Media Player: usados para exibir o conteúdo de áudio e formatos visuais. Descarregue. O Flip4Mac permite reproduzir vídeo Windows Media e arquivos de áudio no seu Mac. Descarregue.
+                </li>
+                <li>QuickTime: é necessário para formatos de media QuickTime.
+                </li>
+                <li>Adobe Reader: usado para exibir arquivos Portable Document Format (PDF). Descarregue.
+                </li>
+                <li>Java: Instalação varia muito de navegador para navegador. Por favor, consulte a ajuda do seu navegador para obter instruções de instalação.
+                </li>
+                <li>RealPlayer: usado para exibir o conteúdo de áudio e formatos visuais. Descarregue.
+                </li>
+                <li>GeoGebra: software de matemática dinâmica para todos os níveis de educação que reúne geometria, álgebra, folha de cálculo, gráficos, estatísticas e cálculo. Descarregue.
+                </li>
+                <li>Hot Potatoes: software que permite a criação de aplicações com exercícios de escolha-multipla, palavras-cruzadas, preenchimento de espaços, etc. Descarregue.</li>
+                </ul>
+
+                
+            </div>
+        
+            <div id="content3" class="content-section">
+                <h3>Pesquisar</h3>
+                <p>Pode pesquisar por: Palavra-chave, Macroárea, Área, Domínio, Ano e Formato.</p>
+
+                <p>Se optar por pesquisar apenas por:</p>
+                <ul class="a">
+                <li>palavra-chave, utilize também o singular/plural ou forma derivada da palavra-chave;
+                </li>
+                <li>disciplina, ser-lhe-ão ativados os domínios correspondentes, que já possuem recursos;
+
+                </li>
+                <li>ano, ser-lhe-ão devolvidos os resultados de todos os recursos referentes a esse ano de escolaridade;
+                </li>
+                <li>formato, ser-lhe-ão devolvidos os resultados de todos os recursos do formato selecionado;
+                </li>
+                </ul>
+
+                <p>Se pretender restringir a sua pesquisa, utilize, cumulativamente, mais do que um filtro.</p>
+
+                <strong>Exemplo 1: Ciências Físico-Químicas, Espaço, 7.º ano</strong>
+                <ul class="a">
+                <li>ser-lhe-ão devolvidos resultados de todos os recursos em todos os formatos de Ciências Físico-Químicas, do domínio Espaço, do 7.º ano de escolaridade.
+                </li>
+                </ul>
+
+                <strong>Exemplo 2: Ciências Físico-Químicas, Espaço, 7.º ano, Vídeo</strong>
+                <ul class="a">
+                <li>ser-lhe-ão devolvidos resultados de todos os recursos existentes com o formato de vídeo para o 7.º ano de escolaridade, no domínio Espaço, da disciplina de Ciências Físico-Químicas.
+                </li>
+                </ul>
+            </div>
+        
+            <div id="content4" class="content-section">
+                <h3>Submeter um Recurso</h3>
+                <h2>Campos de preenchimento obrigatório</h2>
+
+                <p><strong>Recurso exclusivo a docentes</strong></p>
+                <p>Este campo encontra-se selecionado por defeito. Se pretender preparar um recurso exclusivo para alunos, retire essa seleção. Lembre-se de que os recursos exclusivos a docentes não são visíveis aos alunos, enquanto os recursos não exclusivos são visíveis por todos os utilizadores (registados e não registados).
+                </p>
+                <p><strong>Título</strong></p>
+                <p>Refere-se ao título do recurso. Seja sugestivo e objetivo.
+                </p>
+
+                <p><strong>Autor/Fonte</strong></p>
+
+                <p>Este campo refere-se ao autor do recurso. Se não for o autor original, coloque o nome do autor e certifique-se que tem autorização para usar/alterar/transmitir/distribuir o recurso. É da sua responsabilidade respeitar os direitos autorais. Se for o autor, coloque o seu nome.
+                </p>
+
+                <p><strong>Escola/Organização/Nome Do Sítio</strong></p>
+
+                <p>Preencha com o nome da sua escola ou organização, sempre que o recurso for da sua autoria. Caso contrário, coloque o nome da organização ou instituição do autor. Se não o conseguir encontrar, indique o nome do sítio na Internet onde se encontra o recurso. Sem esta(s) referência(s), não poderá introduzir o recurso por questões de Direitos de Autor.
+                </p>
+
+
+                <strong>Palavras-chave</strong>
+
+                <p>Insira palavras ou expressões que melhor descrevam o conteúdo do recurso. Ou seja, termos que facilitem ao utilizador encontrar resultados adequados à sua pesquisa. No que respeita à base de dados, essas palavras-chave são vistas como uma ferramenta para indexação dos recursos e conteúdos na plataforma. Adicione o acrónimo "CREB" sempre que considerar que o recurso se adequa ao referencial curricular para a educação básica na Região Autónoma dos Açores.
+                Neste campo, deve inserir entre 1 a 10 palavras ou expressões. Utilize a vírgula, o ponto e vírgula ou a tecla ENTER para separar as palavras ou expressões.</p>
+
+
+                <strong>Formato</strong>
+                <p>Na plataforma são permitidos apenas os seguintes formatos:
+                Animação/Simulação; Áudio; Folha de cálculo; Imagem; Jogo didático; Texto e Vídeo.</p>
+
+                <p>No caso de o recurso ser:</p>
+
+                <ul class="a">
+                <li>um cartaz ou um folheto, escolha Imagem ou Texto, consoante considerar mais adequado;
+                </li>
+                <li>um vídeo ou um áudio, a duração do mesmo é obrigatória. Utilize o formato: 0:00:00.
+                </li>
+                </ul>
+
+                <p>Se considerar pertinente a permissão de outros formatos, por favor, entre em contacto com a equipa REDA, através do formulário "Fale connosco".
+                </p>
+                <strong>Localização do recurso</strong>
+                <p>As opções, que se apresentam, referem-se ao local onde ficará o recurso (na plataforma, no caso de ser um ficheiro, caso contrário, na Internet). Não são aceites na plataforma o carregamento de ficheiros cujo tamanho exceda os 60MB (incluindo os de vídeo).
+                </p>
+
+                <p>Se o recurso:</p>
+
+                <ul class="a">
+                <li>estiver na Internet, de acesso facilitado, escolha a opção "Endereço e/ou código de incorporação". Deve inserir, de seguida, o endereço da página da Internet onde se encontra o recurso (link). Caso tenha um código de incorporação, por favor adicione-o também.
+                </li>
+                <li>for um vídeo existente na Internet, insira o endereço da página da Internet onde se encontra o recurso (link). No caso de ser um vídeo do Youtube, insira também o código de incorporação.
+                Para este efeito, proceda da seguinte forma:
+                <ol> Aceder ao vídeo do Youtube;</ol>
+                <ol> Clicar em Partilhar  Incorporar um Vídeo, que se encontra por baixo da caixa do vídeo.</ol>
+                <ol> Clicar em Incorporar.</ol>
+                <ol>Copiar o código HTML existente na caixa apresentada.
+                </ol>
+                <ol>Colar o código no campo "Insira o código de incorporação", na plataforma REDA.
+                </ol>
+                </li>
+                <li>for um ficheiro áudio feito por si, e com um tamanho inferior a 60MB, poderá carregá-lo para a plataforma.
+                </li>
+                <li>for um vídeo feito por si, deve carregá-lo, em primeiro lugar, para o Youtube, ou outro sítio na Internet, e, posteriormente, inserir o endereço da página da Internet onde se encontra o vídeo (link) e o código de incorporação (se existir) na plataforma REDA. A plataforma REDA não permite o carregamento direto de vídeos. Caso escolha carregar o seu vídeo para o Youtube, consulte, por favor, o tutorial Carregar Vídeos no Youtube.
+                </li>
+                </ul>
+
+
+                <p>Poderá também consultar o separador "Dicas e Utilidades", na plataforma REDA, para outras sugestões.
+                </p>
+
+                <strong>Requisitos Técnicos</strong>
+                <p>De forma a uniformizar a informação disponibilizada na plataforma e a permitir a utilização facilitada dos recursos, considerou-se pertinente facultar a informação necessária para o efeito. Consulte, por favor, a tabela que se segue para identificar a informação a colocar no campo “Requisitos Técnicos”, que deve ter no mínimo 3 caracteres e no máximo 300.</p>
+
+                <p>Para identificar a extensão/ formato do ficheiro:</p>
+
+                <ul class="a">
+                <li>colocar o rato sobre o ficheiro e clicar com o lado direito do mesmo. Ler a informação que se encontra no final da lista que aparece;
+                </li>
+                <li>guardar o ficheiro e ler a extensão do ficheiro;
+                </li>
+                <li>selecionar as propriedades do ficheiro e verificar o formato;
+                </li>
+                <li>ler o código do objeto!
+                </li>
+                </ul>
+                <p><strong>Exemplo 1:</strong> vídeo do Youtube</p>
+                <p>Formato: Vídeo</p>
+                <p>Requisitos Técnicos: Leitor de vídeo (e.g., VLC Media Player, Windows Media Player); Colunas áudio</p>
+                <p><strong>Exemplo 2:</strong> simulação em “Flash”</p>
+                <p>Formato: Animação/Simulação</p>
+                <p>Requisitos Técnicos: Adobe Flash Player</p>
+                <p><strong>Exemplo 1:</strong> gif animado</p>
+                <p>Formato: Imagem</p>
+                <p>Requisitos Técnicos: Visualizador de Imagem</p>
+
+
+                <strong>Descrição</strong>
+                <p>Este campo deve ser preenchido com informação que descreva o recurso, deve ter no mínimo 20 caracteres e no máximo 800. Se o recurso necessitar de informação adicional, coloque de forma sucinta essa informação (e.g., variáveis manipuláveis, procedimentos na página da Internet de origem). Não deve conter informação sobre a proposta de operacionalização.
+                </p>
+
+                <strong>Metadados</strong>
+                <strong>Áreas</strong>
+                <p>As áreas disponíveis na plataforma REDA são: Cidadania, Ciências Físico-Químicas, Ciências Naturais, Estudo do Meio, Inglês, Matemática, Português e TIC.
+                </p>
+                <p>Selecione a(s) que se adequa(m) melhor ao recurso que está a introduzir. Pode selecionar também “outras”, caso considere importante. Ao selecionar mais do que uma disciplina, quando o utilizador efetuar uma pesquisa, poderá obter como resultado o recurso em causa, potenciando a multidisciplinaridade.
+                </p>
+                <p>Se considerar pertinente a inserção de novas áreas, por favor, entre em contacto com a equipa REDA, através do formulário "Fale connosco".
+                </p>
+
+                <strong>Domínios</strong>
+                <p>Estão disponíveis os domínios de Cidadania, de Ciências Físico-Químicas, de Ciências Naturais, de Matemática e de Português. Tornam-se visíveis após a seleção da(s) disciplina(s).
+                </p>
+                <p>Estão disponíveis os domínios de Cidadania, de Ciências Físico-Químicas, de Ciências Naturais, de Matemática e de Português. Tornam-se visíveis após a seleção da(s) disciplina(s).
+                </p>
+
+                <strong>Anos de escolaridade</strong>
+                <p>Deve selecionar o(s) ano(s) em que o recurso pode ser utilizado.
+                </p>
+                <strong>Área</strong>
+                <p>Se selecionar mais do que uma área fora do seu grupo de lecionação, por favor verifique com um(a) colega da respetiva área. Pode também consultar as metas curriculares.
+                </p>
+                <strong>Idiomas</strong>
+                <p>Estão disponíveis as referências aos seguintes idiomas:
+                </p>
+                <ul class="a">
+                <li>Português (PT); Português (BR); Inglês, legendado em português; Inglês; Francês, legendado em português; Francês; Castelhano, legendado em português; Castelhano; Outros, legendado em português; Outros e Não se aplica.
+                </li>
+                </ul>
+
+                <p>A opção “Não se aplica” deve ser selecionada quando o recurso não apresentar falas nem legendas.
+                </p>
+                <p>Se o recurso for um vídeo do Youtube:
+                </p>
+
+                <ul class="a">
+                <li>confirme se este tem legendas em Português. Para isso, pode consultar o tutorial Ativar e desativar legendas do Youtube;
+                </li>
+                <li>adicione legendas ou edite as existentes. Para isso, pode consultar os tutoriais Adicione ou Editar ou retirar legendas do Youtube.
+                </li>
+                </ul>
+                <p>Se considerar pertinente a inserção de novos idiomas, por favor, entre em contacto com a equipa REDA, através do formulário "Fale connosco".
+                </p>
+
+                <strong>Proposta de operacionalização</strong>
+                <p>Este campo deve ser preenchido com uma proposta de operacionalização, contendo informação suficiente que permita a sua implementação. Deve ter no mínimo 20 caracteres e no máximo 800. Não deve, no entanto, ser uma planificação de aula.
+                </p>
+
+                <strong>Termos e condições</strong>
+                <p>Antes de submeter um recurso, deve aceitar os Termos e condições de utilização da plataforma REDA. Ao submeter um recurso, está a autorizar que o conteúdo seja distribuído sob os termos da licença Creative Commons com a atribuição designada como Atribuição-Não Comercial-Compartilha Igual (CC BY-NC-SA).
+                </p>
+                <p>A responsabilidade sobre os direitos de autor do recurso é da total responsabilidade do utilizador que o submete.</p>
+
+                <p>Ao fazê-lo:</p>
+
+                <ul class="a">
+                <li>mantém os direitos autorais do trabalho submetido;
+                </li>
+                <li>declara ser o autor ou o proprietário da obra ou ter a permissão do autor para a distribuir;
+                </li>
+                <li>pretende que o trabalho/obra submetido(a) seja distribuído(a) sob os termos da licença CC-BY-NC-SA.
+                </li>
+                </ul>
+
+
+                <p>Caso não seja o autor da obra e este exija outro tipo de licença, deverá mencionar no campo “Descrição”. Contudo, a licença deve ser sempre Creative Commons com “atribuição”. Caso contrário, não poderá submeter o recurso.
+                </p>
+                <p>Para mais informações, consulte a página oficial da Creative Commons.</p>
+            </div>
+        </div>
+        
+    </main>
+
+    <!-- Login Modal -->
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <i class="fas fa-user user-icon"></i>
+            <h2>Login</h2>
+            <form>
+                <div class="login-input">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="login-input">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="button-container">
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+
+            </div>
+            
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            
+            <div class="additional-images">
+                <img src="static/images/dre_transparent.png" alt="Image 1">
+                <img src="static/images/gov_acores_transparent.png" alt="Image 2">
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const option1Button = document.getElementById('option1Button');
+            const option2Button = document.getElementById('option2Button');
+            const option3Button = document.getElementById('option3Button');
+            const option4Button = document.getElementById('option4Button');
+            const content1 = document.getElementById('content1');
+            const content2 = document.getElementById('content2');
+            const content3 = document.getElementById('content3');
+            const content4 = document.getElementById('content4');
+
+            content1.style.display = 'block';
+
+        
+            // Add event listeners to the buttons
+            option1Button.addEventListener('click', function() {
+                content1.style.display = 'block';
+                content2.style.display = 'none';
+                content3.style.display = 'none';
+                content4.style.display = 'none';
+            });
+        
+            option2Button.addEventListener('click', function() {
+                content1.style.display = 'none';
+                content2.style.display = 'block';
+                content3.style.display = 'none';
+                content4.style.display = 'none';
+            });
+        
+            option3Button.addEventListener('click', function() {
+                content1.style.display = 'none';
+                content2.style.display = 'none';
+                content3.style.display = 'block';
+                content4.style.display = 'none';
+            });
+        
+            option4Button.addEventListener('click', function() {
+                content1.style.display = 'none';
+                content2.style.display = 'none';
+                content3.style.display = 'none';
+                content4.style.display = 'block';
+            });
+        });
+        
+        
+    </script>
+
+    
+    
+</body>
+</html>

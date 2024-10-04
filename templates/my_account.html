@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Meu perfil - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+    <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
+    <style>
+        .resource-status-icons {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between icons */
+            margin-bottom: 10px; /* Space between icons and buttons */
+        }
+
+        .resource-status-icons i {
+            font-size: 18px; /* Adjust size of icons */
+        }
+
+        .fa-flag {
+            margin-right: 5px; /* Space between flag and dot */
+        }
+
+        .fa-circle {
+            margin-left: 5px; /* Space between flag and dot */
+        }
+
+        .resource-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .resource-card button {
+            margin-right: 10px;
+        }
+
+        .resource-card .Delete {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .resource-card .Delete:hover {
+            background-color: #c0392b;
+        }
+    </style>
+    
+
+   
+</head>
+<body>
+    <div class="header-governo">
+        <img src="static/images/logo.GOV-AZORES.2019.png" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="profile-info">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda">
+                </a>        
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                    <li>
+                        <button class="resource-button" onclick="location.href='/resources'">
+                            <i class="fa fa-search"></i> Recursos
+                        </button>
+                    </li>                    
+                    {%if admin%}
+                    <li>
+                        <button class="resource-button" onclick="location.href='/novorecurso'">
+                            <i class="fa fa-plus"></i> Introduzir recurso
+                        </button>
+                    </li>  
+                    {%endif%}
+                </ul>
+            </nav>
+            <!-- Top Right Navigation -->
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Profile Header -->
+            <div class="header-profile">
+                
+                <div class="profile-details">
+                    <h3>Bem vindo(a) {{ user_details.name }}</h3>
+                    <div class="profile-counts">
+                        <p>{{ resources_count }} Recursos</p>
+                        <p>{{ apps_count }} Aplicações</p>
+                        <p>{{ tools_count }} Ferramentas</p>
+                    </div>
+                    <!-- Progress Tracking Section -->
+                    
+
+                </div>
+                <!-- Options Menu -->
+                <div class="options-menu">
+                    <a href="#my-resources">Meus recursos</a>
+                    <a href="#my-proposals">Minhas propostas de op.</a>
+                    <a href="#my-apps">Minhas aplicações</a>
+                    <a href="#my-tools">Minhas ferramentas</a>
+                </div>
+            </div>
+    
+            <section id="my-resources" class="content-section">
+                <h1>Os meus recursos</h1>
+                <p>{{ resources_count }} resultados</p>
+                <button class="resource"><i class="fa fa-plus"></i> Introduzir recurso</button>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Palavras-chave..." value="{{ search_term }}">
+                    <button class="search-button" onclick="searchResources()">Filtrar palavras</button>
+                    <button class="clear-button" onclick="clearSearch()">Limpar Filtros</button>
+                </div>
+            
+                {% for resource in my_resources %}
+                    <div class="resource-card">
+                        <h2>{{ resource['title'] | strip_html }}</h2>
+                        <p><em>Criado a {{ resource['created_at'] }}</em></p>
+                        <p>{{ resource['description'] | strip_html }}</p>
+                        <div class="resource-status-icons">
+                            <i class="fas fa-flag highlight-flag" style="color: {{ 'green' if resource.highlighted else 'black' }};"
+                               title="{{ 'Recurso do mês' if resource.highlighted else 'Destacar para recurso do mês' }}"
+                               data-id="{{ resource.id }}" data-highlighted="{{ 'true' if resource.highlighted else 'false' }}"></i>
+                            <i class="fas fa-circle" style="color: {{ 'green' if resource.approved else 'orange' }};"
+                               title="{{ 'Aprovado' if resource.approved else 'Aguarda aprovação' }}"></i>
+                        </div>
+                        <a href="/resources/details/{{ resource.id }}"><button>Ver recurso</button></a>
+                        <a href="/resources/edit/{{ resource.id }}"><button>Editar recurso</button></a>
+                    </div>
+                {% endfor %}
+            
+                <div class="pagination">
+                    {% if page_resources > 1 %}
+                        <a href="?page_resources=1&search={{ search_term }}">&laquo; Inicio</a>
+                        <a href="?page_resources={{ page_resources - 1 }}&search={{ search_term }}">Anterior</a>
+                    {% endif %}
+                    <span class="current">Page {{ page_resources }} of {{ total_pages_resources }}</span>
+                    {% if page_resources < total_pages_resources %}
+                        <a href="?page_resources={{ page_resources + 1 }}&search={{ search_term }}">Próximo</a>
+                        <a href="?page_resources={{ total_pages_resources }}&search={{ search_term }}">Fim &raquo;</a>
+                    {% endif %}
+                </div>
+            </section>
+            
+            
+            
+            <section id="my-proposals" class="content-section" style="display: none;">
+                <h1>Recrusos com a minha contribuição</h1>
+                <h3>{{ scripts_count }} resultados</h3>
+                <!--
+                <div class="search-container">
+                    <input type="text" id="searchInputProposals" placeholder="Search...">
+                    <button onclick="searchProposals()">Search</button>
+                </div>
+                -->
+                {% for script in scripts_user %}
+                    <div class="proposta-card">
+                        <h3> {{script.title | strip_html}}</h3>
+                        <p>{{ script.created_at }}</p>
+                        <p>{{ script.operation | strip_html}}</p>
+                        <a href="/resources/details/{{ script.resource_id }}"><button>Ver recurso</button></a>
+                        
+                    </div>
+                {% endfor %}
+                
+                <div class="pagination">
+                    {% if page_proposals > 1 %}
+                        <a href="?page_proposals=1">&laquo; Inicio</a>
+                        <a href="?page_proposals={{ page_proposals - 1 }}">Anterior</a>
+                    {% endif %}
+                    
+                    <span class="current">Page {{ page_proposals }} of {{ total_pages_proposals }}</span>
+                    
+                    {% if page_proposals < total_pages_proposals %}
+                        <a href="?page_proposals={{ page_proposals + 1 }}">Próximo</a>
+                        <a href="?page_proposals={{ total_pages_proposals }}">Fim &raquo;</a>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- Apps Section -->
+            <section id="my-apps" class="content-section" style="display: none;">
+                <h1>Aplicações</h1>
+                <h3>{{ apps_count }} resultados</h3>
+                {% for app in apps_user %}
+                <div class="tool-card">
+                    <h3>{{ app.title | safe }}</h3>
+                    <p>{{ app.description | safe }}</p>
+                    <a href="/resources/edit_app/{{ app.id }}"><button>Editar</button></a>
+                    <button class="eliminar" data-id="{{ app.id }}" onclick="openDeleteModal(this)">Eliminar</button>
+                </div>
+                {% endfor %}
+                
+                <div class="pagination">
+                    {% if page_apps > 1 %}
+                        <a href="?page_apps=1">&laquo; Inicio</a>
+                        <a href="?page_apps={{ page_apps - 1 }}">Anterior</a>
+                    {% endif %}
+                    <span class="current">Page {{ page_apps }} of {{ total_pages_apps }}</span>
+                    {% if page_apps < total_pages_apps %}
+                        <a href="?page_apps={{ page_apps + 1 }}">Próximo</a>
+                        <a href="?page_apps={{ total_pages_apps }}">Fim &raquo;</a>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- Tools Section -->
+            <section id="my-tools" class="content-section" style="display: none;">
+                <h1>Ferramentas</h1>
+                <h3>{{ tools_count }} resultados</h3>
+                {% for tool in tools_user %}
+                    <div class="tool-card">
+                        <h3>{{ tool.title | safe }}</h3>
+                        <p>{{ tool.description | safe }}</p>
+                        <a href="/resources/edit_tool/{{ tool.id }}"><button>Editar</button></a>
+                        <button class="eliminar" data-id="{{ tool.id }}" onclick="openDeleteModal(this)">Eliminar</button>
+                    </div>
+                {% endfor %}
+                
+                <div class="pagination">
+                    {% if page_tools > 1 %}
+                        <a href="?page_tools=1">&laquo; Inicio</a>
+                        <a href="?page_tools={{ page_tools - 1 }}">Anterior</a>
+                    {% endif %}
+                    <span class="current">Page {{ page_tools }} of {{ total_pages_tools }}</span>
+                    {% if page_tools < total_pages_tools %}
+                        <a href="?page_tools={{ page_tools + 1 }}">Próximo</a>
+                        <a href="?page_tools={{ total_pages_tools }}">Fim &raquo;</a>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- Delete resource modal -->
+            <div id="deleteModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeDeleteModal()">&times;</span>
+                    <h2>Atenção</h2>
+                    <p>Tem a certeza de que deseja eliminar este recurso?</p>
+                    <button id="confirmDeleteButton">Sim</button>
+                    <button onclick="closeDeleteModal()">Não</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <i class="fas fa-user user-icon"></i>
+            <h2>Login</h2>
+            <form>
+                <div class="login-input">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="login-input">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="button-container">
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+
+            </div>
+            
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            
+            <div class="additional-images">
+                <img src="static/images/dre_transparent.png" alt="Image 1">
+                <img src="static/images/gov_acores_transparent.png" alt="Image 2">
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Modals
+            const loginModal = document.getElementById("loginModal");
+            const deleteModal = document.getElementById("deleteModal");
+            let resourceIdToDelete = null;
+        
+            // Open and close modals
+            function openModal(modal) {
+                modal.style.display = "block";
+            }
+        
+            function closeModal(modal) {
+                modal.style.display = "none";
+            }
+        
+            function openLoginModal() {
+                openModal(loginModal);
+            }
+        
+            function closeLoginModal() {
+                closeModal(loginModal);
+            }
+        
+            function openDeleteModal(button) {
+                resourceIdToDelete = button.getAttribute('data-id');
+                openModal(deleteModal);
+            }
+        
+            function closeDeleteModal() {
+                closeModal(deleteModal);
+                resourceIdToDelete = null;
+            }
+        
+            // Delete resource
+            function deleteResource() {
+                if (!resourceIdToDelete) {
+                    alert('Resource ID not found');
+                    return;
+                }
+        
+                fetch(`/delete_resource/${resourceIdToDelete}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json().then(data => ({
+                    status: response.status,
+                    body: data
+                })))
+                .then(response => {
+                    if (response.status === 200) {
+                        alert(response.body.message);
+                        window.location.reload();
+                    } else {
+                        alert("Error deleting the resource: " + response.body.message);
+                    }
+                    closeDeleteModal();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Error deleting the resource: " + error.message);
+                    closeDeleteModal();
+                });
+            }
+        
+            // Event listeners for modals
+            document.querySelectorAll('.eliminar').forEach(button => {
+                button.addEventListener('click', () => openDeleteModal(button));
+            });
+        
+            document.querySelectorAll('.close').forEach(span => {
+                span.addEventListener('click', () => closeModal(span.closest('.modal')));
+            });
+        
+            document.getElementById('confirmDeleteButton').addEventListener('click', deleteResource);
+        
+            // Show specific section
+            function showSection(sectionId) {
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                const sectionToShow = document.getElementById(sectionId);
+                if (sectionToShow) {
+                    sectionToShow.style.display = 'block';
+                }
+            }
+        
+            // Menu navigation event listeners
+            document.querySelectorAll('.options-menu a').forEach(option => {
+                option.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const targetSectionId = option.getAttribute('href').substring(1);
+                    showSection(targetSectionId);
+                });
+            });
+        
+            // Handle section visibility based on URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('page_proposals')) {
+                showSection('my-proposals');
+            } else if (urlParams.has('page_apps')) {
+                showSection('my-apps');
+            } else if (urlParams.has('page_tools')) {
+                showSection('my-tools');
+            } else {
+                showSection('my-resources');
+            }
+        
+            // Search functionality
+            function searchResources() {
+                const searchTerm = document.getElementById('searchInput').value;
+                const queryString = new URLSearchParams({ search: searchTerm }).toString();
+                window.location.href = `/myaccount?${queryString}`;
+            }
+        
+            function clearSearch() {
+                document.getElementById('searchInput').value = '';
+                window.location.href = '/myaccount';
+            }
+        
+            document.querySelector('.search-button').addEventListener('click', searchResources);
+            document.querySelector('.clear-button').addEventListener('click', clearSearch);
+    
+            // Highlight functionality
+            const highlightFlags = document.querySelectorAll('.highlight-flag');
+            highlightFlags.forEach(flag => {
+                flag.addEventListener('click', function() {
+                    const resourceId = this.getAttribute('data-id');
+                    const isHighlighted = this.getAttribute('data-highlighted') === 'true';
+                    toggleHighlight(this, resourceId, isHighlighted);
+                });
+            });
+    
+            function toggleHighlight(flagElement, resourceId, isHighlighted) {
+                const action = isHighlighted ? 'highlight_off' : 'highlight_on';
+                fetch(`/resources/${action}/${resourceId}`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        flagElement.setAttribute('data-highlighted', !isHighlighted);
+                        flagElement.style.color = !isHighlighted ? 'green' : 'black';
+                        flagElement.title = !isHighlighted ? 'Recurso do mês' : 'Destacar para recurso do mês';
+                    } else {
+                        alert('Failed to toggle highlight: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Something went wrong. Please try again later.');
+                });
+            }
+    
+            // Event listener for the hamburger menu
+            function toggleMenu() {
+                const menuItems = document.querySelector('.menu-items');
+                if (menuItems) {
+                    menuItems.classList.toggle('active');
+                }
+            }
+    
+            document.querySelector('.menu-button').addEventListener('click', toggleMenu);
+        });
+    </script>
+    
+
+    
+</body>
+</html>

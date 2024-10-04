@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-9Lf9+4Mjcjy5uDZ4AdK6GhpOj76lwhVbl2+uYvs1zLoXgRUeGNCZXz0aTl+1S9NpBUrKb9ICbpZMWZ3BhHrT7w==" crossorigin="anonymous" />
+
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
+
+    <title>Novo/Editar recurso - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/agr3kxwxb5hnsedd9yd0re9bxz0346mtqq1xe1u6ethrlj9a/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    
+    <style>
+        .container2 {
+            background-image: url('static/images/new-form-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            padding: 40px 0;
+            color: #fff;
+            height: 80px;
+        }
+        .required {
+            position: relative;
+        }
+        .required::after {
+            content: '*';
+            position: absolute;
+            top: 0;
+            right: absolute;
+            color: red;
+            font-size: 1.4rem;
+            line-height: 0.3;
+        }
+        .hidden {
+            display: none;
+        }
+        .hidden-input-container {
+            margin: 20px 0;
+        }
+        .hidden-input-container input[type="text"],
+        .hidden-input-container input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            box-sizing: border-box;
+            display: block;
+        }
+        .hidden-input-container input::placeholder {
+            color: #888;
+            font-style: italic;
+        }
+        .hidden-input-container.visible {
+            display: block;
+        }
+
+        /* Container styling */
+        .input-container {
+            margin: 20px 0;
+        }
+
+        /* Input field styling */
+        .input-container input[type="text"],
+        .input-container input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            box-sizing: border-box;
+            display: block;
+        }
+
+        /* Placeholder styling */
+        .input-container input::placeholder {
+            color: #888;
+            font-style: italic;
+        }
+
+        /* Focus state styling */
+        .input-container input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Label styling */
+        .input-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        /* Container for the input group */
+        .input-group-local {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #ddd; /* Light gray border */
+            border-radius: 8px; /* Rounded corners */
+            background-color: #f9f9f9; /* Light background */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        /* Heading */
+        .input-group-local h2 {
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #333; /* Darker text for better readability */
+        }
+
+        /* Radio buttons container */
+        .input-group-local label {
+            display: block;
+            margin: 5px 0;
+            font-size: 13px;
+            color: #333; /* Darker text for better readability */
+            cursor: pointer; /* Cursor changes to pointer for better UX */
+        }
+
+        /* Radio buttons */
+        .input-group-local input[type="radio"] {
+            margin-right: 10px; /* Space between radio button and label */
+            cursor: pointer; /* Cursor changes to pointer for better UX */
+        }
+
+        /* Text input fields */
+        .input-group-local input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc; /* Light border for the input field */
+            border-radius: 4px; /* Slightly rounded corners for the input field */
+            width: 80%; /* Full width of the container */
+            box-sizing: border-box; /* Ensure padding and border are included in the total width */
+            background-color: #fff; /* White background for the input field */
+            color: #333; /* Text color */
+            margin-top: 10px; /* Space above the input field */
+        }
+
+        /* File input field */
+        .input-group-local input[type="file"] {
+            margin-top: 10px; /* Space above the file input field */
+        }
+
+        /* Hidden inputs */
+        .input-group-local div {
+            display: none; /* Hide elements by default */
+        }
+
+        .input-group-local div.show {
+            display: block; /* Show elements when the 'show' class is applied */
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="header-governo">
+        <img src="static/images/logo.GOV-AZORES.2019.png" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+    <header>
+        <div class="container">
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                </ul>
+            </nav>
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container2">
+        <h1>Novo recurso</h1>
+        <p>Detalhes > Metadados </p>
+    </div>
+    <main>
+        <div class="container">
+            <form method="POST" enctype="multipart/form-data">
+                <h1>Detalhes</h1>
+                <div class="input-group required">
+                    <h2>Título:</h2>
+                    <textarea id="titulo" name="titulo" rows="2" class="tinymce"></textarea>
+                </div>
+                <div class="input-group-aut required">
+                    <h2>Autor/fonte:</h2>
+                    <input type="text" id="autor" name="autor" placeholder="Nome do autor/fonte do recurso" required>
+                </div>
+                <div class="input-group-org required">
+                    <h2>Organização:</h2>
+                    <input type="text" id="organizacao" name="organizacao" placeholder="Escola/organização/nome do sítio do autor do recurso" required>
+                </div>
+                <div class="input-group-format required">
+                    <h2>Formato (MAX. 2):</h2>
+                    {% for formato in formatos %}
+                        <input type="checkbox" id="formato{{ loop.index }}" name="formato" value="{{ formato }}" onchange="checkVideoAnimation(this)">
+                        <label for="formato{{ loop.index }}">{{ formato }}</label>
+                    {% endfor %}
+                </div>
+
+                <div id="duration-box" class="hidden">
+                    <h2>Duração :</h2>
+                    <input type="text" id="duration" name="duration" min="1" placeholder="ex: 01:02:00">
+                </div>
+                <div class="input-group-local required">
+                    <h2>Localização do recurso:</h2>
+                    <input type="radio" id="localizacao1" name="localizacao" value="Opção 1">
+                    <label for="localizacao1">Endereço e/ou código de incorporação</label>
+                    <input type="radio" id="localizacao2" name="localizacao" value="Opção 2">
+                    <label for="localizacao2">Ficheiro</label>
+                    
+                    <!-- Small message hidden initially -->
+                    <small>Formatos permitidos para ficheiros: pdf, docx, xlsx, doc</small>
+                
+                    <div id="enderecoInput" style="display: none;">
+                        <input type="text" id="endereco" name="endereco" placeholder="Digite o endereço">
+                    </div>
+                    <div id="embebdInput" style="display: none;">
+                        <input type="text" id="embebed" name="embebed" placeholder="Digite o código de incorporação">
+                    </div>
+                    <div id="fileInput" style="display: none;">
+                        <input type="file" id="file" name="file">
+                    </div>
+                </div>
+                <div class="input-group-use required">
+                    <h2>Modos de Utilização:</h2>
+                    {% for modo in use_mode %}
+                        <input type="checkbox" id="modo{{ loop.index }}" name="use_mode" value="{{ modo }}">
+                        <label for="modo{{ loop.index }}">{{ modo }}</label>
+                    {% endfor %}
+                </div>
+                <div class="input-group-req required">
+                    <h2>Requisitos Técnicos:</h2>
+                    {% for requirement in requirements %}
+                        <input type="checkbox" id="requirement{{ loop.index }}" name="requirements" value="{{ requirement }}">
+                        <label for="requirement{{ loop.index }}">{{ requirement }}</label>
+                    {% endfor %}
+                </div>
+                <div class="input-group-descricao-proposta required">
+                    <h2>Descrição do recurso:</h2>
+                    <div id="editor-container" style="height: 300px;"></div>
+                    <textarea id="descricao" name="descricao" style="display: none;"></textarea>
+                    <div id="counter"></div>
+                    <small class="small-text">Deve ter no mínimo 20 caracteres e no máximo 1500</small>
+                </div>
+                <div class="input-group-lang required">
+                    <h2>Idiomas:</h2>
+                    {% for idioma in idiomas %}
+                        <input type="checkbox" id="idioma{{ loop.index }}" name="idiomas" value="{{ idioma }}">
+                        <label for="idioma{{ loop.index }}">{{ idioma }}</label>
+                    {% endfor %}
+                </div>
+                <div class="input-group-fich">
+                    <h2>Imagem de destaque:</h2>
+                    <label class="file-label" for="ficheiro">
+                        <input type="file" id="ficheiro" name="ficheiro" class="file-input" onchange="updateFileName()">
+                        <span class="file-custom-text">Escolha um arquivo</span>
+                        <span class="file-name">Nenhum arquivo selecionado</span>
+                    </label>
+                </div>
+
+                <small class="small-text">
+                    <span class="text-danger">*</span>
+                    Campo obrigatório
+                </small>
+                
+                <button type="submit">Continuar</button>
+                <button type="button" onclick="window.location.href='/'">Cancelar</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+            </div>
+            
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            
+            <div class="additional-images">
+                <img src="static/images/dre_transparent.png" alt="Image 1">
+                <img src="static/images/gov_acores_transparent.png" alt="Image 2">
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+        </div>
+    </footer>
+
+    <script>
+        const localizacao1 = document.getElementById('localizacao1');
+        const localizacao2 = document.getElementById('localizacao2');
+        const enderecoInput = document.getElementById('enderecoInput');
+        const embebdInput = document.getElementById('embebdInput');
+        const fileInput = document.getElementById('fileInput');
+
+        localizacao1.addEventListener('change', function() {
+            if (this.checked) {
+                enderecoInput.style.display = 'block';
+                embebdInput.style.display = 'block';
+                fileInput.style.display = 'none';
+            }
+        });
+
+        localizacao2.addEventListener('change', function() {
+            if (this.checked) {
+                enderecoInput.style.display = 'none';
+                embebdInput.style.display = 'none';
+                fileInput.style.display = 'block';
+            }
+        });
+    </script>
+    
+    <script>
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            }
+        });
+
+        quill.on('text-change', function() {
+            document.getElementById('descricao').value = quill.root.innerHTML;
+            updateCounter();
+        });
+
+        function updateCounter() {
+            const maxLength = 1500;
+            const content = quill.getText().trim();
+            const currentLength = content.length;
+            const counterEle = document.getElementById('counter');
+            counterEle.innerHTML = `${currentLength}/${maxLength}`;
+        }
+    </script>
+    <script>
+        function updateFileName() {
+            const fileInput = document.getElementById('ficheiro');
+            const fileNameSpan = document.querySelector('.file-name');
+            const file = fileInput.files[0];
+        
+            if (file) {
+                fileNameSpan.textContent = file.name;
+            } else {
+                fileNameSpan.textContent = 'Nenhum arquivo selecionado';
+            }
+        }
+    </script>
+    <script>
+        function checkVideoAnimation(checkbox) {
+            const durationBox = document.getElementById('duration-box');
+            const videoAnimationCheckbox = document.querySelector('input[name="formato"][value="Vídeo/Animação"]');
+            if (videoAnimationCheckbox.checked) {
+                durationBox.classList.remove('hidden');
+            } else {
+                durationBox.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+/* index.css */
+
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #dfdddd;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+}
+
+button.resource {
+    padding: 10px 20px; /* Adjust padding for the button */
+    background-color: #aec03f; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove default border */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    font-size: 14px; /* Adjust font size */
+    margin-bottom: 10px; /* Space below the button */
+}
+
+button.resource:hover {
+    background-color: #a0af3b; /* Button background color on hover */
+}
+
+nav ul li button {
+    background: none; /* Remove default background */
+    border: none; /* Remove default border */
+    color: #000000; /* Match text color */
+    font-size: 18px; /* Match font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 5%;
+    border-color: #a0af3b;
+}
+
+.resource-card .icon-bar {
+    margin-bottom: 10px; /* Adjust spacing between icons and buttons */
+}
+
+.resource-card .icon-bar i {
+    font-size: 20px; /* Adjust the size of the icons */
+    margin-right: 10px; /* Adjust spacing between icons */
+    color: #ccc;
+    border-color: #a0af3b;
+}
+
+.resource-card .icon-bar i:hover {
+    color:#a0af3b; /* Change color on hover if needed */
+}
+
+.resource-card button.edit {
+    background-color:#a0af3b;
+}
+
+.resource-card button.eliminar {
+    background-color: #dc3545; /* Change background color for eliminar button */
+    
+}
+
+
+.resource-card button.eliminar:hover {
+    background-color: #e43849;
+}
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-container input[type=text] {
+    padding: 10px;
+    margin-right: 10px; /* Adjust spacing between input and button */
+    width: 50%; /* Adjust width of input */
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-left: 250px;
+    margin-bottom: 10px;
+}
+
+.search-container button {
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    width: 30%;
+    border-radius: 5px;
+    background-color: #aec03f;
+    color: white;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.search-container button:hover {
+    background-color: #a0af3b;
+}
+button-pag {
+    width: 5%;
+    background-color: #aec03f;
+    color: white;
+    padding: 10px 20px;
+    margin-right: 5px;
+    margin-top: 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: center;
+
+}
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;
+}
+.pagination a {
+    color: #333;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    border: 1px solid #ccc;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.pagination a.active {
+    background-color: #aec03f;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+
+header {
+    background-color: #f9f9f9;
+    color: #fff;
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+header .container img {
+    height: 80px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: -40px;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #313131;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.carousel {
+    position: relative;
+}
+
+.carousel-inner {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-item {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex: 1 0 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item.active {
+    display: flex;
+}
+
+.carousel-item p {
+    font-style: italic;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0,0,0,0.4);
+    border: none;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.carousel-control-prev {
+    left: 10px;
+}
+
+.carousel-control-next {
+    right: 10px;
+}
+
+
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 20px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.input-group label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.input-group input {
+    width: 60%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 18px;
+
+}
+
+.input-group input:focus {
+    outline: none;
+    border: 1px solid #aec03f;
+}
+
+
+.top-nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 45px;
+}
+
+.top-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.top-nav ul li {
+    display:inline-flex;
+    margin-left: 20px; /* Adjust spacing between buttons */
+}
+
+.top-nav ul li a {
+    text-decoration: none;
+    color: #313131;
+    font-size: 14px;
+}
+
+.top-nav ul li a:hover {
+    text-decoration: underline;
+}
+/* New Left Dashboard Menu CSS */
+
+
+ /* Main content styles */
+ main {
+    padding: 50px;
+}
+
+.options-menu {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.options-menu a {
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    margin-right: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom-color 0.3s ease;
+}
+
+.options-menu a:hover {
+    border-bottom-color: #afc03f;
+}
+/* Add custom CSS styles */
+
+/* Header styles */
+.header-profile {
+    background-color: #afc03fb0;
+    background-image: none;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    position: center; /* Add position relative to the header */
+    
+    
+}
+
+.header-profile .container {
+    
+    align-items: center; /* Align items vertically in the center */
+    justify-content: center; /* Center items horizontally */
+    
+}
+
+
+
+/* Profile image styles */
+.profile-icon {
+    position: absolute; /* Position the profile icon */
+    top: 50%; /* Position it in the center vertically */
+    left: 50%; /* Position it in the center horizontally */
+    transform: translate(-50%, -50%); /* Center it precisely */
+    width: 100px; /* Set the width and height */
+    height: 100px;
+    border-radius: 50%; /* Make it round */
+    overflow: hidden; /* Hide any overflow */
+    box-shadow: 0 0 0 5px #fff; /* Add a white border */
+    margin-top: -200px;
+}
+
+.profile-icon img {
+    width: 100%; /* Make the image fill the container */
+    height: 100%;
+    object-fit: cover; /* Ensure the image covers the container */
+}
+.profile-details {
+    text-align: center;
+}
+
+.profile-details h3 {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: -40px;
+}
+
+.profile-counts {
+    display: flex; /* Display counts horizontally */
+    justify-content: center; /* Center counts horizontally */
+    align-items: center; /* Center counts vertically */
+    margin-top: 70px; /* Add some margin */
+}
+
+.profile-counts p {
+    margin: 0 10px; /* Add spacing between counts */
+
+}
+
+footer {
+    background-color: #aec03f;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    margin-top: 20px;
+}
+/* Tool Cards */
+.tools-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adjust the minimum and maximum width as needed */
+    gap: 20px;
+}
+
+.resource-card{
+    background-color: #f5f5f5;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+
+.proposta-card,
+.tool-card {
+    background-color: #f5f5f5;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.proposta-card h3,
+.resource-card,
+.tool-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.proposta-card p,
+.resource-card p,
+.tool-card p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.proposta-card button,
+.resource-card button,
+.tool-card button {
+    background-color: #aec03f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.proposta-card button:hover,
+.resource-card button:hover,
+.tool-card button:hover {
+    background-color: #a0af3b;
+}
+@media (max-width: 1000px) {
+    header .container img {
+        height: 60px;
+    }
+    
+    header h1 {
+        font-size: 20px;
+    }
+    
+    nav ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul li {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    nav ul li button,
+    nav ul li a {
+        font-size: 16px;
+    }
+
+    .rectangle {
+        width: calc(48% - 10px);
+        margin: 1%;
+    }
+
+    .modal-content {
+        width: 80%;
+    }
+
+    .input-group input,
+    button[type=submit] {
+        width: 80%;
+    }
+    .profile-icon {
+        position: absolute; /* Position the profile icon */
+        top: 50%; /* Position it in the center vertically */
+        left: 50%; /* Position it in the center horizontally */
+        transform: translate(-50%, -50%); /* Center it precisely */
+        width: 100px; /* Set the width and height */
+        height: 100px;
+        border-radius: 50%; /* Make it round */
+        overflow: hidden; /* Hide any overflow */
+        box-shadow: 0 0 0 5px #fff; /* Add a white border */
+        margin-top: -100px;
+    }
+}
+@media (max-width: 768px) {
+    header .container img {
+        height: 60px;
+    }
+    
+    header h1 {
+        font-size: 20px;
+    }
+    
+    nav ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul li {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    nav ul li button,
+    nav ul li a {
+        font-size: 16px;
+    }
+
+    .rectangle {
+        width: calc(48% - 10px);
+        margin: 1%;
+    }
+
+    .modal-content {
+        width: 80%;
+    }
+
+    .input-group input,
+    button[type=submit] {
+        width: 80%;
+    }
+}
+
+@media (max-width: 480px) {
+    header .container img {
+        height: 40px;
+    }
+
+    header h1 {
+        font-size: 18px;
+    }
+
+    nav ul li button,
+    nav ul li a {
+        font-size: 14px;
+    }
+
+    .rectangle {
+        width: 100%;
+        margin: 1% 0;
+    }
+
+    .modal-content {
+        width: 90%;
+    }
+
+    .input-group input,
+    button[type=submit] {
+        width: 90%;
+    }
+}
+
+
+
+
+

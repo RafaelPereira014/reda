@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/table.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/sidenav.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        .pagination button.active {
+            background-color: #333;
+            color: white;
+        }
+        .approval-icon {
+            cursor: pointer;
+        }
+        .approval-icon i {
+            margin: 0 5px;
+        }
+        .approval-icon .fa-check {
+            color: green;
+        }
+        .approval-icon .fa-times {
+            color: red;
+        }
+        /* CSS for the modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+            overflow: auto;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        /* Close button (x) */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    </style>
+
+    
+</head>
+<body>
+    
+    <div class="sidebar">
+        <div class="logo">
+            <img src="/static/images/REDA_logo.png" alt="Logo">
+        </div>
+    
+        <ul>
+            <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+
+            <li>
+                <a><i class="fas fa-database"></i> Recursos </a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/recursos/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                    <li><a href="/dashboard/recursos/po/pendentes"><i class="far fa-clock"></i> Operacionalizações pendentes</a></li>
+                    <li><a href="/dashboard/recursos/ocultos" >Ocultos</a></li>
+                </ul>
+            </li>
+            
+            
+            <li>
+                <a href="/dashboard/aplicacoes"><i class="fas fa-layer-group"></i> Aplicações</a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/aplicacoes/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="/dashboard/ferramentas"><i class="fas fa-tools"></i> Ferramentas</a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/ferramentas/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                </ul>
+            </li>
+            <li>
+                <a><i class="fas fa-comments"></i> Comentários</a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/comentarios/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                    <li><a href="/dashboard/comentarios/palavras-proibidas"><i class="fas fa-ban"></i> Palavras proibidas</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="/dashboard/taxonomias"><i class="fas fa-sitemap"></i> Taxonomias</a>
+                <!--
+                <ul class="submenu">
+                    <li><a href="/dashboard/taxonomias/relacoes"><i class="fas fa-link"></i> Relações</a></li>
+                </ul>
+                
+                -->
+            </li>
+            <li><a href="/dashboard/utilizadores"><i class="fas fa-users"></i> Utilizadores</a></li>
+           
+        </ul>
+    </div>
+    
+    <div class="content">
+        <h2>Propostas de operacionalização pendentes de aprovação</h2>
+        <!--
+        <div>
+            <input type="text" id="search" placeholder="Pesquisar...">
+        </div>
+        -->
+
+        <hr></hr>
+
+       
+
+        <!-- Modal -->
+        <div id="descriptionModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeDescriptionModal()">&times;</span>
+                <h2>Descrição do Recurso</h2>
+                <p id="descriptionContent"></p>
+            </div>
+        </div>
+
+        <table id="op_pendent">
+            <thead>
+                <tr>
+                    <th>Recurso</th>
+                    <th>Data de criação</th>
+                    <th>Submetido por</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resource in scripts %}
+                <tr>
+                    <td>
+                        <a href="#" onclick="showDescription('{{ resource.description | safe }}')">
+                            <i class="fas fa-eye"></i>
+                        </a> 
+                        {{ resource.title  }}(<strong>id:{{resource.id}}</strong>)
+                    </td>
+                    <td>{{ resource.created_at }}</td>
+                    <td>{{ resource.author }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination" id="pagination"></div>
+
+        
+       
+    </div>
+
+    <script>
+        function toggleSubmenu(submenuId) {
+            var submenu = document.getElementById(submenuId);
+            if (submenu.style.display === "block") {
+                submenu.style.display = "none";
+            } else {
+                submenu.style.display = "block";
+            }
+        }
+
+        
+    </script>
+    <script>
+        // Function to show description modal
+        function showDescription(description) {
+            var modal = document.getElementById("descriptionModal");
+            var descriptionContent = document.getElementById("descriptionContent");
+            
+            // Set description content
+            descriptionContent.textContent = description;
+            
+            // Display modal
+            modal.style.display = "block";
+        }
+        
+        // Function to close description modal
+        function closeDescriptionModal() {
+            var modal = document.getElementById("descriptionModal");
+            
+            // Hide modal
+            modal.style.display = "none";
+        }
+    </script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const table = document.getElementById("op_pendent");
+            const pagination = document.getElementById("pagination");
+            const rowsPerPage = 15;
+            const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+            let currentPage = 1;
+        
+            function displayRows(page) {
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+        
+                for (let i = 0; i < rows.length; i++) {
+                    rows[i].style.display = i >= start && i < end ? "" : "none";
+                }
+            }
+        
+            function createPageButton(page) {
+                const button = document.createElement("button");
+                button.innerText = page;
+                button.classList.add("page-btn");
+                if (page === currentPage) button.classList.add("active");
+        
+                button.addEventListener("click", function() {
+                    currentPage = page;
+                    displayRows(currentPage);
+        
+                    const currentBtn = document.querySelector(".page-btn.active");
+                    if (currentBtn) {
+                        currentBtn.classList.remove("active");
+                    }
+                    button.classList.add("active");
+        
+                    setupPagination();
+                });
+        
+                return button;
+            }
+        
+            function setupPagination() {
+                pagination.innerHTML = "";
+                const maxDisplayedPages = 3; // Number of pages to display before and after the current page
+                const range = maxDisplayedPages * 2 + 1;
+        
+                // Add the first page button
+                pagination.appendChild(createPageButton(1));
+        
+                if (currentPage > maxDisplayedPages + 2) {
+                    const ellipsis = document.createElement("span");
+                    ellipsis.innerText = "...";
+                    pagination.appendChild(ellipsis);
+                }
+        
+                // Add page buttons around the current page
+                const start = Math.max(2, currentPage - maxDisplayedPages);
+                const end = Math.min(totalPages - 1, currentPage + maxDisplayedPages);
+        
+                for (let i = start; i <= end; i++) {
+                    pagination.appendChild(createPageButton(i));
+                }
+        
+                if (currentPage < totalPages - maxDisplayedPages - 1) {
+                    const ellipsis = document.createElement("span");
+                    ellipsis.innerText = "...";
+                    pagination.appendChild(ellipsis);
+                }
+        
+                // Add the last page button if there are more than one page
+                if (totalPages > 1) {
+                    pagination.appendChild(createPageButton(totalPages));
+                }
+            }
+        
+            displayRows(currentPage);
+            setupPagination();
+
+            function toggleApprovalStatus(cell, type, id) {
+                const currentValue = parseInt(cell.getAttribute("data-value"));
+                const newValue = currentValue === 1 ? 0 : 1;
+                cell.setAttribute("data-value", newValue);
+
+                if (newValue === 1) {
+                    cell.innerHTML = '<i class="fas fa-check"></i>';
+                } else {
+                    cell.innerHTML = '<i class="fas fa-times"></i>';
+                }
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", `/update_approved_${type}/${id}`, true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.send();
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status !== 200) {
+                            alert(`Error updating approval status: ${xhr.responseText}`);
+                        }
+                    }
+                };
+            }
+
+            function confirmToggle(cell) {
+                const confirmation = confirm("Are you sure you want to toggle approval status?");
+                if (confirmation) {
+                    const id = cell.getAttribute("data-id");
+                    const type = cell.getAttribute("data-type");
+                    toggleApprovalStatus(cell, type, id);
+                }
+            }
+
+            table.addEventListener("click", function(event) {
+                const targetCell = event.target.closest(".approval-icon");
+                if (targetCell) {
+                    confirmToggle(targetCell);
+                }
+            });
+
+            const sidebarItems = document.querySelectorAll('.sidebar ul li');
+
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const submenu = item.querySelector('.submenu');
+                    sidebarItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.querySelector('.submenu').style.display = 'none';
+                        }
+                    });
+                    submenu.style.display = submenu.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

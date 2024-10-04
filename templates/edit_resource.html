@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-9Lf9+4Mjcjy5uDZ4AdK6GhpOj76lwhVbl2+uYvs1zLoXgRUeGNCZXz0aTl+1S9NpBUrKb9ICbpZMWZ3BhHrT7w==" crossorigin="anonymous" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <title>Novo/Editar recurso - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}">
+    <style>
+        /* Existing styles */
+    
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+    
+    <style>
+        .container2 {
+            background-image: url('/static/images/new-form-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            padding: 40px 0;
+            color: #fff;
+            height: 80px;
+        }
+        
+        #editor-container {
+            height: 200px;
+            text-transform: none; /* Ensure text-transform is none */
+        }
+        #counter {
+            margin-top: 5px;
+        }
+        /* Custom styles for the Link input group */
+        .custom-link-group {
+            margin-bottom: 20px;
+            background-color: #f9f9f9; /* Light background for better visibility */
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd; /* Light border for structure */
+        }
+
+        .custom-link-group label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .custom-link-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff; /* Ensure input is white */
+        }
+
+        /* Custom styles for the Embed Code textarea group */
+        .custom-embed-group {
+            margin-bottom: 20px;
+            background-color: #f4f4f4; /* Slightly darker background for distinction */
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .custom-embed-group label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .custom-embed-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            background-color: #fafafa; /* Slight off-white background */
+            resize: vertical; /* Allow vertical resizing only */
+            min-height: 100px; /* Ensure textarea is tall enough */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header-governo">
+        <img src="/static/images/logo.GOV-AZORES.2019.png" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+    <header>
+        <div class="container">
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                </ul>
+            </nav>
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container2">
+        <h1>{{resource_details.title}}</h1>
+        <p>Detalhes > Metadados </p>
+        <img src="" alt="">
+    </div>
+    <main>
+        <div class="container">
+            <h1>Detalhes</h1>
+            <form method="POST" enctype="multipart/form-data" action="/resources/edit/{{ resource_details.resource_id }}">
+                <div class="input-group ">
+                    <h2>Título:</h2>
+                    <input type="text" id="titulo" name="titulo" value="{{ resource_details.title }}">
+                </div>
+                <div class="input-group ">
+                    <h2>Autor/fonte:</h2>
+                    <input type="text" id="autor" name="autor" placeholder="Nome do autor/fonte do recurso" value="{{ resource_details.author }}" >
+                </div>
+                <div class="input-group-org ">
+                    <h2>Organização:</h2>
+                    <input type="text" id="organizacao" name="organizacao" placeholder="Escola/organização/nome do sítio do autor do recurso" value="{{ resource_details.organization }}" >
+                </div>
+                <div class="input-group-format ">
+                    <h2>Formato (MAX. 2):</h2>
+                    {% for formato in formatos %}
+                        <input type="checkbox" id="formato{{ loop.index }}" name="formato" value="{{ formato }}" 
+                            {% if formato in formato_title %}checked{% endif %}>
+                        <label for="formato{{ loop.index }}">{{ formato }}</label>
+                    {% endfor %}
+                </div>
+
+                {% if resource_details.link %}
+                <div class="form-group custom-link-group">
+                    <label for="link">Link</label>
+                    <input type="url" id="link" name="link" class="form-control custom-link-input" value="{{ resource_details.link }}">
+                </div>
+                {% endif %}
+
+                {% if resource_details.embed %}
+                <div class="form-group custom-embed-group">
+                    <label for="embed_code">Embed Code</label>
+                    <textarea id="embed_code" name="embed_code" class="form-control custom-embed-textarea">{{ resource_details.embed }}</textarea>
+                </div>
+                {% endif %}
+
+                <div class="input-group-use">
+                    <h2>Modos de Utilização:</h2>
+                    {% for modo in use_mode %}
+                        <input type="checkbox" id="modo{{ loop.index }}" name="use_mode" value="{{ modo }}" 
+                            {% if modo in modo_utilizacao_title %}checked{% endif %}>
+                        <label for="modo{{ loop.index }}">{{ modo }}</label>
+                    {% endfor %}
+                </div>
+                <div class="input-group-req">
+                    <h2>Requisitos Técnicos:</h2>
+                    {% for requirement in requirements %}
+                        <input type="checkbox" id="requirement{{ loop.index }}" name="requirements" value="{{ requirement }}" 
+                            {% if req_tecnicos_title and requirement in req_tecnicos_title %}checked{% endif %}>
+                        <label for="requirement{{ loop.index }}">{{ requirement }}</label>
+                    {% endfor %}
+                </div>
+                
+                <div class="input-group ">
+                    <h2>Descrição:</h2>
+                    <div id="editor-container"></div>
+                    <textarea id="descricao" name="descricao" rows="5" style="display:none;">{{ resource_details.description }}</textarea>
+                    <div id="counter"></div>
+                    <small class="small-text">Deve ter no mínimo 20 caracteres e no máximo 2000</small>
+                </div>
+                <div class="input-group-lang">
+                    <h2>Idiomas:</h2>
+                    {% for idioma in idiomas %}
+                        <input type="checkbox" id="idioma{{ loop.index }}" name="idiomas" value="{{ idioma }}"
+                            {% if idioma in idiomas_title %}checked{% endif %}>
+                        <label for="idioma{{ loop.index }}">{{ idioma }}</label>
+                    {% endfor %}
+                </div>
+                
+                
+                
+                <div class="input-group-fich">
+                    <h2>Imagem de destaque:</h2>
+                    <label class="file-label" for="ficheiro">
+                        <input type="file" id="ficheiro" name="ficheiro" class="file-input" onchange="updateFileName()">
+                        <span class="file-custom-text">Escolha um arquivo</span>
+                        <span class="file-name">Nenhum arquivo selecionado</span>
+                    </label>
+                </div>
+                
+                
+                <button type="submit">Gravar alterações</button>
+                <button type="button" onclick="window.location.href='/'">Cancelar</button>
+            </form>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+            </div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            <div class="additional-images">
+                <img src="/static/images/dre_transparent.png" alt="Image 1">
+                <img src="/static/images/gov_acores_transparent.png" alt="Image 2">
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+        </div>
+    </footer>
+    <script>
+        function updateFileName() {
+            const fileInput = document.getElementById('ficheiro');
+            const fileNameSpan = document.querySelector('.file-name');
+            const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'Nenhum arquivo selecionado';
+            fileNameSpan.textContent = fileName;
+        }
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var editor = new Quill('#editor-container', {
+                theme: 'snow'
+            });
+
+            // Set initial value from textarea to Quill editor
+            var descricaoInput = document.getElementById('descricao');
+            editor.clipboard.dangerouslyPasteHTML(descricaoInput.value);
+
+            // Sync Quill editor content to textarea
+            editor.on('text-change', function() {
+                descricaoInput.value = editor.root.innerHTML;
+                updateCounter();
+            });
+
+            function updateCounter() {
+                var textLength = editor.getText().trim().length;
+                var maxLength = 2000;
+                var counterElement = document.getElementById('counter');
+                counterElement.innerText = textLength + '/' + maxLength;
+                if (textLength > maxLength) {
+                    counterElement.style.color = 'red';
+                } else {
+                    counterElement.style.color = '';
+                }
+            }
+            updateCounter();
+        });
+
+        // Modal handling
+        var modal = document.getElementById("myModal");
+        var span = document.getElementsByClassName("close")[0];
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursos - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resources.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
+    <style>
+        .checked {
+            color: orange;
+        }
+        .rating {
+            color: #ffc107;
+            font-size: 10px;
+            text-align: center;
+        }
+        .year-cycle {
+            font-size: 10px;
+            color: #333;
+            text-align: center;
+        }
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .pagination a {
+            color: #333;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border: 1px solid #ccc;
+            margin: 0 5px;
+            border-radius: 5px;
+        }
+        
+        .pagination a.active {
+            background-color: #aec03f;
+            color: white;
+        }
+        
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+        .video-container, .media-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+        }
+        
+        .video-container iframe,
+        .video-container object,
+        .video-container embed,
+        .responsive-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image covers the container */
+        }
+
+        .areas-resources {
+            position: absolute;
+            top: 10px; /* Adjust this value to move text slightly above the image */
+            left: 10px; /* Adjust this value as needed for horizontal positioning */
+            background: rgba(0, 0, 0, 0.7); /* Darker background */
+            padding: 5px; /* Optional: add padding for better readability */
+            border-radius: 5px; /* Optional: rounded corners */
+            font-size: 0.8em; /* Adjust font size as needed */
+            color: #fff; /* White text color for contrast */
+        }
+
+        #advancedSearchOptions {
+            display: none;
+        }
+
+    </style>
+    <style>
+        /* Style for the advanced search section */
+        details {
+            margin-top: 15px;
+            border: 1px solid #aec03f;
+            border-radius: 10px;
+            padding: 15px;
+            background-color: #f7f7f7;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #555;
+        }
+
+        summary::marker {
+            display: none;
+        }
+
+        summary::before {
+            content: "▼";
+            margin-right: 10px;
+            font-size: 13px;
+            color: #aec03f;
+            transition: transform 0.3s ease;
+        }
+
+        details[open] summary::before {
+            transform: rotate(180deg);
+        }
+
+        /* Advanced search options container */
+        .advanced-search-options {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Form group styling */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Label styling */
+        label {
+            font-weight: bold;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        /* Select dropdown styling */
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            font-size: 13px;
+            color: #555;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        select:focus {
+            border-color: #aec03f;
+            box-shadow: 0 0 8px rgba(0, 172, 63, 0.2);
+            outline: none;
+        }
+
+        option {
+            padding: 8px 10px;
+            white-space: nowrap;
+        }
+
+        option:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Button styling */
+        .form-buttons {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button[type="submit"],
+        button[type="reset"] {
+            background-color: #aec03f;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.3s ease;
+            width: 48%; /* Adjust width to fit buttons side by side */
+            box-sizing: border-box; /* Ensure padding and borders are included in width */
+        }
+
+        button[type="submit"]:hover {
+            background-color: #95a536;
+        }
+
+        button[type="reset"] {
+            background-color: #ccc;
+            color: #333;
+        }
+
+        button[type="reset"]:hover {
+            background-color: #b3b3b3;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .advanced-search-options {
+                grid-template-columns: 1fr;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+                align-items: stretch; /* Ensure buttons take full width */
+            }
+
+            button[type="submit"],
+            button[type="reset"] {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+        .rectangles p {
+            font-size: 12px; /* Adjust the font size as needed */
+            line-height: 1.4; /* Optional: Adjust line height for readability */
+            margin: 5px 0; /* Optional: Adjust margins for spacing */
+        }
+
+
+
+    </style>
+    <script>
+        function fetchDisciplinas() {
+            let selectedAnos = [];
+            $('input[name="anos"]:checked').each(function() {
+                selectedAnos.push($(this).val());
+            });
+        
+            if (selectedAnos.length === 0) {
+                $('#disciplinasContainer').empty();
+                $('#dominiosContainer').empty();
+                $('#subdominiosContainer').empty();
+                $('#conceitosContainer').empty();
+                return; // No anos selected, exit function
+            }
+        
+            $.get('/fetch_disciplinas', { ano: selectedAnos.join(',') }, function(data) {
+                let disciplinasContainer = $('#disciplinasContainer');
+                disciplinasContainer.empty();
+        
+                // Sort the disciplines alphabetically
+                data.sort();
+        
+                data.forEach(function(disciplina) {
+                    disciplinasContainer.append(
+                        `<div class="checkbox-item">
+                            <input type="checkbox" id="disciplina${disciplina}" name="disciplinas" value="${disciplina}" onchange="fetchDominios()">
+                            <label for="disciplina${disciplina}">${disciplina}</label>
+                        </div>`
+                    );
+                });
+            });
+        }
+        
+        function fetchDominios() {
+            let selectedDisciplinas = [];
+            $('input[name="disciplinas"]:checked').each(function() {
+                selectedDisciplinas.push($(this).val());
+            });
+        
+            if (selectedDisciplinas.length === 0) {
+                $('#dominiosContainer').empty();
+                $('#subdominiosContainer').empty();
+                $('#conceitosContainer').empty();
+                return; // No disciplinas selected, exit function
+            }
+        
+            $.get('/fetch_dominios', { disciplinas: selectedDisciplinas.join(',') }, function(data) {
+                let dominiosContainer = $('#dominiosContainer');
+                dominiosContainer.empty();
+        
+                // Sort the dominios alphabetically
+                data.sort();
+        
+                data.forEach(function(dominio) {
+                    dominiosContainer.append(
+                        `<div class="checkbox-item">
+                            <input type="checkbox" id="dominio${dominio}" name="dominios" value="${dominio}" onchange="fetchSubdominios()">
+                            <label for="dominio${dominio}">${dominio}</label>
+                        </div>`
+                    );
+                });
+            });
+        }
+        
+        function fetchSubdominios() {
+            let selectedDominios = [];
+            $('input[name="dominios"]:checked').each(function() {
+                selectedDominios.push($(this).val());
+            });
+        
+            if (selectedDominios.length === 0) {
+                $('#subdominiosContainer').empty();
+                $('#conceitosContainer').empty();
+                return; // No dominios selected, exit function
+            }
+        
+            $.get('/fetch_subdominios', { dominios: selectedDominios.join(',') }, function(data) {
+                let subdominiosContainer = $('#subdominiosContainer');
+                subdominiosContainer.empty();
+        
+                // Sort the subdominios alphabetically
+                data.sort();
+        
+                data.forEach(function(subdominio) {
+                    subdominiosContainer.append(
+                        `<div class="checkbox-item">
+                            <input type="checkbox" id="subdominio${subdominio}" name="subdominios" value="${subdominio}" onchange="fetchConceitos()">
+                            <label for="subdominio${subdominio}">${subdominio}</label>
+                        </div>`
+                    );
+                });
+            });
+        }
+        
+        function fetchConceitos() {
+            let selectedSubdominios = [];
+            $('input[name="subdominios"]:checked').each(function() {
+                selectedSubdominios.push($(this).val());
+            });
+        
+            if (selectedSubdominios.length === 0) {
+                $('#conceitosContainer').empty();
+                return; // No subdominios selected, exit function
+            }
+        
+            $.get('/fetch_conceitos', { subdominios: selectedSubdominios.join(',') }, function(data) {
+                let conceitosContainer = $('#conceitosContainer');
+                conceitosContainer.empty();
+        
+                // Sort the conceitos alphabetically
+                data.sort();
+        
+                data.forEach(function(conceito) {
+                    conceitosContainer.append(
+                        `<div class="checkbox-item">
+                            <input type="checkbox" id="conceito${conceito}" name="conceitos" value="${conceito}">
+                            <label for="conceito${conceito}">${conceito}</label>
+                        </div>`
+                    );
+                });
+            });
+        }
+        
+        $(document).ready(function() {
+            $('input[name="anos"]').change(function() {
+                fetchDisciplinas();
+            });
+        });
+
+    </script>
+
+
+</head>
+<body>
+    <div class="header-governo">
+        <img src="{{ url_for('static', filename='images/logo.GOV-AZORES.2019.png') }}" alt="Governo dos Açores">
+        <span>Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a></span>
+    </div>
+    <header>
+        <div class="container">
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda" style="width: 200px; height: auto;">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                    <li>
+                        <button class="resource-button" onclick="location.href='/resources'">
+                            <i class="fa fa-search"></i> Recursos
+                        </button>
+                    </li>
+                    {%if admin%}
+                    <li>
+                        <button class="resource-button" onclick="location.href='/novorecurso'">
+                            <i class="fa fa-plus"></i> Introduzir recurso
+                        </button>
+                    </li>  
+                    {%endif%}
+                </ul>
+            </nav>
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+            <form action="{{ url_for('resources') }}" method="get" class="search-container">
+                <input type="text" name="search" placeholder="Procurar recursos ou palavras-chave..." value="{{ search_term }}">
+                <button type="submit"><i class="fa fa-search"></i> Pesquisar</button>
+                <button type="submit" id="clearSearch"><i class="fa fa-times"></i> Limpar</button>
+            </form>
+            
+            
+            <details>
+                <summary>Pesquisa Avançada</summary>
+                <div class="advanced-search-options">
+                    <form method="GET" action="{{ url_for('resources') }}">
+                        <!-- Form Group for Anos (Years) -->
+                        <div class="form-group">
+                            <label for="anos">Anos:</label>
+                            <select id="anos" name="ano">
+                                <option value="">Escolher filtro</option>
+                                {% for ano in anos %}
+                                    <option value="{{ ano }}" {% if ano == request.args.get('ano') %}selected{% endif %}>{{ ano }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+            
+                        <!-- Form Group for Disciplinas -->
+                        <div class="form-group">
+                            <label for="disciplinas">Disciplinas:</label>
+                            <select id="disciplinas" name="disciplinas">
+                                <option value="">Escolher filtro</option>
+                                {% for disciplina in disciplinas %}
+                                    <option value="{{ disciplina }}" {% if disciplina == request.args.get('disciplinas') %}selected{% endif %}>{{ disciplina }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+            
+                        <!-- Form Group for Domínios -->
+                        <div class="form-group">
+                            <label for="dominios">Domínios:</label>
+                            <select id="dominios" name="dominio">
+                                <option value="">Escolher filtro</option>
+                                {% for dominio in dominios %}
+                                    <option value="{{ dominio }}" {% if dominio == request.args.get('dominio') %}selected{% endif %}>{{ dominio }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+            
+                        <!-- Form Group for Subdomínios -->
+                        <div class="form-group">
+                            <label for="subdominios">Subdomínios:</label>
+                            <select id="subdominios" name="subdominio">
+                                <option value="">Escolher filtro</option>
+                                {% for subdominio in subdominios %}
+                                    <option value="{{ subdominio }}" {% if subdominio == request.args.get('subdominio') %}selected{% endif %}>{{ subdominio }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+            
+                        <!-- Submit and Reset Buttons -->
+                        <div class="form-buttons">
+                            <button type="submit">Aplicar Filtros</button>
+                            <button type="reset" onclick="window.location.href='{{ url_for('resources') }}'">Limpar Filtros</button>
+                        </div>
+                    </form>
+                </div>
+            </details>
+            
+            
+            
+            
+            
+            
+            
+            
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <p>Início > Recursos</p>
+            {% if admin %}
+            <a href="/novorecurso" class="resource-link">
+                <button class="resource"><i class="fa fa-plus"></i> Introduzir recurso</button>
+            </a>
+            {% endif %}
+            <h3>{{ total_resources }} Resultados</h3>
+            
+            <hr>
+            <div class="rectangles">
+                {% for resource in all_resources %}
+                <div class="rectangle {% if not admin %} smaller-rectangle {% endif %}">
+                    {% if resource.image_url %}
+                        <div class="media-container">
+                            <img src="{{ resource.image_url }}" alt="Resource Image" class="responsive-image">
+                        </div>
+                    {% else %}
+                        <div class="video-container">
+                            {{ resource.embed | safe }}
+                        </div>
+                    {% endif %}
+                    <div class="image-container">
+                        {% for script_id, script in resource.details.scripts_by_id.items() %}
+                            <div class="areas-resources">
+                                {{ resource.areas_resources_display }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                   
+                    <h2>
+                        <strong>
+                            {% if resource.title|length > 25 %}
+                            {{ resource.title[:25] | strip_html ~ '...' }}
+                            {% else %}
+                            {{ resource.title | strip_html }}
+                            {% endif %}
+                        </strong>
+                    </h2>
+                    <p>
+                        {% if resource.description|length > 100 %}
+                        {{ resource.description[:100] | strip_html ~ '...' }}
+                        {% else %}
+                        {{ resource.description | strip_html }}
+                        {% endif %}
+                    </p>
+                    <div class="buttons">
+                        <a href="/resources/details/{{ resource.id }}"><button>Ver recurso</button></a>
+                        {% if admin %}
+                        <a href="/resources/edit/{{ resource.id }}"><button>Editar recurso</button></a>
+                        <a href="/novaproposta/{{ resource.slug }}"><button>Adicionar proposta de operacionalização</button></a>
+                        {% endif %}
+                    </div>
+                    
+                    
+                    
+
+
+                
+                    {% if resource.details and resource.details.formato_title %}
+                    <p class="formato_title">{{ resource.details.formato_title | strip_html }}</p>
+                    {% if resource.details and resource.details.formato_title %}
+                        {% if resource.details.formato_title == 'Vídeo/Animação' %}
+                            <p class="formato_title video">
+                                {{ resource.duration | strip_html }}
+                            </p>
+                        {% endif %}
+                    {% endif %}
+
+                    {% set ciclos = [] %}
+
+                    {% for script_id, script in resource.details.scripts_by_id.items() %}
+                    {% if '1.º' in script.anos_resources or '2.º' in script.anos_resources or '3.º' in script.anos_resources or '4.º' in script.anos_resources %}
+                            {% set _ = ciclos.append('1º ciclo') %}
+                        {% endif %}
+                        {% if '5.º' in script.anos_resources or '6.º' in script.anos_resources %}
+                            {% set _ = ciclos.append('2º ciclo') %}
+                        {% endif %}
+                        {% if '7.º' in script.anos_resources or '8.º' in script.anos_resources or '9.º' in script.anos_resources %}
+                            {% set _ = ciclos.append('3º ciclo') %}
+                        {% endif %}
+                        {% if '10.º' in script.anos_resources or '11.º' in script.anos_resources or '12.º' in script.anos_resources %}
+                            {% set _ = ciclos.append('Secundário') %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% set unique_ciclos = ciclos | unique %}
+
+                    <div class="ciclo-container">
+                        {% if unique_ciclos %}
+                            <p class="ciclo">{{ unique_ciclos | join(', ') }}</p>
+                        {% else %}
+                            <p class="ciclo">No cycle information found</p>
+                        {% endif %}
+                    </div>
+
+
+
+
+
+
+                    {% endif %}
+
+                    <p class="created_at">{{ resource.created_at }}</p>
+                </div>
+                {% endfor %}
+            </div>
+    
+            <div class="pagination">
+                {% if page > 1 %}
+                    <a href="{{ url_for('resources', page=1, search=search_term, ano=ano, disciplinas=disciplina) }}">Início</a>
+                    <a href="{{ url_for('resources', page=page-1, search=search_term, ano=ano, disciplinas=disciplina) }}">Anterior</a>
+                {% endif %}
+                
+                {% for p in page_range %}
+                    <a href="{{ url_for('resources', page=p, search=search_term, ano=ano, disciplinas=disciplina) }}" {% if p == page %}class="active"{% endif %}>{{ p }}</a>
+                {% endfor %}
+                
+                {% if page < total_pages %}
+                    <a href="{{ url_for('resources', page=page+1, search=search_term, ano=ano, disciplinas=disciplina) }}">Próximo</a>
+                    <a href="{{ url_for('resources', page=total_pages, search=search_term, ano=ano, disciplinas=disciplina) }}">Último</a>
+                {% endif %}
+            </div>
+            
+            
+            
+            
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+            </div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            <div class="additional-images">
+                <img src="static/images/dre_transparent.png" alt="Image 1">
+                <img src="static/images/gov_acores_transparent.png" alt="Image 2">
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+        </div>
+    </footer>
+    <script>
+        // Get all elements with class 'created_at'
+        const createdAtElements = document.querySelectorAll('.created_at');
+        
+        // Array of month names in Portuguese
+        const months = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", 
+                        "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+        
+        // Loop through each element and format its date
+        createdAtElements.forEach(element => {
+            // Extract the date string
+            const dateString = element.textContent.trim();
+            
+            // Convert the date string to a JavaScript Date object
+            const date = new Date(dateString);
+            
+            // Format the date in the desired format
+            const formattedDate = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+            
+            // Update the content of the element with the formatted date
+            element.textContent = formattedDate;
+        });
+    </script>
+
+    <script>
+
+        
+        function toggleAdvancedSearch() {
+            console.log("Button clicked"); // Test line
+            var options = document.getElementById('advancedSearchOptions');
+            if (options.style.display === 'none' || options.style.display === '') {
+                options.style.display = 'block';
+            } else {
+                options.style.display = 'none';
+            }
+        }
+        
+        
+        
+    </script>
+    
+    <script>
+        document.getElementById('anos').addEventListener('change', function() {
+            const selectedAno = this.value;
+            const disciplinasDropdown = document.getElementById('disciplinas');
+            disciplinasDropdown.innerHTML = '<option value="">Escolher filtro</option>'; // Reset
+        
+            if (!selectedAno) return;
+        
+            fetch(`/fetch_disciplinas?ano=${selectedAno}`)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(disciplina => {
+                        const option = document.createElement('option');
+                        option.value = disciplina;
+                        option.textContent = disciplina;
+                        disciplinasDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching disciplinas:', error));
+        });
+        
+        document.getElementById('disciplinas').addEventListener('change', function() {
+            const selectedDisciplina = this.value;
+            
+            // Fetch domains (dominios) based on the selected discipline
+            fetch(`/fetch_dominios?disciplinas=${selectedDisciplina}`)
+                .then(response => response.json())
+                .then(data => {
+                    const dominiosDropdown = document.getElementById('dominios');
+                    dominiosDropdown.innerHTML = '<option value="">Escolher filtro</option>'; // Reset
+                    
+                    data.forEach(dominio => {
+                        const option = document.createElement('option');
+                        option.value = dominio;
+                        option.textContent = dominio;
+                        dominiosDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching dominios:', error));
+        });
+        
+        
+        document.getElementById('dominios').addEventListener('change', function() {
+            const selectedDominio = this.value;
+            const subdominiosDropdown = document.getElementById('subdominios');
+            subdominiosDropdown.innerHTML = '<option value="">Escolher filtro</option>'; // Reset
+        
+            if (!selectedDominio) return;
+        
+            fetch(`/fetch_subdominios?dominio=${selectedDominio}`)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(subdominio => {
+                        const option = document.createElement('option');
+                        option.value = subdominio;
+                        option.textContent = subdominio;
+                        subdominiosDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching subdominios:', error));
+        });
+        
+        document.getElementById('subdominios').addEventListener('change', function() {
+            const selectedSubdominio = this.value;
+            console.log('Selected subdomain:', selectedSubdominio); // Debugging log
+            
+            const conceitosDropdown = document.getElementById('conceitos');
+            conceitosDropdown.innerHTML = '<option value="">Escolher filtro</option>'; // Reset
+            
+            if (!selectedSubdominio) return;
+        
+            fetch(`/fetch_conceitos?subdominio=${encodeURIComponent(selectedSubdominio)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Fetched conceitos:', data); // Debugging log
+                    data.forEach(conceito => {
+                        const option = document.createElement('option');
+                        option.value = conceito;
+                        option.textContent = conceito;
+                        conceitosDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching conceitos:', error));
+        });
+        
+        
+        
+        document.getElementById('clearSearch').addEventListener('click', function() {
+            // Clear the search input field
+            document.querySelector('input[name="search"]').value = '';
+            
+            // Redirect to the resources page without the search query
+            window.location.href = "{{ url_for('resources') }}";
+        });
+    </script>
+    
+</body>
+</html>

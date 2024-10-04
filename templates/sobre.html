@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sobre.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
+    <style>
+        header {
+            background-image: url('static/images/home-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 250px;
+            position: relative;
+        }
+        /* Add more custom styles here */
+    </style>
+</head>
+<body>
+    <div class="header-governo">
+        <img src="static/images/logo.GOV-AZORES.2019.png" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                    <li>
+                        <button class="resource-button" onclick="location.href='/resources'">
+                            <i class="fa fa-search"></i> Recursos
+                        </button>
+                    </li>
+                    {% if admin %}
+                    <li>
+                        <button class="resource-button" onclick="location.href='/novorecurso'">
+                            <i class="fa fa-plus"></i> Introduzir recurso
+                        </button>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="container2">
+                <h2>Procure os seus recursos</h2>
+                <p>Recursos Educativos Digitais e Abertos (REDA) é uma plataforma dedicada à disponibilização de conteúdos educativos para a comunidade escolar.</p>
+                <a href="javascript:void(0);" onclick="scrollToSection('second-container')"><button>Como utilizar a REDA?</button></a>
+                <a href="/termosecondicoes"><button>Leia os "Termos e condições"</button></a>
+                <a href="javascript:void(0);" onclick="scrollToSection('fourth-container')"><button>Manual de identidade visual</button></a>
+            </div>
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <section class="first-container">
+                <h2>Aceda a uma ampla biblioteca de recursos</h2>
+                <div class="icons">
+                    <div class="icon">
+                        <i class="fas fa-search"></i>
+                        <p>Pesquise de forma aprofundada pelo recurso pretendido</p>
+                        <button aria-label="Pesquisar">Pesquisar</button>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-tools"></i>
+                        <p>Recorra às nossas ferramentas e dicas para auxílio na utilização da REDA</p>
+                        <button aria-label="Ferramentas">Ferramentas</button>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-phone"></i>
+                        <p>Temos uma variedade de aplicações para a educação ao seu dispor</p>
+                        <button aria-label="Aplicações">Aplicações</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="second-container" class="second-container" style="background-image: url('static/images/teacher.jpg');">
+                <h2>Aceda a uma ampla biblioteca de recursos</h2>
+                <p>Se é docente ou, simplesmente, pretende contribuir para o crescimento da biblioteca, poderá entrar na plataforma e utilizar as nossas ferramentas. Poderá combinar texto, imagens, áudio, vídeo e muitos mais formatos de modo a serem partilhados com professores, alunos e educadores.</p>
+            </section>
+
+            <section class="third-container">
+                <h2>Vídeos de ajuda</h2>
+                <p>Aceda a um conjunto de vídeos que o podem auxiliar na utilização da plataforma.</p>
+                <button aria-label="Ver todos os vídeos">Ver todos os vídeos</button>
+            </section>
+
+            <section id="fourth-container" class="fourth-container" style="background-image: url('static/images/identity-bg.jpg');">
+                <h2>Identidade REDA</h2>
+                <p>Se pretender utilizar a marca REDA nos seus recursos, projetos ou qualquer tipo de suporte digital ou analógico, deve respeitar um conjunto de regras que contribuem para a consistência de utilização da identidade visual.</p>
+                <button id="downloadBtn" aria-label="Descarregue o manual de identidade visual"><i class="fas fa-download"></i>Descarregue o manual de identidade visual</button>
+                <a href="static/files/Manual_de_Normas_-_REDA_1.pdf" download id="fileLink" style="display: none;"></a>
+            </section>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Login</h2>
+            <form>
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <nav class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+            </nav>
+            <div class="social-icons">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+            </div>
+            <div class="additional-images">
+                <img src="static/images/dre_transparent.png" alt="Direção Regional da Educação">
+                <img src="static/images/gov_acores_transparent.png" alt="Governo dos Açores">
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script>
+        function scrollToSection(sectionId) {
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+    
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            document.getElementById('fileLink').click();
+        });
+
+        var loginModal = document.getElementById("loginModal");
+        var loginBtn = document.querySelector("nav ul li:last-child a");
+        var span = document.getElementsByClassName("close")[0];
+
+        function openLoginModal() {
+            loginModal.style.display = "block";
+        }
+
+        function closeLoginModal() {
+            loginModal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == loginModal) {
+                closeLoginModal();
+            }
+        }
+    </script>
+</body>
+</html>

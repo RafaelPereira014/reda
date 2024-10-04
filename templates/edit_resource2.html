@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo/Editar recurso - REDA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource2.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/agr3kxwxb5hnsedd9yd0re9bxz0346mtqq1xe1u6ethrlj9a/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <style>
+        .container2 {
+            background-image: url('{{ url_for('static', filename='images/new-form-bg.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            padding: 40px 0;
+            color: #fff;
+        }
+        .keyword-input-container input {
+            width: calc(80% - 80px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .keyword-input-container button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .keyword-item {
+            display: inline-block;
+            padding: 5px;
+            margin: 5px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+        .keyword-item button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 2px 5px;
+            cursor: pointer;
+        }
+    </style>
+    <style>
+        
+        h1, h2 {
+            color: #white;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-group-escolaridade, 
+        .input-group-disci, 
+        .input-group-domain, 
+        .input-group-descricao-proposta {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        label {
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: #e0e0e0;
+            margin: 20px 0;
+        }
+
+        .input-group-conceitos {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .keyword-input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .keyword-input-container input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .keyword-input-container button {
+            padding: 8px 12px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .keyword-input-container button:hover {
+            background-color: #0056b3;
+        }
+
+        #keywordsContainer {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #keywordsContainer span {
+            background-color: #e7f3ff;
+            color: #0056b3;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        #keywordsContainer span button {
+            margin-left: 8px;
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Description and Editor */
+        #editor-container {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        #counter {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Terms and Conditions */
+        .terms-and-conditions {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .cc-license img {
+            margin-top: 10px;
+        }
+
+        /* Accept Terms Checkbox */
+        .accept-terms {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .accept-terms label {
+            font-size: 14px;
+        }
+
+        /* Buttons */
+        button[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #aec03f;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #a0af3b;
+        }
+
+        button[type="button"] {
+            background-color: #aec03f;
+        }
+
+        button[type="button"]:hover {
+            background-color: #a0af3b;
+        }
+
+        .small-text {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .text-danger {
+            color: #dc3545;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            button[type="submit"] {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function fetchDisciplinas() {
+            let selectedAnos = [];
+            $('input[name="anos"]:checked').each(function() {
+                selectedAnos.push($(this).val());
+            });
+        
+            if (selectedAnos.length === 0) {
+                $('#disciplinasContainer').empty();
+                $('#dominiosContainer').empty();
+                $('#subdominiosContainer').empty();
+                $('#conceitosContainer').empty();
+                return; // No anos selected, exit function
+            }
+        
+            $.get('/fetch_disciplinas', { ano: selectedAnos.join(',') }, function(data) {
+                let disciplinasContainer = $('#disciplinasContainer');
+                disciplinasContainer.empty();
+        
+                // Sort the disciplines alphabetically
+                data.sort();
+        
+                data.forEach(function(disciplina) {
+                    disciplinasContainer.append(
+                        `<div class="checkbox-item">
+                            <input type="checkbox" id="disciplina${disciplina}" name="disciplinas" value="${disciplina}" onchange="fetchDominios()">
+                            <label for="disciplina${disciplina}">${disciplina}</label>
+                        </div>`
+                    );
+                });
+            });
+        }
+        
+        function fetchDominios() {
+            let selectedDisciplinas = [];
+            $('input[name="disciplinas"]:checked').each(function() {
+                selectedDisciplinas.push($(this).val());
+            });
+        
+            if (selectedDisciplinas.length === 0) {
+                $('#dominiosContainer').empty();
+                $('#subdominiosContainer').empty();
+                $('#conceitosContainer').empty();
+                return; // No disciplinas selected, exit function
+            }
+        
+            $.get('/fetch_dominios', { disciplinas: selectedDisciplinas.join(',') }, function(data) {
+                let dominiosContainer = $('#dominiosContainer');
+                dominiosContainer.empty();
+        
+                // Sort the dominios alphabetically
+                data.sort();
+        
+                data.forEach(function(dominio) {
+                    dominiosContainer.append(
+                        `<div class="checkbox-item">
+                            <input type="checkbox" id="dominio${dominio}" name="dominios" value="${dominio}" onchange="fetchSubdominios()">
+                            <label for="dominio${dominio}">${dominio}</label>
+                        </div>`
+                    );
+                });
+            });
+        }
+        
+        function fetchSubdominios() {
+            let selectedDominios = [];
+            $('input[name="dominios"]:checked').each(function() {
+                selectedDominios.push($(this).val());
+            });
+        
+            if (selectedDominios.length === 0) {
+                $('#subdominiosContainer').empty();
+                $('#conceitosContainer').empty();
+                return; // No dominios selected, exit function
+            }
+        
+            $.get('/fetch_subdominios', { dominios: selectedDominios.join(',') }, function(data) {
+                let subdominiosContainer = $('#subdominiosContainer');
+                subdominiosContainer.empty();
+        
+                // Sort the subdominios alphabetically
+                data.sort();
+        
+                data.forEach(function(subdominio) {
+                    subdominiosContainer.append(
+                        `<div class="checkbox-item">
+                            <input type="checkbox" id="subdominio${subdominio}" name="subdominios" value="${subdominio}" onchange="fetchConceitos()">
+                            <label for="subdominio${subdominio}">${subdominio}</label>
+                        </div>`
+                    );
+                });
+            });
+        }
+        
+        function fetchConceitos() {
+            let selectedSubdominios = [];
+            $('input[name="subdominios"]:checked').each(function() {
+                selectedSubdominios.push($(this).val());
+            });
+        
+            if (selectedSubdominios.length === 0) {
+                $('#conceitosContainer').empty();
+                return; // No subdominios selected, exit function
+            }
+        
+            $.get('/fetch_conceitos', { subdominios: selectedSubdominios.join(',') }, function(data) {
+                let conceitosContainer = $('#conceitosContainer');
+                conceitosContainer.empty();
+        
+                // Sort the conceitos alphabetically
+                data.sort();
+        
+                data.forEach(function(conceito) {
+                    conceitosContainer.append(
+                        `<div class="checkbox-item">
+                            <input type="checkbox" id="conceito${conceito}" name="conceitos" value="${conceito}">
+                            <label for="conceito${conceito}">${conceito}</label>
+                        </div>`
+                    );
+                });
+            });
+        }
+        
+        $(document).ready(function() {
+            $('input[name="anos"]').change(function() {
+                fetchDisciplinas();
+            });
+        });
+
+        // Function to update the character counter
+        function updateCounter(editor) {
+            const maxLength = editor.getElement().maxLength || 2000;
+            const content = editor.getContent({ format: 'text' }).trim();
+            const currentLength = content.length;
+            const counterEle = document.getElementById('counter');
+            counterEle.innerHTML = `${currentLength}/${maxLength}`;
+        }
+
+        let keywords = [];
+
+        function addKeyword(keyword) {
+            if (typeof keyword === 'undefined') {
+                const keywordInput = document.getElementById('keywordInput');
+                keyword = keywordInput.value.trim();
+                keywordInput.value = '';
+            }
+
+            if (keyword && !keywords.includes(keyword) && keywords.length < 5) {
+                keywords.push(keyword);
+                updateKeywordsContainer();
+            } else if (keywords.length >= 5) {
+                alert('Você só pode adicionar até 5 palavras-chave.');
+            } else if (keywords.includes(keyword)) {
+                alert('Essa palavra-chave já foi adicionada.');
+            }
+        }
+
+        function removeKeyword(keyword) {
+            keywords = keywords.filter(k => k !== keyword);
+            updateKeywordsContainer();
+        }
+
+        function updateKeywordsContainer() {
+            const keywordsContainer = document.getElementById('keywordsContainer');
+            keywordsContainer.innerHTML = '';
+
+            keywords.forEach(keyword => {
+                const keywordItem = document.createElement('div');
+                keywordItem.className = 'keyword-item';
+                keywordItem.innerHTML = `
+                    ${keyword}
+                    <button type="button" onclick="removeKeyword('${keyword}')">X</button>
+                `;
+                keywordsContainer.appendChild(keywordItem);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="header-governo">
+        <img src="{{ url_for('static', filename='images/logo.GOV-AZORES.2019.png') }}" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+    <header>
+        <div class="container">
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                </ul>
+            </nav>
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container2">
+        <h1>Editar proposta de operacionalização</h1>
+        <p> {{slug}} > <strong>Nova proposta de operacionalização</strong> </p>
+    </div>
+    <main>
+        <div class="container">
+            <h1>Detalhes</h1>
+            <form method="POST" enctype="multipart/form-data" action="/resources/edit2/{{ script_id }}">
+                <div class="input-group-escolaridade required">
+                    <div class="input-group-escolaridade required">
+                        <h2>Ano de Escolaridade:</h2>
+                        {% for ano in anos %}
+                            <input type="checkbox" id="ano{{ loop.index }}" name="anos" value="{{ ano }}"
+                                {% if ano in selected_anos %}checked{% endif %}>
+                            <label for="ano{{ loop.index }}">{{ ano }}</label>
+                        {% endfor %}
+                    </div>
+                    
+                </div>
+                <hr></hr>
+            
+                <div class="input-group-disci required">
+                    <h2>Disciplinas:</h2>
+                    <div id="disciplinasContainer">
+                        {% for disciplina in all_disciplinas %}
+                            <input type="checkbox" id="disciplina{{ loop.index }}" name="disciplinas" value="{{ disciplina }}"
+                                {% if disciplina in selected_disciplinas %}checked{% endif %}>
+                            <label for="disciplina{{ loop.index }}">{{ disciplina }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <hr></hr>
+            
+                <!-- Dominios -->
+                <div class="input-group-domain required">
+                    <h2>Dominios:</h2>
+                    <div id="dominiosContainer">
+                        {% for dominio in all_dominios %}
+                            <input type="checkbox" id="dominio{{ loop.index }}" name="dominios" value="{{ dominio }}"
+                                {% if dominio in selected_dominios %}checked{% endif %}
+                                onchange="updateSubdominios()">
+                            <label for="dominio{{ loop.index }}">{{ dominio }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <hr></hr>
+
+                <!-- Subdominios -->
+                <div class="input-group-domain required">
+                    <h2>Subdominios:</h2>
+                    <div id="subdominiosContainer">
+                        {% for subdominio in all_subdominios %}
+                            <input type="checkbox" id="subdominio{{ loop.index }}" name="subdominios" value="{{ subdominio }}"
+                                {% if subdominio in selected_subdominios %}checked{% endif %}>
+                            <label for="subdominio{{ loop.index }}">{{ subdominio }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <hr></hr>
+                
+                <div class="input-group-domain required">
+                    <h2>Conceitos:</h2>
+                    <div id="conceitosContainer">
+                        {% for conceito in all_conceitos %}
+                            <input type="checkbox" id="conceito{{ loop.index }}" name="conceitos" value="{{ conceito }}"
+                                {% if conceito in selected_conceitos %}checked{% endif %}>
+                            <label for="conceito{{ loop.index }}">{{ conceito }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <hr></hr>
+                <div class="input-group-conceitos">
+                    <h2>Outros conceitos:</h2>
+                    <div class="keyword-input-container">
+                        <input type="text" id="keywordInput" placeholder="Digite uma palavra-chave" maxlength="20">
+                        <button type="button" onclick="addKeyword()">Adicionar</button>
+                    </div>
+                    <div id="keywordsContainer"></div>
+                    <small class="small-text">Pode adicionar até 5 palavras-chave.</small>
+                </div>
+                
+                
+                <div class="input-group-descricao-proposta required">
+                    <h2>Descrição da proposta de operacionalização:</h2>
+                    <div id="editor-container" style="height: 300px;"></div>
+                    <textarea id="descricao" name="descricao" style="display: none;">{{ descricao }}</textarea>
+                    <div id="counter"></div>
+                    <small class="small-text">Deve ter no mínimo 20 caracteres e no máximo 2000</small>
+                </div>
+                
+                
+                <!--
+                <div class="input-group-helpfile">
+                    <h2>Documento de apoio:</h2>
+                    <input type="file" id="ficheiro" name="ficheiro">
+                </div>
+                
+                <div class="input-group-destinatario">
+                    <h2>Destinatarios:</h2>
+                </div>
+                -->
+                <!-- Terms and Conditions -->
+                <div class="terms-and-conditions">
+                    <p><strong>Termos e condições</strong></p>
+                    <p>
+                        Aceito os "Termos e condições" e autorizo que o conteúdo seja distribuído sob os termos da licença Creative Commons com a Atribuição designada como Atribuição-Não Comercial-Compartilha Igual (CC BY-NC-SA).
+                    </p>
+                    <ul>
+                        <li>Mantenho os direitos autorais do trabalho submetido;</li>
+                        <li>Sou o autor ou o proprietário da obra ou tenho a permissão do autor para a distribuir;</li>
+                        <li>Pretendo que este trabalho seja distribuído sob os termos da licença CC-BY-NC-SA.</li>
+                    </ul>
+                    <!-- Image linking to CC BY-NC-SA license -->
+                    <div class="cc-license">
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">
+                            <img src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA 4.0 License">
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="accept-terms" required>
+                    <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+                    <label for="acceptTerms">Aceito os Termos e Condições</label>
+                </div>
+                <small class="small-text">
+                    <span class="text-danger">*</span>
+                    Campo obrigatório
+                </small>
+                <form id="propostaForm" method="POST">
+                    <!-- Your form inputs here -->
+                    <input type="hidden" name="resource_id" value="{{ resource_id }}"> <!-- Add hidden field for resource_id -->
+                    <button type="submit">Gravar alterações</button> <!-- Change button text to reflect editing action -->
+                    <button onclick="window.location.href='/myaccount'; return false;">Cancelar</button> <!-- Add return false to prevent form submission -->
+                </form>
+            </form>
+        </div>
+                
+    </main>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <i class="fas fa-user user-icon"></i>
+            <h2>Login</h2>
+            <form>
+                <div class="login-input">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="login-input">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="button-container">
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+            </div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            <div class="additional-images">
+                <img src="{{ url_for('static', filename='images/dre_transparent.png') }}" alt="Image 1">
+                <img src="{{ url_for('static', filename='images/gov_acores_transparent.png') }}" alt="Image 2">
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+        </div>
+    </footer>
+    <script>
+        // Function to show pop-up message
+        function showSuccessMessage() {
+            alert("Proposta atualizada com sucesso!");
+        }
+    
+        // Function to redirect after 3 seconds
+        function redirectToResourceDetails(resource_id) {
+            setTimeout(function() {
+                window.location.href = `/resources/details/${resource_id}`;
+            }, 3000); // 3000 milliseconds = 3 seconds
+        }
+    
+        // Add event listener to form submission
+        document.getElementById("propostaForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+    
+            // Obtain resource_id from hidden field
+            const script_id = document.querySelector('input[name="script_id"]').value;
+            const resource_id = document.querySelector('input[name="resource_id"]').value;
+    
+            // Perform AJAX request or any necessary form submission logic here
+            fetch(`/resources/edit2/${script_id}`, {
+                method: 'POST',
+                body: new FormData(event.target)
+            })
+            .then(response => {
+                if (response.ok) {
+                    showSuccessMessage(); // Show success pop-up
+                    redirectToResourceDetails(resource_id); // Redirect after 3 seconds
+                } else {
+                    alert('Erro ao atualizar proposta. Por favor, tente novamente.'); // Handle errors
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error); // Log any fetch errors
+            });
+        });
+    </script>
+    
+    <script>
+        // Initialize Quill editor
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',  // Use 'snow' theme for a cleaner editor interface
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link', 'image'],
+                    ['clean']  // Remove formatting button.
+                ]
+            }
+        });
+
+        // Load initial content from the hidden textarea into Quill
+        quill.root.innerHTML = document.getElementById('descricao').value;
+
+        // Sync Quill's content to the hidden textarea on text change
+        quill.on('text-change', function() {
+            document.getElementById('descricao').value = quill.root.innerHTML;
+            updateCounter();  // Update the character counter each time content changes
+        });
+
+        // Function to update the character counter
+        function updateCounter() {
+            const maxLength = 2000;
+            const content = quill.getText().trim();  // Get plain text content
+            const currentLength = content.length;
+            const counterEle = document.getElementById('counter');
+            counterEle.innerHTML = `${currentLength}/${maxLength}`;  // Display current and max length
+            
+            // Optional: Change counter color if content length is out of range
+            if (currentLength < 20 || currentLength > maxLength) {
+                counterEle.style.color = 'red';
+            } else {
+                counterEle.style.color = 'green';
+            }
+        }
+
+        // Initialize counter on page load
+        updateCounter();
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Bind update functions to elements
+            document.querySelectorAll('input[name="anos"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateDisciplinas);
+            });
+        });
+        
+        function updateDisciplinas() {
+            const selectedAnos = Array.from(document.querySelectorAll('input[name="anos"]:checked'))
+                .map(checkbox => checkbox.value);
+            console.log('Selected Anos:', selectedAnos);
+        
+            fetch(`/fetch_disciplinas?ano=${selectedAnos.join(',')}`)
+                .then(response => response.json())
+                .then(disciplinas => {
+                    console.log('Fetched Disciplinas:', disciplinas);
+                    const container = document.getElementById('disciplinasContainer');
+                    container.innerHTML = '';
+        
+                    disciplinas.forEach((disciplina, index) => {
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = `disciplina${index}`;
+                        checkbox.name = 'disciplinas';
+                        checkbox.value = disciplina;
+                        checkbox.addEventListener('change', updateDominios); // Ensure the event is bound
+        
+                        const label = document.createElement('label');
+                        label.setAttribute('for', `disciplina${index}`);
+                        label.textContent = disciplina;
+        
+                        container.appendChild(checkbox);
+                        container.appendChild(label);
+                        container.appendChild(document.createElement('br'));
+                    });
+        
+                    updateDominios(); // Trigger update of Dominios if Disciplinas change
+                })
+                .catch(error => console.error('Error fetching disciplinas:', error));
+        }
+        
+        function updateDominios() {
+            const selectedDisciplinas = Array.from(document.querySelectorAll('input[name="disciplinas"]:checked'))
+                .map(checkbox => checkbox.value);
+            console.log('Selected Disciplinas:', selectedDisciplinas);
+        
+            // Clear subdominios to prevent outdated data
+            const subdominiosContainer = document.getElementById('subdominiosContainer');
+            subdominiosContainer.innerHTML = '';
+        
+            if (selectedDisciplinas.length === 0) {
+                document.getElementById('dominiosContainer').innerHTML = '';
+                return;
+            }
+        
+            fetch(`/fetch_dominios?disciplina=${selectedDisciplinas.join(',')}`)
+                .then(response => response.json())
+                .then(dominios => {
+                    console.log('Fetched Dominios:', dominios);
+                    const container = document.getElementById('dominiosContainer');
+                    container.innerHTML = '';
+        
+                    dominios.forEach((dominio, index) => {
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = `dominio${index}`;
+                        checkbox.name = 'dominios';
+                        checkbox.value = dominio;
+                        checkbox.addEventListener('change', updateSubdominios); // Ensure the event is bound
+        
+                        const label = document.createElement('label');
+                        label.setAttribute('for', `dominio${index}`);
+                        label.textContent = dominio;
+        
+                        container.appendChild(checkbox);
+                        container.appendChild(label);
+                        container.appendChild(document.createElement('br'));
+                    });
+        
+                    updateSubdominios(); // Trigger update of Subdominios if Dominios change
+                })
+                .catch(error => console.error('Error fetching dominios:', error));
+        }
+        
+        function updateSubdominios() {
+            const selectedDominios = Array.from(document.querySelectorAll('input[name="dominios"]:checked'))
+                .map(checkbox => checkbox.value);
+            console.log('Selected Dominios:', selectedDominios);
+        
+            if (selectedDominios.length === 0) {
+                document.getElementById('subdominiosContainer').innerHTML = '';
+                return;
+            }
+        
+            fetch(`/fetch_subdominios?dominio=${selectedDominios.join(',')}`)
+                .then(response => response.json())
+                .then(subdominios => {
+                    console.log('Fetched Subdominios:', subdominios);
+                    const container = document.getElementById('subdominiosContainer');
+                    container.innerHTML = '';
+        
+                    subdominios.forEach((subdominio, index) => {
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = `subdominio${index}`;
+                        checkbox.name = 'subdominios';
+                        checkbox.value = subdominio;
+        
+                        const label = document.createElement('label');
+                        label.setAttribute('for', `subdominio${index}`);
+                        label.textContent = subdominio;
+        
+                        container.appendChild(checkbox);
+                        container.appendChild(label);
+                        container.appendChild(document.createElement('br'));
+                    });
+                })
+                .catch(error => console.error('Error fetching subdominios:', error));
+        }
+    </script>
+</body>
+</html>

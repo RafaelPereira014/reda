@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Meu perfil - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f0f0;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        .container h3 {
+            text-align: center;
+            font-size: 20px;
+        }
+        
+        .container h2 {
+            text-align: left;
+            font-size: 18px;
+        }
+        
+        .container p {
+            color: #515050;
+        }
+        
+    </style>
+   
+    <!-- Add other necessary CSS links -->
+   
+</head>
+<body>
+    <div class="header-governo">
+        <img src="static/images/logo.GOV-AZORES.2019.png" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="profile-info">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda">
+                </a>            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                    <li>
+                        <button class="resource-button" onclick="location.href='/resources'">
+                            <i class="fa fa-search"></i> Recursos
+                        </button>
+                    </li>                    
+                    {%if admin%}
+                    <li>
+                        <button class="resource-button" onclick="location.href='/novorecurso'">
+                            <i class="fa fa-plus"></i> Introduzir recurso
+                        </button>
+                    </li>  
+                    {%endif%}
+                </ul>
+            </nav>
+            <!-- Top Right Navigation -->
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <h1>Política de privacidade</h1>
+            <h2>Como e para que fins os seus dados pessoais são utilizados?</h2>
+            <p><strong>A Direção Regional da Educação (DRE)</strong> utiliza a informação recolhida, através dos formulários de contacto, para facilitar a gestão a nível de funcionalidades fornecidas no website, para fins históricos e estatísticos, obrigações legais, controle da qualidade de serviço e para contactos futuros.
+
+            Utilizamos a informação recolhida para adequar os nossos serviços aos nossos utilizadores, para o envio de informações, promoções através de e-mail ou chamada telefónica. Esta comunicação é relativa aos eventos e novidades providenciadas pela DRE.
+
+            Para além disso, são recolhidos dados relativos ao seu endereço IP e navegador para fins analíticos, que são partilhados com a plataforma Google Analytics.
+
+            Não existem consequências para quem não as fornecer.</p>
+
+            
+
+            <h2>Quem é o responsável pela informação?</h2>
+            <p>DRE é a responsável pelos dados recolhidos que são tratados informaticamente. Para garantir a segurança dos seus dados e a máxima confidencialidade, tratamos a informação que nos forneceu de forma absolutamente confidencial, de acordo com as nossas políticas e procedimentos internos de segurança e confidencialidade e não partilhamos os seus dados com terceiros para fins comerciais.
+
+            No caso de dados recolhidos para fins de inscrição em eventos, os seus dados são partilhados com o organizador do mesmo, para fins logísticos.
+
+            O titular dos dados pode apresentar reclamação à autoridade de controlo – a Comissão Nacional de Proteção de Dados.</p>
+
+            
+
+            <h2>Carregamento de ficheiros multimédia</h2>
+            <p>Ao carregar imagens para o site, deve evitar carregar imagens com dados incorporados de geolocalização (EXIF GPS). Os visitantes podem descarregar e extrair os dados de geolocalização das imagens do site.</p>
+
+            
+
+            <h2>Utilização de cookies</h2>
+           <p> Os cookies utilizados pela REDA consistem essencialmente em serviços como o Google Analytics, utilizado para avaliar o seu desempenho online, acompanhar e examinar o uso deste website de modo a que sejam preparados relatórios sobre as atividades dos seus visitantes.</p>
+
+            
+
+            <h2>Permissões de dispositivo para acesso a dados pessoais</h2>
+            <p>A aplicação móvel requer determinadas permissões por parte dos utilizadores que permitem o acesso a dados do dispositivo a ser utilizado.
+
+            Por definição, estas permissões devem ser garantidas pelo utilizadores antes de proceder à sua recolha. Uma vez atribuída a permissão, esta pode ser removida a qualquer momento. De modo a revogar essas permissões, os utilizadores devem aceder às definições do seu dispositivo.
+
+            O procedimento exato de controle das permissões da aplicação depende do dispositivo do utilizador e software. Tenha em mente que essa revogação pode limitar o bom funcionamento desta aplicação.
+
+            Se o utilizador permitir qualquer das permissões listadas posteriormente, os dados pessoais respetivos poderão ser processados (i. e. acedidos por, modificados ou removidos) por esta aplicação.</p>
+
+            
+
+            <h2>Permissões de dispositivo</h2>
+            <p>As permissões são utilizadas para aceder a funcionalidades do dispositivo. Permite, por exemplo, efetuar a leitura do estado atual do dispositivo, o que significa que permite verificar o estado de ligação à internet, aceder ao número do telefone no dispositivo, ou o estado de algumas chamadas realizadas.</p>
+
+            
+
+            <h2>Conteúdo incorporado de outros sites</h2>
+           <p> Os artigos neste site podem incluir conteúdo incorporado (por exemplo: vídeos, imagens, artigos, etc.). O conteúdo incorporado de outros sites comporta-se tal como se o utilizador visitasse esses sites.
+
+            Este site pode recolher dados sobre si, usar cookies, incorporar rastreio feito por terceiros, monitorizar as suas interacções com o mesmo, incluindo registar as interacções com conteúdo incorporado se tiver uma conta e estiver com sessão iniciada nesse site.</p>
+
+            
+
+            <h2>Como são protegidos os seus dados?</h2>
+            <p>Garantimos a segurança de seus dados pessoais, fornecendo protecção aprimorada por meio do uso de medidas de segurança técnicas e organizacionais específicas para evitar que seus dados pessoais sejam usados ​​ilegalmente ou de forma fraudulenta. Garantimos que seus dados pessoais não sejam divulgados, deturpados, danificados / alterados ou terceiros não autorizados tenham acesso a eles.</p>
+            
+
+           <h2> Quem posso contactar para aceder, retificar ou apagar os dados?</h2>
+            <p>Os nossos utilizadores e visitantes têm diferentes preocupações de privacidade e podem a qualquer momento rever, atualizar e decidir que tipo de dados pretendem ver guardados. O encarregado pelos dados pode ser contactado diretamente através do e-mail ou por correio, a quem poderá solicitar a qualquer momento a cópia dos dados que lhe digam respeito, a retirada do consentimento, a retificação, o apagamento, a limitação, a portabilidade e a oposição ao tratamento dos mesmos. A retirada posterior de consentimento não compromete a legalidade do tratamento realizado com base neste consentimento.</p>
+
+            
+
+            Paços da Junta Geral - Carreira dos Cavalos
+            9700 Angra do Heroísmo
+
+            dre.info@azores.gov.pt
+
+            
+
+            <h2>Por quanto tempo são os dados armazenados?</h2>
+            <p>Os dados pessoais são mantidos até se esgotar o fim a que se destinam, não tendo sido definido um limite temporal para o mesmo. Caso pretenda remover a sua informação da nossa base de dados, contacte-nos.</p>
+
+
+        
+        
+        </div>
+        
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Login</h2>
+            <form>
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+
+            </div>
+
+            <div class="additional-images">
+                <img src="static/images/dre_transparent.png" alt="Image 1">
+                <img src="static/images/gov_acores_transparent.png" alt="Image 2">
+            </div>
+            
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            
+            
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+
+        </div>
+    </footer>
+
+    
+</body>
+</html>

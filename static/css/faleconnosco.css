@@ -1,0 +1,116 @@
+/* Global Styles */
+
+/* Container Styles */
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Header Styles */
+header {
+    background-color: #ffffff;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.profile-info img {
+    max-width: 150px;
+    height: auto;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+/* Main Content Styles */
+main {
+    padding: 20px 0;
+}
+
+h1, h2 {
+    margin-top: 20px;
+}
+
+.input-group-assunto, .input-group-mensagem, .input-group-nome, .input-group-email, .input-group-data {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+textarea, input[type="text"], input[type="checkbox"] {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+input[type="checkbox"] {
+    width: auto;
+    display: inline-block; /* Display checkboxes inline */
+    margin-right: 20px; /* Add some space between checkboxes */
+}
+
+.checkbox-group {
+    display: flex; /* Use flexbox */
+    justify-content: space-between; /* Distribute items evenly */
+    margin-bottom: 10px; /* Add some space below each group */
+}
+
+/* Adjust the width of the checkboxes */
+.checkbox-group input[type="checkbox"] {
+    width: calc(20% - 10px); /* Set width to 50% of the container minus margin */
+}
+
+
+.small-text {
+    font-size: 12px;
+    color: #666;
+}
+
+.text-danger {
+    color: red;
+}
+
+button[type="submit"],
+button[type="button"] {
+  background-color: #aec03f;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+button[type="submit"]:hover,
+button[type="button"]:hover {
+  background-color: #aec03f;
+}
+
+.header-governo {
+    text-align: center; /* Center-align the content */
+    background-color: #dfdddd;
+    height: 40px;
+    font-size: 12px;
+}
+
+.header-governo img {
+    width: 150px; /* Adjust the width of the image as needed */
+    vertical-align: middle; /* Align the image vertically with the text */
+}

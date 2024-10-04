@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maintenance Counter</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: url('/static/images/home-bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: #ffffff;
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .container {
+      position: relative;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .logo {
+      width: 100px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+    .message {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .counter {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 32px;
+    }
+    .icon {
+      color: #ffffff;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <div class="overlay"></div>
+  <div class="container">
+    <img src="/static/images/REDA_logo.png" alt="Logo" class="logo"> <!-- Add your logo path -->
+    <h1>Modo de Manutenção</h1>
+    <p class="message">A plataforma está atualmente em manutenção. Voltaremos em breve.</p>
+    <p class="counter" id="counter">A carregar...</p>
+    <div class="icons">
+      <i class="fas fa-tools icon"></i>
+      <i class="fas fa-cogs icon"></i>
+      <i class="fas fa-wrench icon"></i>
+    </div>
+  </div>
+
+  <script>
+    // Set the start time of maintenance
+    const maintenanceStartTime = new Date('2024-07-30T00:00:00'); // Change to your start time
+
+    function updateCounter() {
+      const now = new Date();
+      const elapsedTime = now - maintenanceStartTime;
+
+      const seconds = Math.floor((elapsedTime / 1000) % 60);
+      const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+      const hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
+      const days = Math.floor(elapsedTime / (1000 * 60 * 60 * 24));
+
+      document.getElementById('counter').innerText = 
+        `${days} dias, ${hours} horas, ${minutes} minutos, ${seconds} segundos`;
+    }
+
+    // Update the counter every second
+    setInterval(updateCounter, 1000);
+
+    // Initial call to display the counter immediately
+    updateCounter();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+
+/* CSS for table */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: black;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+.content {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+
+
+hr {
+    width: 100%;
+    height: 1px;
+    border: none;
+    background-color: #ccc; /* You can adjust the color as needed */
+}
+button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* CSS for search bar */
+#search {
+    padding: 8px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+/* Adjustments for mobile devices */
+@media screen and (max-width: 600px) {
+    #search {
+        width: 100%;
+    }
+}
+/* CSS for panels */
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.panel {
+    background: linear-gradient(to bottom, #3c781d, #e0e0e0);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: calc(30% - 10px); /* Adjust width based on the number of panels */
+    box-sizing:content-box;
+}
+
+.panel h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.panel p {
+    color: #666;
+}
+/* CSS for Font Awesome eye icon */
+td .fas.fa-eye {
+    color: #45a049; /* Change color as needed */
+    font-size: 18px; /* Change size as needed */
+    /* Add any other styles as needed */
+    margin-right: 10px;
+}
+
+td .fas.fa-trash {
+    color: #ec0c0c; /* Change color as needed */
+    font-size: 18px; /* Change size as needed */
+    /* Add any other styles as needed */
+    margin-right: 10px;
+}
+td .fa.fa-pencil{
+    color: #45a049; /* Change color as needed */
+    font-size: 18px; /* Change size as needed */
+    /* Add any other styles as needed */
+    margin-right: 10px;
+}

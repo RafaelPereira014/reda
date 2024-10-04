@@ -1,0 +1,412 @@
+.container2 {
+    text-align: center;
+    margin-bottom: 15px;
+    margin-top: 30px;
+}
+
+.container2 button {
+    background-color: #83ae03;
+    color: #fff;
+    border: 1px solid #83ae03;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 10px;
+}
+
+.container2 p {
+    font-size: 16px;
+    font-family: "Open Sans", sans-serif;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    unicode-bidi: isolate;
+    
+}
+
+.rectangle {
+    position: relative;
+    width: calc(23% - 20px);
+    margin: 0.5%;
+    height: 250px;
+    background-color: #f1f0f0;
+    padding: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid #b4b4b4;
+    transition: box-shadow 0.3s ease;
+}
+
+.rectangle:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add a shadow effect */
+}
+
+
+.rectangle img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    z-index: 2; /* Ensure the image is above the layer */
+}
+.rectangle .text {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff; /* Adjust text color */
+    z-index: 3; /* Ensure text is above the layer */
+    width: 80%; /* Adjust text width */
+}
+
+.rectangle .buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.rectangle .buttons button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    color: #aec03f;
+    border: none;
+    cursor: pointer;
+}
+
+
+.rectangle .buttons button:hover {
+    background-color: #aec03f;
+    color: #fff;
+}
+
+.rectangle .buttons i {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #e7e7e7;
+    font-size: 18px;
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;
+    margin-bottom: 10px;
+
+}
+
+.pagination a {
+    color: #333;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    border: 1px solid #ccc;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.pagination a.active {
+    background-color: #aec03f;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-container input[type=text] {
+    padding: 10px;
+    margin-right: 10px; /* Adjust spacing between input and button */
+    width: 50%; /* Adjust width of input */
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-left: 250px;
+    margin-bottom: 10px;
+}
+
+.search-container button {
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    width: 30%;
+    border-radius: 5px;
+    background-color: #aec03f;
+    color: white;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.search-container button:hover {
+    background-color: #a0af3b;
+}
+
+.top-nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 10px;
+}
+
+.top-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.top-nav ul li {
+    display: inline-flex;
+    margin-left: 20px; /* Adjust spacing between buttons */
+}
+
+.top-nav ul li a {
+    text-decoration: none;
+    color: #e7e7e7;
+    font-size: 14px;
+}
+
+.top-nav ul li a:hover {
+    text-decoration: underline;
+}
+
+
+
+.platform-btn {
+    background-color: #83ae03;
+    color: #fff;
+    border: 1px solid #83ae03;
+}
+
+/* Style for the active button */
+.platform-btn.active {
+    background-color: #aec03f;
+    color: white;
+}
+.readmore{
+    background-color: #83ae03;
+    color: #fff;
+    border: 1px solid #83ae03;
+    cursor: pointer;
+    font-size: 10px;
+    text-align: center;
+    align-items: center;
+
+}
+
+.open-path {
+    padding: 8px 16px;
+    border: none;
+    background-color: #aec03f;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: center;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+.open-path:hover {
+    background-color: #afc03fa8;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+.android-icon {
+    text-align: center;
+}
+
+.filter-bar {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.filter-bar h2 {
+    margin-bottom: 10px;
+    color: #333;
+    text-align: left;
+}
+
+.filter-bar input[type="text"] {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+.filter-bar button.search-button {
+    background-color: #aec03f;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-bar button.clear-button {
+    background-color: #aec03f;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-bar button.search-button:hover {
+    background-color: #899631;
+}
+.filter-bar button.clear-button:hover {
+    background-color: #899631;
+}
+
+.filter-bar button.search-button i {
+    margin-right: 5px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 9999; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    position: relative; /* Ensure it's positioned within the modal container */
+    z-index: 10000; /* Ensure it sits on top of the modal container */
+}
+
+/* Close button */
+.modal .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.modal .close:hover,
+.modal .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+
+/* Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Styles for "Abrir endereço" modal */
+#openPathModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#openPathModal .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+}
+
+#openPathModal h2 {
+    margin-top: 0;
+}
+
+#openPathModal .button-container {
+    margin-top: 20px;
+}
+
+#openPathModal .button-container a,
+#openPathModal .button-container button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#openPathModal .button-container a {
+    background-color: #83ae03;
+}
+
+#openPathModal .button-container a:hover {
+    background-color: #6c9201;
+}
+
+#openPathModal .button-container button {
+    background-color: #ccc;
+    color: #333;
+}
+
+#openPathModal .button-container button:hover {
+    background-color: #999;
+}
+
+/* Specific button styles */
+.compreendi {
+    background-color: #83ae03;
+    color: #fff;
+    border: 1px solid #83ae03;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 10px;
+}
+
+.close-modal {
+    background-color: #83ae03;
+    color: #fff;
+    border: 1px solid #83ae03;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 10px;
+}
+
+    
+
+

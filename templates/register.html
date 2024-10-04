@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+</head>
+<body>
+
+    <div class="register-container">
+        <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="Platform Logo"> <!-- Ensure the correct path to the logo image -->
+        <h1>Registar</h1>
+        <form id="registerForm">
+            <input type="text" id="username" name="username" placeholder="Nome" required>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+            
+            <div class="radio-group">
+                <label><input type="radio" name="userType" value="colaborador" required> Colaborador</label>
+                <label><input type="radio" name="userType" value="docente" required> Docente</label>
+                <label><input type="radio" name="userType" value="outro" required> Outro Utilizador</label>
+            </div>
+    
+            <div class="terms">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">Aceito os termos e condições</label>
+            </div>
+            
+            <div class="error" id="error" style="display: none;">Error message</div>
+            <button type="submit">Registar</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+            var userType = document.querySelector('input[name="userType"]:checked').value;
+            var terms = document.getElementById('terms').checked;
+    
+            // Example client-side validation
+            if (!username || !email || !password || !confirmPassword || !userType) {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = 'Please fill in all fields';
+            } else if (password !== confirmPassword) {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = 'Passwords do not match';
+            } else if (!terms) {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = 'You must accept the terms and conditions';
+            } else {
+                // Make an AJAX call to register the user
+                fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password,
+                        confirmPassword: confirmPassword,
+                        userType: userType
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/login';
+                    } else {
+                        document.getElementById('error').style.display = 'block';
+                        document.getElementById('error').textContent = 'Registration failed: ' + data.message;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('error').style.display = 'block';
+                    document.getElementById('error').textContent = 'An error occurred. Please try again.';
+                });
+            }
+        });
+    </script>
+    
+    
+
+</body>
+</html>

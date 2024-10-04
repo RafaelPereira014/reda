@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/table.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/sidenav.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .pagination button {
+            margin: 0 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            color: #007bff;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+        
+        .pagination button.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .pagination button:hover:not(.active) {
+            background-color: #e9ecef;
+            border-color: #ddd;
+        }
+        
+        .pagination span {
+            margin: 0 5px;
+            padding: 10px 15px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+    </style>    
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <img src="/static/images/REDA_logo.png" alt="Logo">
+        </div>
+        <ul>
+            <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li>
+                <a><i class="fas fa-database"></i> Recursos </a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/recursos/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                    <li><a href="/dashboard/recursos/po/pendentes"><i class="far fa-clock"></i> Operacionalizações pendentes</a></li>
+                    <li><a href="/dashboard/recursos/ocultos">Ocultos</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="/dashboard/aplicacoes"><i class="fas fa-layer-group"></i> Aplicações</a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/aplicacoes/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="/dashboard/ferramentas"><i class="fas fa-tools"></i> Ferramentas</a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/ferramentas/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                </ul>
+            </li>
+            <li>
+                <a><i class="fas fa-comments"></i> Comentários</a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/comentarios/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                    <li><a href="/dashboard/comentarios/palavras-proibidas"><i class="fas fa-ban"></i> Palavras proibidas</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="/dashboard/taxonomias"><i class="fas fa-sitemap"></i> Taxonomias</a>
+                <!--
+                <ul class="submenu">
+                    <li><a href="/dashboard/taxonomias/relacoes"><i class="fas fa-link"></i> Relações</a></li>
+                </ul>
+                
+                -->
+            </li>
+            <li><a href="/dashboard/utilizadores"><i class="fas fa-users"></i> Utilizadores</a></li>
+           
+        </ul>
+    </div>
+    
+    <div class="content">
+        <h2>Gestão de utilizadores</h2>
+        <div class="search-container">
+            <input type="text" id="searchNameEmail" placeholder="Nome / E-mail">
+            <select id="userType">
+                <option value="">Tipo de Utilizador</option>
+                <option value="1">Administrador</option>
+                <option value="2">Utilizador Regular</option>
+                <option value="3">Convidado</option>
+            </select>
+            <button id="searchButton">Pesquisar</button>
+        </div>
+        
+        <hr>
+
+        <table id="users_table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Organização</th>
+                    <th>Criado a</th>
+                    <th>Tipo de utilizador</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in all_users %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.organization }}</td>
+                    <td>{{ user.created_at }}</td>
+                    <td>{{ user.type }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const rowsPerPage = 15;
+            let currentPage = 1;
+
+            function displayRows(page) {
+                const table = document.getElementById("users_table");
+                const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+
+                for (let i = 0; i < rows.length; i++) {
+                    rows[i].style.display = i >= start && i < end ? "" : "none";
+                }
+            }
+
+            function createPageButton(page) {
+                const button = document.createElement("button");
+                button.innerText = page;
+                button.classList.add("page-btn");
+                if (page === currentPage) button.classList.add("active");
+
+                button.addEventListener("click", function() {
+                    currentPage = page;
+                    displayRows(currentPage);
+
+                    const currentBtn = document.querySelector(".page-btn.active");
+                    if (currentBtn) {
+                        currentBtn.classList.remove("active");
+                    }
+                    button.classList.add("active");
+
+                    setupPagination();
+                });
+
+                return button;
+            }
+
+            function setupPagination() {
+                const table = document.getElementById("users_table");
+                const pagination = document.getElementById("pagination");
+                const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+                const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+                pagination.innerHTML = "";
+
+                const maxDisplayedPages = 3;
+                const range = maxDisplayedPages * 2 + 1;
+
+                pagination.appendChild(createPageButton(1));
+
+                if (currentPage > maxDisplayedPages + 2) {
+                    const ellipsis = document.createElement("span");
+                    ellipsis.innerText = "...";
+                    pagination.appendChild(ellipsis);
+                }
+
+                const start = Math.max(2, currentPage - maxDisplayedPages);
+                const end = Math.min(totalPages - 1, currentPage + maxDisplayedPages);
+
+                for (let i = start; i <= end; i++) {
+                    pagination.appendChild(createPageButton(i));
+                }
+
+                if (currentPage < totalPages - maxDisplayedPages - 1) {
+                    const ellipsis = document.createElement("span");
+                    ellipsis.innerText = "...";
+                    pagination.appendChild(ellipsis);
+                }
+
+                if (totalPages > 1) {
+                    pagination.appendChild(createPageButton(totalPages));
+                }
+
+                displayRows(currentPage);
+            }
+
+            function searchUsers() {
+                const searchNameEmail = document.getElementById('searchNameEmail').value;
+                const userType = document.getElementById('userType').value;
+            
+                const data = {
+                    searchNameEmail: searchNameEmail,
+                    userType: userType
+                };
+            
+                fetch('/search-users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector("#users_table tbody");
+                    tableBody.innerHTML = ""; // Clear previous results
+            
+                    data.forEach(user => {
+                        const row = document.createElement("tr");
+            
+                        const nameCell = document.createElement("td");
+                        nameCell.textContent = user.name;
+                        row.appendChild(nameCell);
+            
+                        const emailCell = document.createElement("td");
+                        emailCell.textContent = user.email;
+                        row.appendChild(emailCell);
+            
+                        const organizationCell = document.createElement("td");
+                        organizationCell.textContent = user.organization;
+                        row.appendChild(organizationCell);
+            
+                        const createdAtCell = document.createElement("td");
+                        createdAtCell.textContent = user.created_at;
+                        row.appendChild(createdAtCell);
+            
+                        const typeCell = document.createElement("td");
+                        typeCell.textContent = user.type;
+                        row.appendChild(typeCell);
+            
+                        tableBody.appendChild(row);
+                    });
+
+                    // Reset the current page to 1 after searching
+                    currentPage = 1;
+                    setupPagination();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+
+            // Initial setup for pagination
+            setupPagination();
+
+            // Attach the search function to the button click
+            document.getElementById('searchButton').addEventListener('click', searchUsers);
+        });
+    </script>
+</body>
+</html>

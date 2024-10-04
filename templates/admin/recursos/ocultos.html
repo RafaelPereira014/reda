@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/table.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/sidenav.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        .pagination button.active {
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="sidebar">
+        <div class="logo">
+            <img src="/static/images/REDA_logo.png" alt="Logo">
+        </div>
+    
+        <ul>
+            <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li>
+                <a><i class="fas fa-database"></i> Recursos </a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/recursos/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                    <li><a href="/dashboard/recursos/po/pendentes"><i class="far fa-clock"></i> Operacionalizações pendentes</a></li>
+                    <li><a href="/dashboard/recursos/ocultos" >Ocultos</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="/dashboard/aplicacoes"><i class="fas fa-layer-group"></i> Aplicações</a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/aplicacoes/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="/dashboard/ferramentas"><i class="fas fa-tools"></i> Ferramentas</a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/ferramentas/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                </ul>
+            </li>
+            <li>
+                <a><i class="fas fa-comments"></i> Comentários</a>
+                <ul class="submenu">
+                    <li><a href="/dashboard/comentarios/pendentes"><i class="far fa-clock"></i> Pendentes</a></li>
+                    <li><a href="/dashboard/comentarios/palavras-proibidas"><i class="fas fa-ban"></i> Palavras proibidas</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="/dashboard/taxonomias"><i class="fas fa-sitemap"></i> Taxonomias</a></li>
+            <li><a href="/dashboard/utilizadores"><i class="fas fa-users"></i> Utilizadores</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h2>Recursos ocultos</h2>
+        <div>
+            <input type="text" id="search" placeholder="Pesquisar...">
+        </div>
+        <hr>
+
+        <table id="resourcesTable">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Data de criação</th>
+                    <th>Submetido por</th>
+                    <th>Aprovado</th>
+                    <th>Ativar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resource in ocultos %}
+                <tr>
+                    <td>
+                        <a href="/resources/details/{{ resource.id }}" target="_blank">
+                            <i class="fas fa-eye"></i>
+                        </a> 
+                        {{ resource.title | safe }}
+                    </td>
+                    <td>{{ resource.created_at }}</td>
+                    <td>{{ resource.author }}</td>
+                    <td>{{ resource.approved }}</td>
+                    <td>
+                        <a href="{{ url_for('show_resource_route', resource_id=resource.id) }}" class="btn btn-primary">Ativar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="pagination" id="pagination"></div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const table = document.getElementById("resourcesTable");
+            const pagination = document.getElementById("pagination");
+            const rowsPerPage = 15;
+            const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+            const searchInput = document.getElementById("search");
+            let currentPage = 1;
+
+            function displayRows(page) {
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+
+                for (let i = 0; i < rows.length; i++) {
+                    rows[i].style.display = i >= start && i < end ? "" : "none";
+                }
+            }
+
+            function setupPagination() {
+                pagination.innerHTML = "";
+                const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const button = document.createElement("button");
+                    button.innerText = i;
+                    button.classList.add("page-btn");
+                    if (i === currentPage) button.classList.add("active");
+
+                    button.addEventListener("click", function() {
+                        currentPage = i;
+                        displayRows(currentPage);
+
+                        const currentBtn = document.querySelector(".page-btn.active");
+                        currentBtn.classList.remove("active");
+                        button.classList.add("active");
+                    });
+
+                    pagination.appendChild(button);
+                }
+            }
+
+            function filterRows() {
+                const searchTerm = searchInput.value.toLowerCase();
+                let filteredRows = 0;
+
+                for (let i = 0; i < rows.length; i++) {
+                    const titleCell = rows[i].getElementsByTagName("td")[0];
+                    const titleText = titleCell.textContent.toLowerCase();
+                    if (titleText.includes(searchTerm)) {
+                        rows[i].style.display = "";
+                        filteredRows++;
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+
+                currentPage = 1;
+                setupPagination();
+                displayRows(currentPage);
+            }
+
+            // Event listener for search input
+            searchInput.addEventListener("input", filterRows);
+
+            displayRows(currentPage);
+            setupPagination();
+        });
+
+        function toggleSubmenu(submenuId) {
+            var submenu = document.getElementById(submenuId);
+            if (submenu.style.display === "block") {
+                submenu.style.display = "none";
+            } else {
+                submenu.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>

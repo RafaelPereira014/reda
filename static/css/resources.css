@@ -1,0 +1,185 @@
+
+
+nav ul li button {
+    background: none; /* Remove default background */
+    border: none; /* Remove default border */
+    color: #000000; /* Match text color */
+    font-size: 18px; /* Match font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-color: #a0af3b;
+}
+nav ul li a {
+    text-decoration: none;
+    color: #231616;
+    font-size: 18px;
+}
+
+
+
+
+.top-nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 45px;
+}
+
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.pagination a {
+    color: #333;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    border: 1px solid #ccc;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.pagination a.active {
+    background-color: #aec03f;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+button.resource {
+    padding: 10px 20px; /* Adjust padding for the button */
+    background-color: #aec03f; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove default border */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    font-size: 14px; /* Adjust font size */
+    margin-bottom: 10px; /* Space below the button */
+}
+
+button.resource:hover {
+    background-color: #a0af3b; /* Button background color on hover */
+}
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-container input[type=text] {
+    padding: 10px;
+    margin-right: 10px; /* Adjust spacing between input and button */
+    width: 50%; /* Adjust width of input */
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    margin-left: 250px;
+    margin-bottom: 10px;
+}
+
+.search-container button {
+    padding: 10px;
+    cursor: pointer;
+    width: 20%;
+    margin-right: 5px;
+    background-color: #aec03f;
+    border-radius: 0%;
+    color: white;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.search-container button:hover {
+    background-color: #a0af3b;
+}
+#advancedSearchOptions {
+    margin-top: 20px;
+    display: none;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.5s ease-in-out;
+    font-size: 10px;
+}
+
+#advancedSearchOptions label {
+    color: black;
+    display: inline-block;
+}
+
+#advancedSearchOptions select,
+#advancedSearchOptions input[type="text"] {
+    width: calc(20% - 10px);
+    padding: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+#advancedSearchOptions button {
+    padding: 10px 20px;
+    background-color: #83ae03;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    align-self: flex-end;
+}
+
+#advancedSearchOptions button:hover {
+    background-color: #6f9802;
+}
+
+#advancedSearchBtn {
+    border: none;
+    background: none;
+    color: rgb(0, 0, 0);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 900px;
+}
+
+#advancedSearchBtn:hover {
+    color: #a0af3b;
+}
+
+
+.top-nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 45px;
+}
+
+.top-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.top-nav ul li {
+    display:inline-flex;
+    margin-left: 20px; /* Adjust spacing between buttons */
+}
+
+.top-nav ul li a {
+    text-decoration: none;
+    color: #313131;
+    font-size: 14px;
+}
+
+.top-nav ul li a:hover {
+    text-decoration: underline;
+    color: #a0af3b;
+}
+.order-resources{
+    text-align: right;
+    margin-bottom: 15px;
+}
+/* CSS for Advanced Search */
+
+

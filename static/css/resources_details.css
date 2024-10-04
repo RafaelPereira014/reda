@@ -1,0 +1,664 @@
+/* index.css */
+
+body {
+    font-family: "Lato", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F0F4F8;
+    color: #333;
+}
+
+.header-governo {
+    text-align: center; /* Center-align the content */
+    background-color: #dfdddd;
+    height: 40px;
+    font-size: 12px;
+}
+
+.header-governo img {
+    width: 150px; /* Adjust the width of the image as needed */
+    vertical-align: middle; /* Align the image vertically with the text */
+}   
+.header-resource {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 30px;
+    width: 66.5%;
+}
+
+.header-resource span {
+    font-size: 14px;
+    color: #727272;
+}
+
+
+.resource-info button {
+    background-color: #aec03f; /* Button background color */
+    color: #fff; /* Button text color */
+    padding: 10px 20px; /* Padding for the button */
+    border: none; /* Remove button border */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s ease; /* Add transition for hover effect */
+    margin-bottom: 5px;
+}
+
+.resource-info button:hover {
+    background-color: #899631; /* Change background color on hover */
+}
+
+.logo-reda img {
+    width: 20%;
+    height: 10px;
+    margin-bottom: 5px;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    margin-top: 10px;
+}
+header .container img {
+    height: 80px;
+}
+
+.actions button {
+    background-color: #aec03f; /* Change the background color */
+    color: white; /* Change the text color */
+    padding: 10px 20px; /* Adjust the padding */
+    border: none; /* Remove the border */
+    margin-right: 10px; /* Adjust the right margin between buttons */
+    cursor: pointer; /* Add cursor pointer on hover */
+    margin-top: 10px;
+    display: inline;
+}
+
+.actions button.Contact {
+    background-color: #fff; /* Change the background color */
+    color: #aec03f; /* Change the text color */
+    padding: 10px 20px; /* Adjust the padding */
+    margin-right: 10px; /* Adjust the right margin between buttons */
+    cursor: pointer; /* Add cursor pointer on hover */
+    margin-top: 10px;
+}
+
+
+.actions button:hover {
+    background-color: white; /* Change the background color on hover */
+    color: #aec03f;
+}
+.actions button:hover.Contact {
+    background-color: #aec03f; /* Change the background color on hover */
+    color: white;
+}
+
+.actions a {
+    text-decoration: none;
+}
+
+
+
+header {
+    background-color: #f9f9f9;
+    color: #fff;
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+
+nav ul li button {
+    background: none; /* Remove default background */
+    border: none; /* Remove default border */
+    color: #000000; /* Match text color */
+    font-size: 18px; /* Match font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 5%;
+    border-color: #a0af3b;
+}
+nav ul li button:hover {
+    text-decoration: underline;
+    color: #a0af3b;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: -40px;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #313131;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+    color: #a0af3b;
+}
+.top-nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 45px;
+}
+
+.top-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.top-nav ul li {
+    display:inline-flex;
+    margin-left: 20px; /* Adjust spacing between buttons */
+}
+
+.top-nav ul li a {
+    text-decoration: none;
+    color: #313131;
+    font-size: 14px;
+}
+
+.top-nav ul li a:hover {
+    text-decoration: underline;
+    color: #a0af3b;
+}
+.carousel {
+    position: relative;
+}
+
+.carousel-inner {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-item {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex: 1 0 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item.active {
+    display: flex;
+}
+
+.carousel-item p {
+    font-style: italic;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0,0,0,0.4);
+    border: none;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.carousel-control-prev {
+    left: 10px;
+}
+
+.carousel-control-next {
+    right: 10px;
+}
+
+.resource-details {
+    display: flex;
+    justify-content: space-between;
+}
+
+.resource-info {
+    width: 65%;
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.resource-info img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.resource-info h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+
+}
+
+.mini-fields {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.mini-fields div {
+    flex: 0 0 50%;
+}
+
+.mini-fields span {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.mini-fields span:first-child {
+    font-weight: bold;
+    color: #aec03f;
+}
+
+.ficha-tecnica {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.ficha-tecnica h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 10px;
+}
+
+.ficha-tecnica .separator {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.ficha-tecnica .separator:last-child {
+    border-bottom: none;
+}
+
+.ficha-tecnica strong {
+    color: #555;
+    font-weight: 600;
+}
+
+.ficha-tecnica span {
+    font-size: 16px;
+    color: #333;
+}
+
+.proposta-op {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    border: 1px solid #e1e1e1;
+}
+
+.proposta-op h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 10px;
+}
+
+.proposta-op .button-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.proposta-op button {
+    background-color: #aec03f;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    margin: 0 5px;
+}
+
+.proposta-op button:hover {
+    background-color: #afc03f95;
+}
+
+.proposta-op .proposta-content {
+    display: none; /* Hide all proposals by default */
+}
+
+.proposta-op .proposta-content.active {
+    display: block; /* Show active proposal */
+}
+
+.proposta-op .separator {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 16px;
+}
+
+.proposta-op .separator span {
+    color: #333;
+}
+
+.proposta-op .separator span.label {
+    font-weight: 600;
+    color: #555;
+    min-width: 180px; /* Ensure labels are aligned */
+}
+
+.proposta-op .separator span.value {
+    flex-grow: 1;
+}
+
+.proposta-op .separator:last-child {
+    border-bottom: none;
+}
+
+.proposta-op .button-container button {
+    margin: 0 5px;
+}
+
+
+.comments {
+    width: 30%;
+}
+
+.comments h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    resize: none;
+}
+
+.comment-form button {
+    background-color: #aec03f;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.comment-form button:hover {
+    background-color: #899631;
+}
+
+.comment-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.comment {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.comment-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.comment-author {
+    font-weight: bold;
+}
+
+.comment-date {
+    color: #666;
+}
+
+.comment p {
+    margin: 0;
+}
+
+footer {
+    background-color: #aec03f;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+/* Modal styling */
+.modal {
+    display: none; /* Hide the modal by default */
+    position: fixed; /* Position the modal */
+    z-index: 1; /* Set the z-index to ensure it appears on top of other content */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scrolling if needed */
+    background-color: rgba(0,0,0,0.4); /* Black background with opacity */
+}
+
+/* Modal content styling */
+.modal {
+    display: none; /* Hide the modal by default */
+    position: fixed; /* Position the modal */
+    z-index: 1; /* Set the z-index to ensure it appears on top of other content */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scrolling if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+}
+
+/* Modal content styling */
+.modal-content {
+    background-color: #f9f9f9;
+    margin: 10% auto; /* Center modal vertically and horizontally */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px; /* Max width of the modal */
+    text-align: center;
+}
+
+/* Close button styling */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.related{
+    background-color: #f1f0f0;
+}
+
+.rectangles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-color: #333;
+}
+
+
+.rectangle {
+    position: relative;
+    width: calc(20% - 20px);
+    margin: 1%;
+    height: 430px;
+    background-color: #f1f0f0;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add box-shadow */
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid #b4b4b4; /* Add border */
+}
+
+.rectangle img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+
+.image-meta {
+    position: absolute;
+    bottom: 280px; /* Adjust as needed */
+    left: 0; /* Adjust as needed */
+    width: 100%;
+    background-color: rgba(45, 45, 45, 0.7);
+    padding: 5px;
+    box-sizing: border-box; /* Include padding and border in the width calculation */
+    font-size: 14px;
+    color: #ffffff;
+    text-align: center;
+}
+
+    
+.rectangle:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Add a shadow effect */
+}
+
+.rectangle i {
+    font-size: 20px;
+    color: white;
+    cursor: pointer; /* Change cursor to pointer on hover */
+    border: 1px solid #aec03f; /* Add border */
+    border-radius: 50%; /* Make border circular */
+    padding: 5px; /* Add padding to the icon */
+    margin-left: 5px;
+}
+
+.rectangle i:hover {
+    color: #aec03f; /* Change icon color on hover */
+    background-color: rgba(174, 192, 63, 0.2); /* Add background color on hover */
+}
+
+.rectangle i.clicked {
+    color:#aec03f; /* Change icon color when clicked */
+    background-color: rgba(174, 192, 63, 0.2); /* Add background color when clicked */
+}
+.rectangle .buttons {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.rectangle .buttons button {
+    width: 70%;
+    margin-top: 10px;
+    padding: 10px;
+    color: #aec03f;
+    border: none;
+    cursor: pointer;
+
+}
+
+.rectangle .buttons button:hover {
+    background-color: #afc03f80;
+    color: #fff;
+}
+
+.rectangle .buttons i {
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.related h2{
+    font-size: 19px;
+    color: #000000;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    text-align: center;
+
+}
+
+.rectangle h2 {
+    font-size: 19px;
+    color: #000000;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    text-align: center;
+}
+.rectangle p {
+    font-size: 14px;
+    color: #000000;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.button-container {
+    display: flex;
+}
+
+.button-container button {
+    flex: 1; /* Adjusted button width */
+    margin-right: 5px; /* Adjusted margin between buttons */
+}
+
+/* General styles for warning boxes */
+.warning {
+    background-color: #ffcccb; /* Light red background */
+    border-left: 6px solid #f44336; /* Dark red left border */
+    padding: 10px; /* Some padding for better appearance */
+    margin-bottom: 15px; /* Space below the warning */
+    font-family: Arial, sans-serif; /* Consistent font */
+    color: #333; /* Dark text color */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Slight shadow for depth */
+}
+
+/* Optional: Icons within warnings for better visibility */
+.warning .icon {
+    margin-right: 10px; /* Space between icon and text */
+    vertical-align: middle; /* Align icon with text */
+}
+
+/* Optional: Style for the text within the warning */
+.warning span {
+    font-size: 14px; /* Slightly larger font */
+}
+

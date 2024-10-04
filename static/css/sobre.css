@@ -1,0 +1,134 @@
+/* General container styling */
+.container2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.container2 button {
+    background-color: transparent;
+    font-size: 16px;
+    color: #fff;
+    border: 1px solid white;
+    cursor: pointer;
+}
+
+.container2 button:hover {
+    background-color: #a9a7a7;
+    color: #fff;
+    cursor: pointer;
+}
+
+.container2 p {
+    font-size: 14px;
+    font-family: "Open Sans", sans-serif;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    unicode-bidi: isolate;
+}
+
+/* sobre.css */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Apply full-width for containers within the main element */
+main .container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0 auto;
+}
+
+/* Container-specific styling */
+.first-container {
+    background-color: #fff;
+    padding: 40px;
+}
+
+.first-container h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.icons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.icon {
+    text-align: center;
+    width: 30%;
+}
+
+.icon i {
+    font-size: 48px;
+    color: #83ae03;
+}
+
+.icon h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.icon p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.icon button {
+    padding: 10px 20px;
+    background-color: #83ae03;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.icon button:hover {
+    background-color: #91c103;
+}
+
+/* Full-width background images */
+.second-container, .third-container, .fourth-container {
+    width: 100%;
+    margin: 0;
+    padding: 100px 0;
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+}
+
+/* Specific styling for second and fourth containers */
+.second-container {
+    color: #fff;
+}
+
+.third-container {
+    color: #000;
+}
+
+.fourth-container {
+    color: #fff;
+}
+
+/* Button styling for third and fourth containers */
+.third-container button, .fourth-container button {
+    padding: 10px 20px;
+    background-color: #83ae03;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.third-container button:hover, .fourth-container button:hover {
+    background-color: #6b8e23;
+}

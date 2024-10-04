@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicações - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/apps.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login-form.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
+    <style>
+        header {
+            background-image: url('static/images/apps-bg.jpg'); 
+            background-size: cover;
+            background-position: center;
+            height: 250px; 
+            position: relative;
+        }
+
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 9999; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+        }
+        .modal h2 {
+            color: black;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            position: relative;
+            z-index: 10000; 
+        }
+
+        .compreendi {
+            background-color: #83ae03;
+            color: #fff;
+            border: 1px solid #83ae03;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 10px 10px;
+            margin-right: 5px;
+        }
+        
+        .close-modal {
+            background-color: #83ae03;
+            color: #fff;
+            border: 1px solid #83ae03;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 10px 10px;
+        }
+        button[type=submit] {
+            width: 30%;
+            background-color: #48A9A6;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+    </style>
+    <style>
+        /* Styling for the 'Ler mais' button */
+        .readmore {
+            background-color: transparent;
+            border: none;
+            color: #aec03f;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            padding: 5px 0;
+            text-decoration: underline;
+            transition: color 0.3s, transform 0.2s;
+        }
+
+        .readmore:hover {
+            color: #afc03fa8;
+            transform: scale(1.05);
+        }
+
+        /* Container for buttons */
+        .button-container {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Styling for the 'Abrir endereço' button */
+        .open-path {
+            padding: 8px 16px;
+            border: none;
+            background-color: #aec03f;
+            color: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .open-path:hover {
+            background-color: #afc03fa8;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header-governo">
+        <img src="static/images/logo.GOV-AZORES.2019.png" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+    <header>
+        <div class="container">
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda" style="width: 200px; height: auto;">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                    <li>
+                        <button class="resource-button" onclick="location.href='/resources'">
+                            <i class="fa fa-search"></i> Recursos
+                        </button>
+                    </li>                    
+                    {%if admin%}
+                    <li>
+                        <button class="resource-button" onclick="location.href='/novorecurso'">
+                            <i class="fa fa-plus"></i> Introduzir recurso
+                        </button>
+                    </li>  
+                    {%endif%}
+                </ul>
+            </nav>
+            <div class="container2">
+                <h1>Aplicações</h1>
+                <p>Descubra as aplicações para dispositivos móveis que encontrámos sobre educação, gestão de trabalho, jogos, formação, ciências, matemática, português, física e química.</p>
+                {%if admin%}
+                <a href="/novaapp"><button>Introduzir aplicação</button></a>
+                {%endif%}
+            </div>
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <p>Início > Aplicações</p>
+            <div class="button-container">
+            </div>
+            <div class="filter-bar">
+                <h2>Filtrar por...</h2>
+                <form method="GET" action="{{ url_for('apps') }}">
+                    <input type="text" name="search" placeholder="Palavras-chave..." value="{{ request.args.get('search', '') }}">
+                    <button type="search-button" class="search-button"><i class="fas fa-search"></i> Filtrar palavras</button>
+                    <button type="button" class="clear-button" onclick="location.href='{{ url_for('apps') }}'"> Limpar Filtros </button>
+                </form>
+            </div>
+            <hr>
+            <!-- Loop through applications -->
+            {% for app in all_apps %}
+            <div class="rectangle">
+                <img src="{{ app.image_url or 'static/images/white.jpeg' }}" alt="App Image">
+                <div class="text">
+                    <h2>{{ app.title }}</h2>
+                    <small class="small-text">
+                        {% if app.embed == 'Opção 1' %}
+                            Android
+                        {% elif app.embed == 'Opção 2' %}
+                            iOS
+                        {% elif app.embed == 'Opção 3' %}
+                            Windows
+                        {% else %}
+                            <!-- Show nothing if app.embed is None or doesn't match any options -->
+                        {% endif %}
+                    </small>
+                </div>
+                
+                <p class="short-description">{{ app.description[:100]|escape }}...</p>
+                <p class="full-description" style="display: none;">{{ app.description|escape }}</p>
+                <button class="readmore">Ler mais</button>
+                <div class="button-container">
+                    <button class="open-path" data-modal-id="openPathModal-{{ loop.index }}">Abrir endereço</button>
+                </div>
+                <div id="openPathModal-{{ loop.index }}" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal('openPathModal-{{ loop.index }}')">&times;</span>
+                        <h2>Está a sair do sítio REDA</h2>
+                        <p>Está a sair do sítio REDA da Direção Regional de Educação dos Açores. A DRE não se responsabiliza nem tem qualquer controlo sobre as opiniões expressas ou a informação externa à plataforma. Os termos e condições bem como as políticas de privacidade da plataforma REDA não se aplicam à página que irá aceder.</p>
+                        <p>Obrigado por nos visitar e volte sempre!</p>
+                        <div class="button-container">
+                            <a href="{{ app.metadados }}" class="compreendi" target="_blank">Compreendi</a>
+                            <button class="close-modal" onclick="closeModal('openPathModal-{{ loop.index }}')">Não, obrigado</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% endfor %}
+            <!-- Pagination -->
+            <div class="pagination">
+                {% if page > 1 %}
+                    <a href="{{ url_for('apps', page=1, search=request.args.get('search', '')) }}">Início</a>
+                    <a href="{{ url_for('apps', page=page-1, search=request.args.get('search', '')) }}">Anterior</a>
+                {% endif %}
+                {% for p in page_range %}
+                    <a href="{{ url_for('apps', page=p, search=request.args.get('search', '')) }}" {% if p == page %}class="active"{% endif %}>{{ p }}</a>
+                {% endfor %}
+                {% if page < total_pages %}
+                    <a href="{{ url_for('apps', page=page+1, search=request.args.get('search', '')) }}">Próximo</a>
+                    <a href="{{ url_for('apps', page=total_pages, search=request.args.get('search', '')) }}">Último</a>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for "Ler mais" -->
+    <div id="appModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('appModal')">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <i class="fas fa-user user-icon"></i>
+            <h2>Login</h2>
+            <form>
+                <div class="login-input">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="login-input">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="button-container">
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Register Modal -->
+    <div id="RegisterModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('RegisterModal')">&times;</span>
+            <h2>Register</h2>
+            <form>
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+            </div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            <div class="additional-images">
+                <img src="static/images/dre_transparent.png" alt="Image 1">
+                <img src="static/images/gov_acores_transparent.png" alt="Image 2">
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/apps_modal.js') }}"></script>
+    <script>
+        function openModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+        function attachReadMoreListeners() {
+            var readmoreButtons = document.getElementsByClassName("readmore");
+
+            for (var i = 0; i < readmoreButtons.length; i++) {
+                readmoreButtons[i].addEventListener("click", function(event) {
+                    var parentRectangle = event.target.closest(".rectangle");
+                    var modalTitle = parentRectangle.querySelector("h2").innerText;
+                    var fullDescription = parentRectangle.querySelector(".full-description").innerText;
+
+                    document.getElementById("modalTitle").innerText = modalTitle;
+                    document.getElementById("modalDescription").innerText = fullDescription;
+
+                    // Display the modal
+                    var appModal = document.getElementById("appModal");
+                    appModal.style.display = "block";
+                    document.body.style.overflow = "hidden"; // Prevent background scrolling
+                });
+            }
+        }
+        
+        attachReadMoreListeners();
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,429 @@
+.container2 {
+    text-align: center;
+    margin-bottom: 15px;
+    margin-top: 30px;
+}
+
+.container2 button {
+    background-color: #83ae03;
+    color: #fff;
+    border: 1px solid #83ae03;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 10px;
+}
+
+.container2 p {
+    font-size: 14px;
+    font-family: "Open Sans", sans-serif;
+    display: block;
+    margin: 0 0 10px;
+    margin-block-start: 1em;
+    line-height: 1.4285;
+    margin-block-end: 1em;
+    unicode-bidi: isolate;
+    overflow: hidden;
+    max-height: 2em; /* Adjust the maximum height to show */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
+/* General modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000; /* Ensure it's above other elements */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    z-index: 1001; /* Ensure it's above the modal overlay */
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* Button container styles */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Specific button styles */
+
+
+
+
+
+
+
+
+
+
+/* Styles for "Abrir endereço" modal */
+#openPathModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#openPathModal .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+}
+
+#openPathModal h2 {
+    margin-top: 0;
+}
+
+#openPathModal .button-container {
+    margin-top: 20px;
+}
+
+#openPathModal .button-container a,
+#openPathModal .button-container button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#openPathModal .button-container a {
+    background-color: #83ae03;
+}
+
+#openPathModal .button-container a:hover {
+    background-color: #6c9201;
+}
+
+
+
+#openPathModal .button-container button {
+    background-color: #ccc;
+    color: #333;
+}
+
+#openPathModal .button-container button:hover {
+    background-color: #999;
+}
+
+/* Adjust other elements' z-index if needed */
+.rectangle {
+    position: relative;
+    width: calc(25% - 20px); /* Adjusted to fit 4 elements per row */
+    margin: 0.5%;
+    height: 327px; /* Adjust height as needed */
+    background-color: #f1f0f0;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid #b4b4b4;
+    transition: box-shadow 0.3s ease;
+    display: inline-block; /* Ensure they display inline to form rows */
+    vertical-align: top; /* Align elements to the top of their container */
+    box-sizing: border-box; /* Include padding and border in width calculation */
+}
+
+.rectangle:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add shadow on hover */
+}
+
+.rectangle::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 53%;
+    background-color: rgba(0, 0, 0, 0.628); /* Adjust background color opacity */
+    z-index: 1; /* Ensure layer is above the image */
+}
+
+.rectangle h2 {
+    font-size: 19px;
+    color: #f5f5f5;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    text-align: left;
+    z-index: 2; /* Ensure text is above the layer */
+}
+
+.rectangle img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    z-index: 1; /* Ensure image is above the layer */
+}
+
+.rectangle .text {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    z-index: 3; /* Ensure text is above the layer */
+    width: 80%; /* Adjust text width */
+}
+
+.rectangle .buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.rectangle .buttons button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    color: #aec03f;
+    border: none;
+    cursor: pointer;
+}
+
+.rectangle .buttons button:hover {
+    background-color: #aec03f;
+    color: #fff;
+}
+
+.rectangle .buttons i {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+
+nav ul li a {
+    text-decoration: none;
+    color: #e7e7e7;
+    font-size: 18px;
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.pagination a {
+    color: #333;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    border: 1px solid #ccc;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.pagination a.active {
+    background-color: #aec03f;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-container input[type=text] {
+    padding: 10px;
+    margin-right: 10px; /* Adjust spacing between input and button */
+    width: 50%; /* Adjust width of input */
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-left: 250px;
+    margin-bottom: 10px;
+}
+
+.search-container button {
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    width: 30%;
+    border-radius: 5px;
+    background-color: #aec03f;
+    color: white;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.search-container button:hover {
+    background-color: #a0af3b;
+}
+
+.top-nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 10px;
+}
+
+.top-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.top-nav ul li {
+    display: inline-flex;
+    margin-left: 20px; /* Adjust spacing between buttons */
+}
+
+.top-nav ul li a {
+    text-decoration: none;
+    color: #e7e7e7;
+    font-size: 14px;
+}
+
+.top-nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.filter-bar {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.filter-bar h2 {
+    margin-bottom: 10px;
+    color: #333;
+    text-align: left;
+}
+
+.filter-bar input[type="text"] {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+.filter-bar button.search-button {
+    background-color: #aec03f;
+    color: #fff;
+    border: none;
+    width: 20%;
+    padding: 10px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-bar button.clear-button {
+    background-color: #aec03f;
+    color: #fff;
+    border: none;
+    width: 20%;
+    padding: 10px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-bar button.search-button:hover {
+    background-color: #899631;
+}
+.filter-bar button.clear-button:hover {
+    background-color: #899631;
+}
+
+.filter-bar button.search-button i {
+    margin-right: 5px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center; /* Centers the buttons horizontally */
+    align-items: center; /* Centers the buttons vertically (optional) */
+    margin-top: 20px; /* Adjust as needed */
+}
+
+.platform-btn {
+    background-color: #dfdddd;
+    color: #83ae03;
+    border: 1px solid #83ae03;
+    font-size: 18px;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px 10px;
+    margin: 0 5px; /* Adjust margin as needed */
+    align-items: center;
+}
+
+.platform-btn:hover {
+    background-color: #83ae03;
+    color: #fff;
+}
+
+.platform-btn.active {
+    background-color: #aec03f;
+    color: white;
+}
+
+.readmore{
+    background-color: #83ae03;
+    color: #fff;
+    border: 1px solid #83ae03;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: center;
+    align-items: center;
+
+}
+
+.open-path{
+    background-color: #83ae03;
+    color: #fff;
+    border: 1px solid #83ae03;
+    cursor: pointer;
+    font-size: 13px;
+    
+
+}
+
+
+
+
+

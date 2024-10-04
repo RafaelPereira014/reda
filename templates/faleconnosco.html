@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu perfil - REDA</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/REDA_logo.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/faleconnosco.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f0f0;
+            color: #333;
+        }
+        .required {
+            position: relative;
+        }
+        .required::after {
+            content: '*';
+            position: absolute;
+            top: 0;
+            right: absolute;
+            color: red;
+            font-size: 1.4rem;
+            line-height: 0.3;
+        }
+    </style>
+    <style>
+        
+        /* Form Header */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #black;
+        }
+        
+        /* Input Groups */
+        .input-group-assunto,
+        .input-group-mensagem,
+        .input-group-nome,
+        .input-group-email,
+        .input-group-data {
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #black;
+        }
+        
+        .small-text {
+            font-size: 12px;
+            color: #7f8c8d;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        /* Form Inputs */
+        select,
+        textarea,
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus,
+        textarea:focus,
+        input[type="text"]:focus {
+            border-color: #aec03f;
+            outline: none;
+        }
+        
+        /* Checkbox */
+        .input-group-data {
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-group-data input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .input-group-data label {
+            font-size: 14px;
+        }
+        
+        /* Privacy Policy Link */
+        .input-group-data a {
+            color: #aec03f;
+            text-decoration: none;
+        }
+        
+        .input-group-data a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Submit Button */
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: #aec03f;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #a0af3b;
+        }
+        
+        /* Required Fields */
+        .required::after {
+            content: "*";
+            color: #e74c3c;
+            margin-left: 5px;
+        }
+        
+        /* Error and Small Text */
+        .text-danger {
+            color: #e74c3c;
+        }
+        
+    
+    </style>
+
+</head>
+<body>
+    <div class="header-governo">
+        <img src="static/images/logo.GOV-AZORES.2019.png" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+
+    <header>
+        <div class="container">
+            
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda" style="width: 200px; height: auto;">
+            </a>
+           
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                    <li>
+                        <button class="resource-button" onclick="location.href='/resources'">
+                            <i class="fa fa-search"></i> Recursos
+                        </button>
+                    </li>
+                    {% if admin %}
+                    <li>
+                        <button class="resource-button" onclick="location.href='/novorecurso'">
+                            <i class="fa fa-plus"></i> Introduzir recurso
+                        </button>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <form  method="POST" enctype="multipart/form-data">
+                <h1>Fale connosco</h1>
+
+                <div class="input-group-assunto required">
+                    <h2>Assunto</h2>
+                    <select id="assunto" name="assunto" required>
+                        <option value="">Selecione um assunto</option>
+                        <option value="Opção 1">Recursos</option>
+                        <option value="Opção 2">Comentários</option>
+                        <option value="Opção 3">Sugestões(endereços)</option>
+                        <option value="Opção 4">Problemas técnicos</option>
+                        <option value="Opção 5">Aplicações</option>
+                        <option value="Opção 6">Registo</option>
+                        <option value="Opção 7">Experimenta</option>
+                        <option value="Opção 8">Outros</option>
+                    </select>
+                </div>
+
+                <div class="input-group-mensagem required">
+                    <h2>Mensagem:</h2>
+                    <small class="small-text">
+                        Por favor incluir ligações externas (links) sempre que seja adequado
+                    </small>
+                    <textarea id="descricao" name="descricao" rows="5" class="tinymce" placeholder="Mensagem que nos pretende transmitir" required></textarea>
+                </div>
+
+                <div class="input-group-nome required">
+                    <h2>Nome:</h2>
+                    <input type="text" id="autor" name="autor" placeholder="O seu nome" required>
+                </div>
+
+                <div class="input-group-email">
+                    <h2>Email:</h2>
+                    <small class="small-text">
+                        Deixe o seu endereço de correiro eletrónico se pretender que o contactemos
+                    </small>
+                    <input type="text" id="email" name="email" placeholder="O seu email" required>
+                </div>
+
+                <div class="input-group-data required">
+                    <input type="checkbox" id="dataConsent" name="dataConsent" value="accepted" required>
+                    <label for="dataConsent">Compreendo e aceito como os meus dados serão <a href="/politica-privacidade">recolhidos, armazenados e tratados</a>.</label>
+                </div>
+
+                <form action="submit.php" method="POST">
+                    <div class="g-recaptcha" data-sitekey="6LfwHzAqAAAAAHfrakYkIUtf8j9K29haVnibBuSP"></div>
+                    <button type="submit">Enviar</button>
+                </form>
+
+                <small class="small-text">
+                    <span class="text-danger">*</span>
+                    Campo obrigatório
+                </small>
+            </form>
+        </div>
+    </main>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <i class="fas fa-user user-icon"></i>
+            <h2>Login</h2>
+            <form>
+                <div class="login-input">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="login-input">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="button-container">
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <button>Fale connosco </button>
+            </div>
+            <div class="additional-images">
+                <img src="static/images/dre_transparent.png" alt="Image 1">
+                <img src="static/images/gov_acores_transparent.png" alt="Image 2">
+            </div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+        </div>
+    </footer>
+</body>
+</html>
