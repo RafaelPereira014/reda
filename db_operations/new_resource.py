@@ -21,7 +21,7 @@ def get_formatos():
         JOIN
             Taxonomies tax ON t.taxonomy_id = tax.id
         WHERE
-            tax.title = 'Formato'
+            tax.title = 'Formato' AND t.title != 'none'
     """)
     formatos = cursor.fetchall()
     cursor.close()
@@ -31,6 +31,9 @@ def get_formatos():
 
 def get_idiomas():
     conn = connect_to_database()
+    if conn is None:
+        return ()  # Return an empty tuple if connection fails
+    
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
         SELECT DISTINCT
@@ -44,11 +47,16 @@ def get_idiomas():
         WHERE
             tax.title = 'Idiomas'
     """)
+    
     idiomas = cursor.fetchall()
+    
+    # Filter out None or empty strings
+    idiomas_filtered = [item['idiomas_title'] for item in idiomas if item['idiomas_title']]
+
     cursor.close()
     conn.close()
     
-    return tuple(item['idiomas_title'] for item in idiomas)
+    return tuple(idiomas_filtered)  # Return a tuple without None or empty values
 
 def get_modos_utilizacao():
     conn = connect_to_database()
@@ -63,7 +71,7 @@ def get_modos_utilizacao():
         JOIN
             Taxonomies tax ON t.taxonomy_id = tax.id
         WHERE
-            tax.title = 'Modos de utilização'
+            tax.title = 'Modos de utilização' AND t.title != 'none'
     """)
     modos_utilizacao = cursor.fetchall()
     cursor.close()
@@ -84,7 +92,7 @@ def get_requisitos_tecnicos():
         JOIN
             Taxonomies tax ON t.taxonomy_id = tax.id
         WHERE
-            tax.title = 'Requisitos técnicos'
+            tax.title = 'Requisitos técnicos' AND t.title!='none'
     """)
     requisitos_tecnicos = cursor.fetchall()
     cursor.close()
@@ -105,7 +113,7 @@ def get_anos_escolaridade():
         JOIN
             Taxonomies tax ON t.taxonomy_id = tax.id
         WHERE
-            tax.title = 'Anos escolaridade'
+            tax.title = 'Anos escolaridade' AND t.title!='none'
     """)
     anos_escolaridade = cursor.fetchall()
     cursor.close()

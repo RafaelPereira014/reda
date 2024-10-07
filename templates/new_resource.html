@@ -238,7 +238,7 @@
                     <h2>Organização:</h2>
                     <input type="text" id="organizacao" name="organizacao" placeholder="Escola/organização/nome do sítio do autor do recurso" required>
                 </div>
-                <div class="input-group-format ">
+                <div class="input-group-format required">
                     <h2>Formato (MAX. 2):</h2>
                     {% for formato in formatos %}
                         <input type="checkbox" id="formato{{ loop.index }}" name="formato" value="{{ formato }}" onchange="checkVideoAnimation(this)">
@@ -281,13 +281,12 @@
                 </div>
                 
 
-                <div class="input-group-req required">
+                <div class="input-group-req ">
                     <h2>Requisitos Técnicos:</h2>
                     {% for requirement in requirements %}
                         <input type="checkbox" class="requirements-checkbox" id="requirement{{ loop.index }}" name="requirements" value="{{ requirement }}">
                         <label for="requirement{{ loop.index }}">{{ requirement }}</label>
                     {% endfor %}
-                    <span id="requirements-error" style="display:none; color:red;">Selecione um requisito técnico.</span>
                 </div>
 
                 
@@ -391,16 +390,7 @@
                 document.getElementById('checkbox-error').style.display = 'none'; // Hide error message
             }
     
-            // Validate "Requisitos Técnicos" group
-            const requisitosCheckboxes = document.querySelectorAll('.requirements-checkbox');
-            const isRequisitosChecked = Array.from(requisitosCheckboxes).some(checkbox => checkbox.checked);
-    
-            if (!isRequisitosChecked) {
-                event.preventDefault(); // Prevent form submission
-                document.getElementById('requirements-error').style.display = 'block'; // Show error message for "Requisitos Técnicos"
-            } else {
-                document.getElementById('requirements-error').style.display = 'none'; // Hide error message
-            }
+            
     
             // Validate "Idiomas" group
             const idiomasCheckboxes = document.querySelectorAll('.idiomas-checkbox');
