@@ -273,17 +273,24 @@
                 <div class="input-group-use required">
                     <h2>Modos de Utilização:</h2>
                     {% for modo in use_mode %}
-                        <input type="checkbox" id="modo{{ loop.index }}" name="use_mode" value="{{ modo }}">
+                        <input type="checkbox" id="modo{{ loop.index }}" name="use_mode" value="{{ modo }}" class="use-mode-checkbox">
                         <label for="modo{{ loop.index }}">{{ modo }}</label>
                     {% endfor %}
+                    <span id="checkbox-error" style="display:none; color:red;">Selecione um modo de utilização.</span>
+
                 </div>
+                
+
                 <div class="input-group-req required">
                     <h2>Requisitos Técnicos:</h2>
                     {% for requirement in requirements %}
-                        <input type="checkbox" id="requirement{{ loop.index }}" name="requirements" value="{{ requirement }}">
+                        <input type="checkbox" class="requirements-checkbox" id="requirement{{ loop.index }}" name="requirements" value="{{ requirement }}">
                         <label for="requirement{{ loop.index }}">{{ requirement }}</label>
                     {% endfor %}
+                    <span id="requirements-error" style="display:none; color:red;">Selecione um requisito técnico.</span>
                 </div>
+
+                
                 <div class="input-group-descricao-proposta required">
                     <h2>Descrição do recurso:</h2>
                     <div id="editor-container" style="height: 300px;"></div>
@@ -294,9 +301,10 @@
                 <div class="input-group-lang required">
                     <h2>Idiomas:</h2>
                     {% for idioma in idiomas %}
-                        <input type="checkbox" id="idioma{{ loop.index }}" name="idiomas" value="{{ idioma }}">
+                        <input type="checkbox" class="idiomas-checkbox" id="idioma{{ loop.index }}" name="idiomas" value="{{ idioma }}">
                         <label for="idioma{{ loop.index }}">{{ idioma }}</label>
                     {% endfor %}
+                    <span id="idiomas-error" style="display:none; color:red;">Selecione um idioma.</span>
                 </div>
                 <div class="input-group-fich">
                     <h2>Imagem de destaque:</h2>
@@ -366,6 +374,43 @@
                 enderecoInput.style.display = 'none';
                 embebdInput.style.display = 'none';
                 fileInput.style.display = 'block';
+            }
+        });
+    </script>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            // Validate "Modos de Utilização" group
+            const useModeCheckboxes = document.querySelectorAll('.use-mode-checkbox');
+            const isUseModeChecked = Array.from(useModeCheckboxes).some(checkbox => checkbox.checked);
+    
+            if (!isUseModeChecked) {
+                event.preventDefault(); // Prevent form submission
+                document.getElementById('checkbox-error').style.display = 'block'; // Show error message for "Modos de Utilização"
+            } else {
+                document.getElementById('checkbox-error').style.display = 'none'; // Hide error message
+            }
+    
+            // Validate "Requisitos Técnicos" group
+            const requisitosCheckboxes = document.querySelectorAll('.requirements-checkbox');
+            const isRequisitosChecked = Array.from(requisitosCheckboxes).some(checkbox => checkbox.checked);
+    
+            if (!isRequisitosChecked) {
+                event.preventDefault(); // Prevent form submission
+                document.getElementById('requirements-error').style.display = 'block'; // Show error message for "Requisitos Técnicos"
+            } else {
+                document.getElementById('requirements-error').style.display = 'none'; // Hide error message
+            }
+    
+            // Validate "Idiomas" group
+            const idiomasCheckboxes = document.querySelectorAll('.idiomas-checkbox');
+            const isIdiomasChecked = Array.from(idiomasCheckboxes).some(checkbox => checkbox.checked);
+    
+            if (!isIdiomasChecked) {
+                event.preventDefault(); // Prevent form submission
+                document.getElementById('idiomas-error').style.display = 'block'; // Show error message for "Idiomas"
+            } else {
+                document.getElementById('idiomas-error').style.display = 'none'; // Hide error message
             }
         });
     </script>
