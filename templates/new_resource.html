@@ -170,6 +170,26 @@
             text-transform: none; /* Ensure normal capitalization */
         }
 
+        #error-modal {
+            display: none; 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0, 0, 0, 0.5); 
+            z-index: 1000;
+        }
+        
+        #error-modal div {
+            background: white; 
+            padding: 20px; 
+            margin: 15% auto; 
+            width: 300px; 
+            text-align: center; 
+            border-radius: 5px;
+        }
+
 
     </style>
 </head>
@@ -229,7 +249,9 @@
                     <textarea id="titulo" name="titulo" style="display: none;" required></textarea>
                     <div id="titulo-counter"></div>
                     <small class="small-text">Deve ter no mínimo 5 caracteres e no máximo 255</small>
+                    <div id="titulo-error" style="color: red; display: none;">O título deve ter no mínimo 5 caracteres.</div>
                 </div>
+                
                 <div class="input-group-aut required">
                     <h2>Autor/fonte:</h2>
                     <input type="text" id="autor" name="autor" placeholder="Nome do autor/fonte do recurso" required>
@@ -353,6 +375,13 @@
         </div>
     </footer>
 
+    <div id="error-modal" style="display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+        <div style="background: white; padding: 20px; margin: 15% auto; width: 300px; text-align: center;">
+            <p id="modal-message"></p>
+            <button id="close-modal">Close</button>
+        </div>
+    </div>
+
     <script>
         const localizacao1 = document.getElementById('localizacao1');
         const localizacao2 = document.getElementById('localizacao2');
@@ -379,34 +408,48 @@
 
     <script>
         document.querySelector('form').addEventListener('submit', function(event) {
+            let errorMessage = '';
+            let hasError = false;
+    
             // Validate "Modos de Utilização" group
             const useModeCheckboxes = document.querySelectorAll('.use-mode-checkbox');
             const isUseModeChecked = Array.from(useModeCheckboxes).some(checkbox => checkbox.checked);
-    
+        
             if (!isUseModeChecked) {
-                event.preventDefault(); // Prevent form submission
+                hasError = true; // Indicate there is an error
                 document.getElementById('checkbox-error').style.display = 'block'; // Show error message for "Modos de Utilização"
+                errorMessage += "Por favor selecione um modo de utilização.\n"; // Append to error message
             } else {
                 document.getElementById('checkbox-error').style.display = 'none'; // Hide error message
             }
-    
-            
-    
+        
             // Validate "Idiomas" group
             const idiomasCheckboxes = document.querySelectorAll('.idiomas-checkbox');
             const isIdiomasChecked = Array.from(idiomasCheckboxes).some(checkbox => checkbox.checked);
-    
+        
             if (!isIdiomasChecked) {
-                event.preventDefault(); // Prevent form submission
+                hasError = true; // Indicate there is an error
                 document.getElementById('idiomas-error').style.display = 'block'; // Show error message for "Idiomas"
+                errorMessage += "Por favor selecione um idioma.\n"; // Append to error message
             } else {
                 document.getElementById('idiomas-error').style.display = 'none'; // Hide error message
             }
+    
+            if (hasError) {
+                event.preventDefault(); // Prevent form submission
+                document.getElementById('modal-message').innerText = errorMessage; // Set the modal message
+                document.getElementById('error-modal').style.display = 'block'; // Show the modal
+            }
+        });
+    
+        // Close modal when the button is clicked
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('error-modal').style.display = 'none'; // Hide the modal
         });
     </script>
     
+    
     <script>
-
         // Initialize Quill for Titulo
         var tituloQuill = new Quill('#titulo-editor-container', {
             theme: 'snow',
@@ -431,7 +474,19 @@
             counterEle.innerHTML = `${currentLength}/${maxLength}`;
         }
 
-        
+        // Form submission event listener
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const tituloContent = tituloQuill.getText().trim();
+            const errorMessage = document.getElementById('titulo-error');
+
+            if (tituloContent.length < 5) {
+                event.preventDefault(); // Prevent form submission
+                errorMessage.style.display = 'block'; // Show error message
+            } else {
+                errorMessage.style.display = 'none'; // Hide error message if valid
+            }
+        });
+
         var quill = new Quill('#editor-container', {
             theme: 'snow',
             modules: {
