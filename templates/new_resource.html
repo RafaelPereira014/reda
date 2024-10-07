@@ -166,6 +166,10 @@
             display: block; /* Show elements when the 'show' class is applied */
         }
 
+        #titulo-editor-container .ql-editor {
+            text-transform: none; /* Ensure normal capitalization */
+        }
+
 
     </style>
 </head>
@@ -221,7 +225,10 @@
                 <h1>Detalhes</h1>
                 <div class="input-group required">
                     <h2>Título:</h2>
-                    <textarea id="titulo" name="titulo" rows="2" class="tinymce"></textarea>
+                    <div id="titulo-editor-container" style="height: 100px;"></div>
+                    <textarea id="titulo" name="titulo" style="display: none;" required></textarea>
+                    <div id="titulo-counter"></div>
+                    <small class="small-text">Deve ter no mínimo 5 caracteres e no máximo 255</small>
                 </div>
                 <div class="input-group-aut required">
                     <h2>Autor/fonte:</h2>
@@ -231,7 +238,7 @@
                     <h2>Organização:</h2>
                     <input type="text" id="organizacao" name="organizacao" placeholder="Escola/organização/nome do sítio do autor do recurso" required>
                 </div>
-                <div class="input-group-format required">
+                <div class="input-group-format ">
                     <h2>Formato (MAX. 2):</h2>
                     {% for formato in formatos %}
                         <input type="checkbox" id="formato{{ loop.index }}" name="formato" value="{{ formato }}" onchange="checkVideoAnimation(this)">
@@ -364,6 +371,32 @@
     </script>
     
     <script>
+
+        // Initialize Quill for Titulo
+        var tituloQuill = new Quill('#titulo-editor-container', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    ['clean']
+                ]
+            }
+        });
+
+        tituloQuill.on('text-change', function() {
+            document.getElementById('titulo').value = tituloQuill.root.innerHTML;
+            updateTituloCounter();
+        });
+
+        function updateTituloCounter() {
+            const maxLength = 1500;
+            const content = tituloQuill.getText().trim();
+            const currentLength = content.length;
+            const counterEle = document.getElementById('titulo-counter');
+            counterEle.innerHTML = `${currentLength}/${maxLength}`;
+        }
+
+        
         var quill = new Quill('#editor-container', {
             theme: 'snow',
             modules: {
