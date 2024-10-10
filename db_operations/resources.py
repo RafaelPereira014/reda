@@ -708,7 +708,7 @@ def resource_has_embed_code(resource_slug):
 
     try:
         # Query to check if the embed field is NULL
-        cursor.execute("SELECT embed FROM resources WHERE slug = %s", (resource_slug,))
+        cursor.execute("SELECT embed FROM Resources WHERE slug = %s", (resource_slug,))
         result = cursor.fetchone()
         
         # Check if the result is None or the embed field is NULL
