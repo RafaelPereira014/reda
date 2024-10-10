@@ -904,7 +904,7 @@ def get_propostasOp(resource_id):
     else:
         return []
 
-def search_resources(search_term, page, per_page):
+def search_resources(search_term, page=1, per_page=12):
     search_term = f"%{search_term}%"
     offset = (page - 1) * per_page
 
@@ -912,24 +912,33 @@ def search_resources(search_term, page, per_page):
         conn = connect_to_database()
         cursor = conn.cursor(dictionary=True)
 
-        # Execute search query
+        # Execute search query with additional conditions for areas_resources, dominios_resources, and subdominios
         query = """
-            SELECT SQL_CALC_FOUND_ROWS DISTINCT r.*, r.created_at
+            SELECT SQL_CALC_FOUND_ROWS DISTINCT r.*, r.created_at,
+                GROUP_CONCAT(DISTINCT CASE WHEN tx.slug = 'areas_resources' THEN t.title END) AS disciplinas,
+                GROUP_CONCAT(DISTINCT CASE WHEN tx.slug = 'dominios_resources' THEN t.title END) AS dominios,
+                GROUP_CONCAT(DISTINCT CASE WHEN tx.slug = 'subdominios' THEN t.title END) AS subdominios
             FROM Resources r
             LEFT JOIN Scripts s ON r.id = s.resource_id
             LEFT JOIN script_terms st ON s.id = st.script_id
             LEFT JOIN Terms t ON st.term_id = t.id
             LEFT JOIN Taxonomies tx ON t.taxonomy_id = tx.id
-            WHERE (r.title LIKE %s OR r.description LIKE %s OR (tx.slug = 'hashtags' AND t.title LIKE %s))
+            WHERE (r.title LIKE %s OR r.description LIKE %s OR (tx.slug = 'hashtags' AND t.title LIKE %s)
+                OR (tx.slug = 'areas_resources' AND t.title LIKE %s)
+                OR (tx.slug = 'dominios_resources' AND t.title LIKE %s)
+                OR (tx.slug = 'subdominios' AND t.title LIKE %s))
             AND r.approvedScientific = 1
             AND r.approvedLinguistic = 1
             AND r.hidden = 0
             AND r.type_id='2'
+            GROUP BY r.id
             ORDER BY r.id DESC
             LIMIT %s OFFSET %s
-
         """
-        cursor.execute(query, (search_term, search_term, search_term, per_page, offset))
+
+        # Add search_term for the additional conditions
+        params = (search_term, search_term, search_term, search_term, search_term, search_term, per_page, offset)
+        cursor.execute(query, params)
         resources = cursor.fetchall()
 
         # Execute query to get the total number of results
