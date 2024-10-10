@@ -701,18 +701,40 @@ def no_resources(userid):
     conn.close()
     return result[0] if result else 0
 
+def resource_has_embed_code(resource_slug):
+    # Create a database connection
+    connection = connect_to_database()
+    cursor = connection.cursor()
 
+    try:
+        # Query to check if the embed field is NULL
+        cursor.execute("SELECT embed FROM resources WHERE slug = %s", (resource_slug,))
+        result = cursor.fetchone()
+        
+        # Check if the result is None or the embed field is NULL
+        return result[0] is not None if result else False
+    finally:
+        cursor.close()
+        connection.close()
+        
 def get_resource_image_url(resource_slug):
-    image_extensions = ['png', 'jpg','JPG','PNG']
+    # Check if the resource has an embed_code
+    if resource_has_embed_code(resource_slug):
+        return None  # No image if there is an embed_code
+
+    image_extensions = ['png', 'jpg', 'JPG', 'PNG']
     directory_path = os.path.join(current_app.root_path, 'static', 'files', 'resources', resource_slug)
 
+    # Check if the directory for the resource exists
     if os.path.exists(directory_path) and os.path.isdir(directory_path):
         for ext in image_extensions:
             for filename in os.listdir(directory_path):
+                # Check if the filename matches the resource_slug and has the correct extension
                 if filename.startswith(resource_slug) and filename.endswith('.' + ext):
                     return url_for('static', filename=f'/files/resources/{resource_slug}/{filename}')
 
-    return None  # Return None if no image is found
+    # If no specific image is found, return the default image
+    return url_for('static', filename='images/default.jpg')
 
 def get_resource_files(resource_slug):
     file_extensions = ['pdf', 'docx', 'xlsx','doc']  # Add other file extensions as needed
