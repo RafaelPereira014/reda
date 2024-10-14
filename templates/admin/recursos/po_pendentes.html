@@ -157,7 +157,13 @@
         <div id="descriptionModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeDescriptionModal()">&times;</span>
-                <h2>Descrição do Recurso</h2>
+                <h2>Proposta de operacionalização</h2>
+                <p id="created_at_content"></p>
+                <h4><strong>Recurso</strong></h4>
+                <p id="titulocontent"></p>
+                <h4><strong>Autor</strong></h4>
+                <p id="author_content"></p>
+                <h4><strong>Proposta de operacionalização</strong></h4>
                 <p id="descriptionContent"></p>
             </div>
         </div>
@@ -174,10 +180,10 @@
                 {% for resource in scripts %}
                 <tr>
                     <td>
-                        <a href="#" onclick="showDescription('{{ resource.description | safe }}')">
+                        <a href="#" onclick="showDescription('{{ resource.description | safe }}', '{{ resource.created_at }}', '{{ resource.title | safe }}', '{{ resource.author }}')">
                             <i class="fas fa-eye"></i>
                         </a> 
-                        {{ resource.title  }}(<strong>id:{{resource.id}}</strong>)
+                        {{ resource.title | safe }} (<strong>id:{{ resource.id }}</strong>)
                     </td>
                     <td>{{ resource.created_at }}</td>
                     <td>{{ resource.author }}</td>
@@ -206,13 +212,19 @@
     </script>
     <script>
         // Function to show description modal
-        function showDescription(description) {
+        function showDescription(description, created_at, title, author) {
             var modal = document.getElementById("descriptionModal");
             var descriptionContent = document.getElementById("descriptionContent");
-            
-            // Set description content
-            descriptionContent.textContent = description;
-            
+            var created_at_content = document.getElementById("created_at_content");
+            var titulocontent = document.getElementById("titulocontent");
+            var author_content = document.getElementById("author_content");
+
+            // Set modal content using innerHTML to render HTML correctly
+            descriptionContent.innerHTML = description; // Changed to innerHTML
+            created_at_content.textContent = created_at; // Keep as textContent for safe display
+            titulocontent.innerHTML = title; // Keep as textContent for safe display
+            author_content.innerHTML = author; // Keep as textContent for safe display
+
             // Display modal
             modal.style.display = "block";
         }

@@ -164,6 +164,7 @@
                     <div class="resource-card">
                         <h2>{{ resource['title'] | strip_html }}</h2>
                         <p><em>Criado a {{ resource['created_at'] }}</em></p>
+
                         <p>{{ resource['description'] | strip_html }}</p>
                         <div class="resource-status-icons">
                             <i class="fas fa-flag highlight-flag" style="color: {{ 'green' if resource.highlighted else 'black' }};"
