@@ -233,6 +233,25 @@
             margin: 5px 0; /* Optional: Adjust margins for spacing */
         }
 
+        .scroll-box {
+            max-height: 200px; /* Set the maximum height of the box */
+            overflow-y: auto; /* Enable vertical scrolling if content exceeds max-height */
+            border: 1px solid #ccc; /* Optional: Add a border to the box */
+            border-radius: 5px; /* Optional: Rounded corners */
+            padding: 10px; /* Optional: Padding inside the box */
+            background-color: #f9f9f9; /* Optional: Background color */
+        }
+        
+        /* Optional: Style for the checkboxes and labels */
+        .scroll-box input[type="checkbox"] {
+            margin-right: 5px; /* Space between checkbox and label */
+        }
+        
+        .scroll-box label {
+            display: block; /* Make each label a block element for better spacing */
+            margin-bottom: 5px; /* Space between labels */
+        }
+
 
 
     </style>
@@ -443,37 +462,22 @@
                             </select>
                         </div>
             
-                        <!-- Form Group for Disciplinas -->
+                       <!-- Form Group for Disciplinas -->
                         <div class="form-group">
-                            <label for="disciplinas">Disciplinas:</label>
-                            <select id="disciplinas" name="disciplinas">
-                                <option value="">Escolher filtro</option>
-                                {% for disciplina in disciplinas %}
-                                    <option value="{{ disciplina }}" {% if disciplina == request.args.get('disciplinas') %}selected{% endif %}>{{ disciplina }}</option>
-                                {% endfor %}
-                            </select>
+                            <label>Disciplinas:</label><br>
+                            <div id="disciplinas" class="scroll-box"></div> <!-- Container for dynamic checkboxes -->
                         </div>
             
                         <!-- Form Group for Domínios -->
                         <div class="form-group">
-                            <label for="dominios">Domínios:</label>
-                            <select id="dominios" name="dominio">
-                                <option value="">Escolher filtro</option>
-                                {% for dominio in dominios %}
-                                    <option value="{{ dominio }}" {% if dominio == request.args.get('dominio') %}selected{% endif %}>{{ dominio }}</option>
-                                {% endfor %}
-                            </select>
+                            <label>Domínios:</label><br>
+                            <div id="dominios" class="scroll-box"></div> <!-- Container for dynamic checkboxes -->
                         </div>
             
                         <!-- Form Group for Subdomínios -->
                         <div class="form-group">
-                            <label for="subdominios">Subdomínios:</label>
-                            <select id="subdominios" name="subdominio">
-                                <option value="">Escolher filtro</option>
-                                {% for subdominio in subdominios %}
-                                    <option value="{{ subdominio }}" {% if subdominio == request.args.get('subdominio') %}selected{% endif %}>{{ subdominio }}</option>
-                                {% endfor %}
-                            </select>
+                            <label>Subdomínios:</label><br>
+                            <div id="subdominios" class="scroll-box"></div> <!-- Container for dynamic checkboxes -->
                         </div>
             
                         <!-- Submit and Reset Buttons -->
@@ -694,100 +698,76 @@
     <script>
         document.getElementById('anos').addEventListener('change', function() {
             const selectedAno = this.value;
-            const disciplinasDropdown = document.getElementById('disciplinas');
-            disciplinasDropdown.innerHTML = '<option value="">Escolher filtro</option>'; // Reset
+            const disciplinasDiv = document.getElementById('disciplinas');
+            disciplinasDiv.innerHTML = ''; // Reset
         
             if (!selectedAno) return;
         
+            // Fetch disciplinas based on the selected year
             fetch(`/fetch_disciplinas?ano=${selectedAno}`)
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(disciplina => {
-                        const option = document.createElement('option');
-                        option.value = disciplina;
-                        option.textContent = disciplina;
-                        disciplinasDropdown.appendChild(option);
+                        const checkbox = document.createElement('div');
+                        checkbox.innerHTML = `
+                            <input type="checkbox" id="disciplina_${disciplina}" name="disciplinas" value="${disciplina}" onchange="loadDominios()">
+                            <label for="disciplina_${disciplina}">${disciplina}</label>
+                        `;
+                        disciplinasDiv.appendChild(checkbox);
                     });
                 })
                 .catch(error => console.error('Error fetching disciplinas:', error));
         });
         
-        document.getElementById('disciplinas').addEventListener('change', function() {
-            const selectedDisciplina = this.value;
-            
-            // Fetch domains (dominios) based on the selected discipline
-            fetch(`/fetch_dominios?disciplinas=${selectedDisciplina}`)
+        function loadDominios() {
+            const selectedDisciplinas = Array.from(document.querySelectorAll('input[name="disciplinas"]:checked')).map(cb => cb.value);
+            const dominiosDiv = document.getElementById('dominios');
+            dominiosDiv.innerHTML = ''; // Reset
+        
+            if (selectedDisciplinas.length === 0) return;
+        
+            // Fetch dominios based on selected disciplinas
+            fetch(`/fetch_dominios?disciplinas=${selectedDisciplinas.join(',')}`)
                 .then(response => response.json())
                 .then(data => {
-                    const dominiosDropdown = document.getElementById('dominios');
-                    dominiosDropdown.innerHTML = '<option value="">Escolher filtro</option>'; // Reset
-                    
                     data.forEach(dominio => {
-                        const option = document.createElement('option');
-                        option.value = dominio;
-                        option.textContent = dominio;
-                        dominiosDropdown.appendChild(option);
+                        const checkbox = document.createElement('div');
+                        checkbox.innerHTML = `
+                            <input type="checkbox" id="dominio_${dominio}" name="dominios" value="${dominio}" onchange="loadSubdominios()">
+                            <label for="dominio_${dominio}">${dominio}</label>
+                        `;
+                        dominiosDiv.appendChild(checkbox);
                     });
                 })
                 .catch(error => console.error('Error fetching dominios:', error));
-        });
+        }
         
+        function loadSubdominios() {
+            const selectedDominios = Array.from(document.querySelectorAll('input[name="dominios"]:checked')).map(cb => cb.value);
+            const subdominiosDiv = document.getElementById('subdominios');
+            subdominiosDiv.innerHTML = ''; // Reset
         
-        document.getElementById('dominios').addEventListener('change', function() {
-            const selectedDominio = this.value;
-            const subdominiosDropdown = document.getElementById('subdominios');
-            subdominiosDropdown.innerHTML = '<option value="">Escolher filtro</option>'; // Reset
+            if (selectedDominios.length === 0) return;
         
-            if (!selectedDominio) return;
-        
-            fetch(`/fetch_subdominios?dominio=${selectedDominio}`)
+            // Fetch subdominios based on selected dominios
+            fetch(`/fetch_subdominios?dominios=${selectedDominios.join(',')}`)
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(subdominio => {
-                        const option = document.createElement('option');
-                        option.value = subdominio;
-                        option.textContent = subdominio;
-                        subdominiosDropdown.appendChild(option);
+                        const checkbox = document.createElement('div');
+                        checkbox.innerHTML = `
+                            <input type="checkbox" id="subdominio_${subdominio}" name="subdominios" value="${subdominio}">
+                            <label for="subdominio_${subdominio}">${subdominio}</label>
+                        `;
+                        subdominiosDiv.appendChild(checkbox);
                     });
                 })
                 .catch(error => console.error('Error fetching subdominios:', error));
-        });
+        }
         
-        document.getElementById('subdominios').addEventListener('change', function() {
-            const selectedSubdominio = this.value;
-            console.log('Selected subdomain:', selectedSubdominio); // Debugging log
-            
-            const conceitosDropdown = document.getElementById('conceitos');
-            conceitosDropdown.innerHTML = '<option value="">Escolher filtro</option>'; // Reset
-            
-            if (!selectedSubdominio) return;
-        
-            fetch(`/fetch_conceitos?subdominio=${encodeURIComponent(selectedSubdominio)}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Fetched conceitos:', data); // Debugging log
-                    data.forEach(conceito => {
-                        const option = document.createElement('option');
-                        option.value = conceito;
-                        option.textContent = conceito;
-                        conceitosDropdown.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching conceitos:', error));
-        });
-        
-        
-        
+        // Optional: Handle clearing the search
         document.getElementById('clearSearch').addEventListener('click', function() {
-            // Clear the search input field
             document.querySelector('input[name="search"]').value = '';
-            
-            // Redirect to the resources page without the search query
             window.location.href = "{{ url_for('resources') }}";
         });
     </script>

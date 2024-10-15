@@ -191,9 +191,13 @@ def resources():
     admin = is_admin(user_id) if is_logged_in else False
     anos = get_unique_terms(level=1)
     ano = request.args.get('ano', '')
-    disciplina = request.args.get('disciplinas', '')
-    dominio = request.args.get('dominio', '')  # Get the selected `dominio`
-    subdominio = request.args.get('subdominio', '')  # Get the selected `subdominio`
+    disciplina = request.args.getlist('disciplinas')    
+    dominio = request.args.getlist('dominios')  
+    subdominio = request.args.getlist('subdominios')  
+    
+
+    # Split search terms into a list, if search_term is not empty
+    search_terms = [term.strip() for term in search_term.split(',')] if search_term else []
 
     # Filter the disciplinas based on the selected `ano`
     disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=ano) if ano else []
@@ -204,8 +208,8 @@ def resources():
 
     if ano:
         paginated_resources, total_resources = advanced_search_resource(ano, disciplina, dominio, subdominio, page, per_page)
-    elif search_term:
-        paginated_resources, total_resources = search_resources(search_term, page, per_page)
+    elif search_terms:  # Handle the search terms as a list of terms
+        paginated_resources, total_resources = search_resources(search_terms, page, per_page)
     else:
         paginated_resources = get_all_resources(page, per_page)
         total_resources = get_total_resource_count()

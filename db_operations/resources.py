@@ -957,7 +957,14 @@ def search_resources(search_term, page=1, per_page=12):
     return resources, total_results
 
 
-def advanced_search_resource(ano, disciplina='', dominio='', subdominio='', page=1, per_page=12):
+def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=None, page=1, per_page=12):
+    if disciplinas is None:
+        disciplinas = []
+    if dominios is None:
+        dominios = []
+    if subdominios is None:
+        subdominios = []
+
     offset = (page - 1) * per_page
 
     try:
@@ -981,50 +988,47 @@ def advanced_search_resource(ano, disciplina='', dominio='', subdominio='', page
         
         params = [ano]
 
-        # Add filtering by `disciplina` if provided
-        if disciplina:
+        # Handle `disciplinas` as a list directly
+        if disciplinas:
             query += """
-            AND EXISTS (
-                SELECT 1
+            AND s.id IN (
+                SELECT st2.script_id
                 FROM script_terms st2
                 JOIN Terms t2 ON st2.term_id = t2.id
                 JOIN Taxonomies tx2 ON t2.taxonomy_id = tx2.id
-                WHERE st2.script_id = s.id
-                AND tx2.slug = 'areas_resources'
-                AND t2.title = %s
+                WHERE tx2.slug = 'areas_resources'
+                AND t2.title IN ({})
             )
-            """
-            params.append(disciplina)
+            """.format(','.join(['%s'] * len(disciplinas)))  # Create placeholders for IN clause
+            params.extend(disciplinas)
 
-        # Add filtering by `dominio` if provided
-        if dominio:
+        # Handle `dominios` as a list
+        if dominios:
             query += """
-            AND EXISTS (
-                SELECT 1
+            AND s.id IN (
+                SELECT st3.script_id
                 FROM script_terms st3
                 JOIN Terms t3 ON st3.term_id = t3.id
                 JOIN Taxonomies tx3 ON t3.taxonomy_id = tx3.id
-                WHERE st3.script_id = s.id
-                AND tx3.slug = 'dominios_resources'
-                AND t3.title = %s
+                WHERE tx3.slug = 'dominios_resources'
+                AND t3.title IN ({})
             )
-            """
-            params.append(dominio)
+            """.format(','.join(['%s'] * len(dominios)))  # Create placeholders for IN clause
+            params.extend(dominios)
 
-        # Add filtering by `subdominio` if provided
-        if subdominio:
+        # Handle `subdominios` as a list
+        if subdominios:
             query += """
-            AND EXISTS (
-                SELECT 1
+            AND s.id IN (
+                SELECT st4.script_id
                 FROM script_terms st4
                 JOIN Terms t4 ON st4.term_id = t4.id
                 JOIN Taxonomies tx4 ON t4.taxonomy_id = tx4.id
-                WHERE st4.script_id = s.id
-                AND tx4.slug = 'subdominios'
-                AND t4.title = %s
+                WHERE tx4.slug = 'subdominios'
+                AND t4.title IN ({})
             )
-            """
-            params.append(subdominio)
+            """.format(','.join(['%s'] * len(subdominios)))  # Create placeholders for IN clause
+            params.extend(subdominios)
 
         # Add ordering and pagination
         query += " ORDER BY r.id DESC LIMIT %s OFFSET %s"
@@ -1048,11 +1052,6 @@ def advanced_search_resource(ano, disciplina='', dominio='', subdominio='', page
         conn.close()
 
     return resources, total_results
-
-
-
-
-
 
 def get_current_month_resources():
     try:

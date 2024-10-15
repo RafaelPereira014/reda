@@ -145,25 +145,48 @@ def get_filtered_terms(level, parent_level, parent_term):
     conn = connect_to_database()
     cursor = conn.cursor(dictionary=True)
 
-    query = f"""
-    SELECT DISTINCT
-        tx.title AS term_title
-    FROM terms_relations trs
-    INNER JOIN Terms tx ON tx.id = trs.term_id
-    WHERE trs.level = {level} AND
-          trs.term_relationship_id IN (
-              SELECT trs_inner.term_relationship_id
-              FROM terms_relations trs_inner
-              INNER JOIN Terms tx_inner ON tx_inner.id = trs_inner.term_id
-              WHERE trs_inner.level = {parent_level} AND tx_inner.title = %s
-          )
-    ORDER BY tx.title 
-    """
-    
-    cursor.execute(query, (parent_term,))
+    # If parent_term is a list, we need to adjust the query
+    if isinstance(parent_term, list) and parent_term:
+        # Generate placeholders for the number of parent terms
+        placeholders = ','.join(['%s'] * len(parent_term))
+        query = f"""
+        SELECT DISTINCT
+            tx.title AS term_title
+        FROM terms_relations trs
+        INNER JOIN Terms tx ON tx.id = trs.term_id
+        WHERE trs.level = %s AND
+              trs.term_relationship_id IN (
+                  SELECT trs_inner.term_relationship_id
+                  FROM terms_relations trs_inner
+                  INNER JOIN Terms tx_inner ON tx_inner.id = trs_inner.term_id
+                  WHERE trs_inner.level = %s AND tx_inner.title IN ({placeholders})
+              )
+        ORDER BY tx.title
+        """
+        params = [level, parent_level] + parent_term  # Flatten list of parent terms
+    else:
+        # Handle single parent term
+        query = """
+        SELECT DISTINCT
+            tx.title AS term_title
+        FROM terms_relations trs
+        INNER JOIN Terms tx ON tx.id = trs.term_id
+        WHERE trs.level = %s AND
+              trs.term_relationship_id IN (
+                  SELECT trs_inner.term_relationship_id
+                  FROM terms_relations trs_inner
+                  INNER JOIN Terms tx_inner ON tx_inner.id = trs_inner.term_id
+                  WHERE trs_inner.level = %s AND tx_inner.title = %s
+              )
+        ORDER BY tx.title
+        """
+        params = [level, parent_level, parent_term]
+
+    cursor.execute(query, params)
     result = cursor.fetchall()
     
     conn.close()
+
     return [row['term_title'] for row in result]
 
 
