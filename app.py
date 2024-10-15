@@ -709,7 +709,6 @@ def resource_edit2(script_id):
 
     # Fetch descricao if available
     initial_description = get_script_description(script_id)  # Function to fetch the description
-    print(initial_description)
     
 
     # Fetch all possible anos
@@ -719,24 +718,23 @@ def resource_edit2(script_id):
     selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos = [], [], [], [], []
 
     if resource_details:
-        # Flatten and remove duplicates
-        selected_anos = set()
-        for script in resource_details['scripts_by_id'].values():
-            selected_anos.update(script.get('anos_resources', []))
-            selected_disciplinas.extend(script.get('areas_resources', []))
-            selected_dominios.extend(script.get('dominios_resources', []))
-            selected_subdominios.extend(script.get('subdominios', []))
-            selected_conceitos.extend(script.get('hashtags', []))
-        
-        # Convert selected anos to a list
-        selected_anos = list(selected_anos)
-        
-        # Remove duplicates for other lists
-        selected_disciplinas = list(set(selected_disciplinas))
-        selected_dominios = list(set(selected_dominios))
-        selected_subdominios = list(set(selected_subdominios))
-        selected_conceitos = list(set(selected_conceitos))
-        print(selected_conceitos)
+        # Get only the specific script's details
+        script = resource_details['scripts_by_id'].get(script_id)
+    if script:
+        selected_anos = script.get('anos_resources', [])
+        selected_disciplinas = script.get('areas_resources', [])
+        selected_dominios = script.get('dominios_resources', [])
+        selected_subdominios = script.get('subdominios', [])
+        selected_conceitos = script.get('hashtags', [])
+    else:
+        selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos = [], [], [], [], []
+    
+    # Flatten and remove duplicates for lists (if needed)
+    selected_anos = list(set(selected_anos))
+    selected_disciplinas = list(set(selected_disciplinas))
+    selected_dominios = list(set(selected_dominios))
+    selected_subdominios = list(set(selected_subdominios))
+    selected_conceitos = list(set(selected_conceitos))
 
     # Fetch all disciplinas based on the selected anos
     all_disciplinas = set()
