@@ -233,23 +233,64 @@
             margin: 5px 0; /* Optional: Adjust margins for spacing */
         }
 
+        /* Styling for Form Groups */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        /* Scroll Box Styling */
         .scroll-box {
-            max-height: 200px; /* Set the maximum height of the box */
-            overflow-y: auto; /* Enable vertical scrolling if content exceeds max-height */
-            border: 1px solid #ccc; /* Optional: Add a border to the box */
-            border-radius: 5px; /* Optional: Rounded corners */
-            padding: 10px; /* Optional: Padding inside the box */
-            background-color: #f9f9f9; /* Optional: Background color */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;  /* Allows scrolling */
+            background-color: #f9f9f9;
         }
-        
-        /* Optional: Style for the checkboxes and labels */
+
+        /* Customize Scrollbar */
+        .scroll-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-box::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .scroll-box::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 5px;
+        }
+
+        .scroll-box::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+
+        /* Make the checkboxes appear inline with labels */
+        .scroll-box .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
         .scroll-box input[type="checkbox"] {
-            margin-right: 5px; /* Space between checkbox and label */
+            margin-right: 8px;
+            cursor: pointer;
+            transform: scale(1.1);
         }
-        
+
         .scroll-box label {
-            display: block; /* Make each label a block element for better spacing */
-            margin-bottom: 5px; /* Space between labels */
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
         }
 
 
