@@ -79,36 +79,23 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
 
 
 
-def update_script(resource_id,script_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao):
-    # Establish database connection
+def update_script(resource_id, script_id, user_id, selected_anos, selected_disciplinas, 
+                 selected_dominios, selected_subdominios, selected_conceitos, descricao):
     conn = connect_to_database()
     cursor = conn.cursor()
     current_date = datetime.now()
 
     try:
-        # Update existing script using the resource_id
+        # Update existing script using the script_id
         script_query = """
             UPDATE Scripts 
             SET description = %s, updated_at = %s, user_id = %s, operation = %s, approved = %s
-            WHERE resource_id = %s AND id=%s
+            WHERE resource_id = %s AND id = %s
         """
-        cursor.execute(script_query, (descricao, current_date, user_id, descricao, False, resource_id,script_id))
-        print(f"Updated script with resource ID: {resource_id}")
-
-        # Ensure previous query results are processed before executing new queries
-        conn.commit()  # Commit to ensure the update is applied
-
-        # Fetch the script ID corresponding to the resource_id
-        cursor.execute("SELECT id FROM Scripts WHERE resource_id = %s", (resource_id,))
-        script_row = cursor.fetchone()
+        cursor.execute(script_query, (descricao, current_date, user_id, descricao, False, resource_id, script_id))
+        print(f"Updated script with resource ID: {resource_id} and script ID: {script_id}")
         
-        # Check if a script is found for the given resource_id
-        if not script_row:
-            print(f"No script found for resource ID: {resource_id}")
-            return None
-        
-        # Fetch the script_id correctly
-        script_id = script_row[0]
+        conn.commit()  # Commit after updating the script
 
         # Define a helper function to update terms
         def update_terms(term_list, taxonomy_slug, script_id):
@@ -120,6 +107,7 @@ def update_script(resource_id,script_id, user_id, selected_anos, selected_discip
                 )
             """
             cursor.execute(delete_terms_query, (script_id, taxonomy_slug))
+            conn.commit()  # Commit the delete operation
 
             # Insert updated terms for the script
             term_insert_query = """
@@ -141,6 +129,8 @@ def update_script(resource_id,script_id, user_id, selected_anos, selected_discip
                 else:
                     print(f"Term '{term}' for taxonomy '{taxonomy_slug}' not found in database.")
 
+            conn.commit()  # Commit after inserting terms
+
         # Update associated terms using the correct script_id
         update_terms(selected_anos, 'anos_resources', script_id)
         update_terms(selected_disciplinas, 'areas_resources', script_id)
@@ -148,10 +138,7 @@ def update_script(resource_id,script_id, user_id, selected_anos, selected_discip
         update_terms(selected_subdominios, 'subdominios', script_id)
         update_terms(selected_conceitos, 'hashtags', script_id)
 
-        # Commit the transaction after updates
-        conn.commit()
-
-        # Return the script_id
+        # Return the script_id after successful updates
         return script_id
 
     except mysql.connector.Error as e:

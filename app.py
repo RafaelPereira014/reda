@@ -1614,8 +1614,11 @@ def fetch_dominios():
 def fetch_subdominios():
     # Fetch selected dominios from query parameters
     dominios = request.args.get('dominios', '')
+    print("Received Dominios:", dominios)  # Log the received dominios
+    
     if dominios:
         dominios_list = dominios.split(',')
+        print("Dominios List:", dominios_list)  # Log the processed list
         subdominios_set = set()
         
         # Collect all subdominios based on selected dominios
@@ -1637,7 +1640,7 @@ def fetch_conceitos():
     if subdominios:
         subdominios_list = subdominios.split(',')
         conceitos_set = set()
-        
+
         # Collect all conceitos based on selected subdominios
         for subdominio in subdominios_list:
             if subdominio:  # Ensure subdominio is not empty

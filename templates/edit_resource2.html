@@ -355,40 +355,36 @@
             });
         }
     
-        // Fetch conceitos based on selected subdominios
         function fetchConceitos() {
-            selectedSubdominios = $('input[name="subdominios"]:checked').map(function() {
+            const selectedSubdominios = $('input[name="subdominios"]:checked').map(function() {
                 return $(this).val();
             }).get(); // Get array of selected subdominios
-    
+        
             if (selectedSubdominios.length === 0) {
                 $('#conceitosContainer').empty();
                 return; // No subdominios selected, exit function
             }
-    
+        
             $.get('/fetch_conceitos', { subdominios: selectedSubdominios.join(',') }, function(data) {
                 let conceitosContainer = $('#conceitosContainer');
                 conceitosContainer.empty();
-    
+        
                 data.sort(); // Sort conceitos alphabetically
-    
+        
                 data.forEach(function(conceito) {
-                    let checked = selectedConceitos.includes(conceito) ? 'checked' : '';
+                    const checked = selectedConceitos.includes(conceito) ? 'checked' : '';
                     conceitosContainer.append(`
                         <div class="checkbox-item">
-                            <input type="checkbox" id="conceito${conceito}" name="conceitos" value="${conceito}" ${checked}>
-                            <label for="conceito${conceito}">${conceito}</label>
+                            <input type="checkbox" id="conceito_${conceito}" name="conceitos" value="${conceito}" ${checked}>
+                            <label for="conceito_${conceito}">${conceito}</label>
                         </div>
                     `);
                 });
+            })
+            .fail(function(error) {
+                console.error('Error fetching conceitos:', error);
             });
         }
-    
-        $(document).ready(function() {
-            $('input[name="anos"]').change(function() {
-                fetchDisciplinas();
-            });
-        });
     
         // Function to update the character counter
         function updateCounter(editor) {
@@ -832,6 +828,7 @@
         document.addEventListener('DOMContentLoaded', bindAnosCheckboxes);
 
         // Function to update Dominios based on selected Disciplinas
+        // Function to update Dominios based on selected Disciplinas
         function updateDominios() {
             const selectedDisciplinas = Array.from(document.querySelectorAll('input[name="disciplinas"]:checked'))
                 .map(checkbox => checkbox.value);
@@ -883,50 +880,115 @@
                 .catch(error => console.error('Error fetching dominios:', error));
         }
 
-        // Function to update Subdominios based on selected Dominios
         function updateSubdominios() {
             const selectedDominios = Array.from(document.querySelectorAll('input[name="dominios"]:checked'))
                 .map(checkbox => checkbox.value);
             console.log('Selected Dominios:', selectedDominios);
-
+        
+            // Store the currently selected subdominios
             const previouslyCheckedSubdominios = Array.from(document.querySelectorAll('input[name="subdominios"]:checked'))
                 .map(checkbox => checkbox.value);
-
+            console.log('Previously Checked Subdominios:', previouslyCheckedSubdominios);
+        
             if (selectedDominios.length === 0) {
                 document.getElementById('subdominiosContainer').innerHTML = '';
+                document.getElementById('conceitosContainer').innerHTML = '';
                 return;
             }
-
-            fetch(`/fetch_subdominios?dominio=${selectedDominios.join(',')}`)
+        
+            // Fetch subdominios based on the selected dominios
+            fetch(`/fetch_subdominios?dominios=${selectedDominios.join(',')}`)
                 .then(response => response.json())
-                .then(subdominios => {
-                    console.log('Fetched Subdominios:', subdominios);
-
+                .then(fetchedSubdominios => {
+                    console.log('Fetched Subdominios:', fetchedSubdominios);
+        
+                    // Combine previously selected subdominios with the new ones
+                    const allSubdominios = new Set([...previouslyCheckedSubdominios, ...fetchedSubdominios]);
+                    console.log('All Subdominios:', Array.from(allSubdominios));
+        
                     const subdominiosContainer = document.getElementById('subdominiosContainer');
                     subdominiosContainer.innerHTML = ''; // Clear existing subdominios
-
-                    subdominios.forEach((subdominio, index) => {
+        
+                    Array.from(allSubdominios).forEach((subdominio, index) => {
                         const checkbox = document.createElement('input');
                         checkbox.type = 'checkbox';
                         checkbox.id = `subdominio${index}`;
                         checkbox.name = 'subdominios';
                         checkbox.value = subdominio;
-
+        
                         // Restore previously checked subdominios
                         if (previouslyCheckedSubdominios.includes(subdominio)) {
                             checkbox.checked = true;
                         }
-
+        
+                        // Attach event listener to update conceitos when subdominios change
+                        checkbox.addEventListener('change', updateConceitos);
+        
                         const label = document.createElement('label');
                         label.setAttribute('for', `subdominio${index}`);
                         label.textContent = subdominio;
-
+        
                         subdominiosContainer.appendChild(checkbox);
                         subdominiosContainer.appendChild(label);
                         subdominiosContainer.appendChild(document.createElement('br'));
                     });
+        
+                    // Update conceitos based on the new selection of subdominios
+                    updateConceitos();
                 })
                 .catch(error => console.error('Error fetching subdominios:', error));
+        }
+        function updateConceitos() {
+            const selectedSubdominios = Array.from(document.querySelectorAll('input[name="subdominios"]:checked'))
+                .map(checkbox => checkbox.value);
+            console.log('Selected Subdominios:', selectedSubdominios);
+        
+            // Store the currently selected conceitos
+            const previouslyCheckedConceitos = Array.from(document.querySelectorAll('input[name="conceitos"]:checked'))
+                .map(checkbox => checkbox.value);
+            console.log('Previously Checked Conceitos:', previouslyCheckedConceitos);
+        
+            if (selectedSubdominios.length === 0) {
+                document.getElementById('conceitosContainer').innerHTML = '';
+                return;
+            }
+        
+            // Fetch conceitos based on the selected subdominios
+            fetch(`/fetch_conceitos?subdominios=${selectedSubdominios.join(',')}`)
+                .then(response => response.json())
+                .then(fetchedConceitos => {
+                    console.log('Fetched Conceitos:', fetchedConceitos);
+        
+                    // Combine previously selected conceitos with the new ones
+                    const allConceitos = new Set([...previouslyCheckedConceitos, ...fetchedConceitos]);
+                    console.log('All Conceitos:', Array.from(allConceitos));
+        
+                    const conceitosContainer = document.getElementById('conceitosContainer');
+                    conceitosContainer.innerHTML = ''; // Clear existing conceitos
+        
+                    Array.from(allConceitos).forEach((conceito) => {
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = `conceito_${conceito}`; // Unique ID for each conceito
+                        checkbox.name = 'conceitos';
+                        checkbox.value = conceito;
+        
+                        // Restore previously checked conceitos
+                        checkbox.checked = previouslyCheckedConceitos.includes(conceito);
+        
+                        const label = document.createElement('label');
+                        label.setAttribute('for', checkbox.id);
+                        label.textContent = conceito;
+        
+                        conceitosContainer.appendChild(checkbox);
+                        conceitosContainer.appendChild(label);
+                        conceitosContainer.appendChild(document.createElement('br'));
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching conceitos:', error);
+                    console.log('Selected Subdominios on error:', selectedSubdominios);
+                });
         }
     </script>
 </body>
