@@ -164,7 +164,7 @@ def get_script_description(script_id):
     Returns:
         str: The description of the script if found, otherwise an empty string.
     """
-    query = "SELECT description FROM Scripts WHERE id = %s"
+    query = "SELECT operation FROM Scripts WHERE id = %s"
     
     try:
         with connect_to_database() as conn:

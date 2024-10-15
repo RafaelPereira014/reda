@@ -708,7 +708,8 @@ def resource_edit2(script_id):
     resource_details = get_combined_details(resource_id)
 
     # Fetch descricao if available
-    initial_description = get_script_description(script_id)  # Function to fetch the description
+    initial_description = get_script_description(script_id)  
+    print("Initial Description:", initial_description)  # Debugging output
     
 
     # Fetch all possible anos
@@ -772,6 +773,7 @@ def resource_edit2(script_id):
         selected_subdominios = list(set(data.getlist('subdominios')))
         selected_conceitos = list(set(data.getlist('conceitos')))
         descricao = data.get('descricao', '')  # Fetch updated descricao from form
+        print("Submitted Descricao:", descricao)  # Debugging output
 
         try:
             with connect_to_database() as conn:
