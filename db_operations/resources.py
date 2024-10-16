@@ -971,7 +971,7 @@ def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=N
         conn = connect_to_database()
         cursor = conn.cursor(dictionary=True)
 
-        # Base query to filter by `ano`
+        # Base query for retrieving resources
         query = """
             SELECT SQL_CALC_FOUND_ROWS DISTINCT r.*
             FROM Resources r
@@ -979,14 +979,21 @@ def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=N
             LEFT JOIN script_terms st ON s.id = st.script_id
             LEFT JOIN Terms t ON st.term_id = t.id
             LEFT JOIN Taxonomies tx ON t.taxonomy_id = tx.id
-            WHERE tx.slug = 'anos_resources' AND t.title = %s
-            AND r.approvedScientific = 1
+            WHERE r.approvedScientific = 1
             AND r.approvedLinguistic = 1
             AND r.hidden = 0
-            AND r.type_id='2'
+            AND r.type_id = '2'
         """
         
-        params = [ano]
+        params = []
+
+        # Handle 'ano' filtering unless 'ano' is 'all'
+        if ano and ano != 'all':
+            query += """
+            AND tx.slug = 'anos_resources' 
+            AND t.title = %s
+            """
+            params.append(ano)
 
         # Handle `disciplinas` as a list directly
         if disciplinas:

@@ -191,6 +191,7 @@ def resources():
     admin = is_admin(user_id) if is_logged_in else False
     anos = get_unique_terms(level=1)
     ano = request.args.get('ano', '')
+    print(ano)
     disciplina = request.args.getlist('disciplinas')    
     dominio = request.args.getlist('dominios')  
     subdominio = request.args.getlist('subdominios')  
@@ -199,8 +200,11 @@ def resources():
     # Split search terms into a list, if search_term is not empty
     search_terms = [term.strip() for term in search_term.split(',')] if search_term else []
 
-    # Filter the disciplinas based on the selected `ano`
-    disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=ano) if ano else []
+    # If ano is "all", get all anos_resources, otherwise filter by the specific ano
+    if ano.lower() == "all":
+        disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)  # No specific ano, fetch all
+    else:
+        disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=ano) if ano else []
     # Filter the dominios based on the selected `disciplina`
     dominios = get_filtered_terms(level=3, parent_level=2, parent_term=disciplina) if disciplina else []
     # Filter the subdominios based on the selected `dominio`
@@ -1582,15 +1586,19 @@ def novo_recurso2():
 def fetch_disciplinas():
     # Fetch selected anos from query parameters
     anos = request.args.get('ano', '').split(',')
-    disciplinas_set = set()
-    
-    # Collect all disciplines based on selected anos
-    for ano in anos:
-        if ano:  # Ensure ano is not empty
-            disciplinas_set.update(get_filtered_terms(level=2, parent_level=1, parent_term=ano))
-    
-    # Convert the set to a sorted list
-    disciplinas = sorted(disciplinas_set)
+
+    # If 'all' is in the anos list, fetch all disciplinas without filtering
+    if 'all' in anos:
+        disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)  # Fetch all disciplinas
+    else:
+        disciplinas_set = set()
+        # Collect all disciplines based on selected anos
+        for ano in anos:
+            if ano:  # Ensure ano is not empty
+                disciplinas_set.update(get_filtered_terms(level=2, parent_level=1, parent_term=ano))
+        
+        # Convert the set to a sorted list
+        disciplinas = sorted(disciplinas_set)
     
     return jsonify(disciplinas)
 

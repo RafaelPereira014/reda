@@ -145,9 +145,19 @@ def get_filtered_terms(level, parent_level, parent_term):
     conn = connect_to_database()
     cursor = conn.cursor(dictionary=True)
 
-    # If parent_term is a list, we need to adjust the query
-    if isinstance(parent_term, list) and parent_term:
-        # Generate placeholders for the number of parent terms
+    # Handle the case when parent_term is None (for "all" case)
+    if parent_term is None:
+        query = """
+        SELECT DISTINCT
+            tx.title AS term_title
+        FROM terms_relations trs
+        INNER JOIN Terms tx ON tx.id = trs.term_id
+        WHERE trs.level = %s
+        ORDER BY tx.title
+        """
+        params = [level]
+    elif isinstance(parent_term, list) and parent_term:
+        # If parent_term is a list, use IN clause
         placeholders = ','.join(['%s'] * len(parent_term))
         query = f"""
         SELECT DISTINCT
@@ -188,7 +198,6 @@ def get_filtered_terms(level, parent_level, parent_term):
     conn.close()
 
     return [row['term_title'] for row in result]
-
 
 def create_slug(title):
     return title.replace(" ", "-").lower()

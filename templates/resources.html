@@ -497,6 +497,7 @@
                             <label for="anos">Anos:</label>
                             <select id="anos" name="ano">
                                 <option value="">Escolher filtro</option>
+                                <option value="all">Todos os anos</option>
                                 {% for ano in anos %}
                                     <option value="{{ ano }}" {% if ano == request.args.get('ano') %}selected{% endif %}>{{ ano }}</option>
                                 {% endfor %}
