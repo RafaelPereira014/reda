@@ -1227,11 +1227,14 @@ def my_account():
         #resource['details'] = get_combined_details(resource['id'])
         
         
-    apps_user, apps_count = get_apps_from_user(user_id, search_term)
-    tools_user, tools_count = get_tools_from_user(user_id, search_term)
+    #apps_user, apps_count = get_apps_from_user(user_id, search_term)
+    apps_user, apps_count = get_apps_from_user(user_id)
+    #tools_user, tools_count = get_tools_from_user(user_id, search_term)
+    tools_user, tools_count = get_tools_from_user(user_id)
     user_details = get_details(user_id)
     resources_count = no_resources(user_id)
-    scripts_user, scripts_count = get_script_details_by_user(user_id)
+    scripts_user, scripts_count = get_script_details_by_user(user_id,search_term)
+    print(scripts_count)
     scripts_user_with_titles = add_titles_to_scripts(scripts_user)
 
 

@@ -167,20 +167,6 @@
                         
                         <p>{{ resource['description'] | strip_html }}</p>
 
-                        <!-- Access areas_resources
-                        <h3>Areas Resources:</h3>
-                        {% if resource['details'] and resource['details']['scripts_by_id'] %}
-                            <ul>
-                                {% for script in resource['details']['scripts_by_id'].values() %}
-                                    {% if script['areas_resources'] %}
-                                        <li>{{ script['areas_resources'] | join(', ') }}</li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <p>No areas resources available.</p>
-                        {% endif %}
-                         -->
 
                         <div class="resource-status-icons">
                             <i class="fas fa-flag highlight-flag" style="color: {{ 'green' if resource.highlighted else 'black' }};"

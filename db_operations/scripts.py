@@ -36,8 +36,8 @@ def get_script_details():
     return scripts_user, scripts_count
 
 
-def get_script_details_by_user(user_id):
-    """Get all scripts from user and their count."""
+def get_script_details_by_user(user_id, search_term=''):
+    """Get all scripts from user with optional search term filtering based on the resource title."""
     conn = connect_to_database()
     cursor = conn.cursor(dictionary=True)
     
@@ -45,13 +45,53 @@ def get_script_details_by_user(user_id):
     scripts_count = 0
     
     try:
-        # Query to fetch all scripts for the user
-        cursor.execute("SELECT * FROM Scripts WHERE user_id=%s ORDER BY id DESC", (user_id,))
+        if search_term:
+            # Query to fetch scripts with search term filtering based on resource title
+            query = """
+            SELECT Scripts.*, Resources.title
+            FROM Scripts
+            JOIN Resources ON Scripts.resource_id = Resources.id
+            WHERE Scripts.user_id = %s
+            AND (Resources.title LIKE %s OR Resources.description LIKE %s)
+            ORDER BY Scripts.id DESC
+            """
+            search_term = f"%{search_term}%"
+            cursor.execute(query, (user_id, search_term, search_term))
+        else:
+            # Query to fetch all scripts without search term filtering
+            query = """
+            SELECT Scripts.*, Resources.title
+            FROM Scripts
+            JOIN Resources ON Scripts.resource_id = Resources.id
+            WHERE Scripts.user_id = %s
+            ORDER BY Scripts.id DESC
+            """
+            cursor.execute(query, (user_id,))
+        
         scripts_user = cursor.fetchall()
         
-        # Query to count the scripts
-        cursor.execute("SELECT COUNT(*) AS count FROM Scripts WHERE user_id=%s", (user_id,))
+        if search_term:
+            # Query to count scripts with search term filtering
+            query_count = """
+            SELECT COUNT(*) AS count
+            FROM Scripts
+            JOIN Resources ON Scripts.resource_id = Resources.id
+            WHERE Scripts.user_id = %s
+            AND (Resources.title LIKE %s OR Resources.description LIKE %s)
+            """
+            cursor.execute(query_count, (user_id, search_term, search_term))
+        else:
+            # Query to count all scripts without search term filtering
+            query_count = """
+            SELECT COUNT(*) AS count
+            FROM Scripts
+            JOIN Resources ON Scripts.resource_id = Resources.id
+            WHERE Scripts.user_id = %s
+            """
+            cursor.execute(query_count, (user_id,))
+        
         scripts_count = cursor.fetchone()['count']
+    
     except Exception as e:
         print(f"Error: {e}")
     finally:
