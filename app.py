@@ -1224,6 +1224,7 @@ def my_account():
     for resource in my_resources:
         resource['highlighted'] = highlighted_resources.get(resource['id'], False)
         resource['approved'] = approved_resources.get(resource['id'], False)
+        #resource['details'] = get_combined_details(resource['id'])
         
         
     apps_user, apps_count = get_apps_from_user(user_id, search_term)
