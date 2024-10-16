@@ -780,6 +780,8 @@ def resource_edit2(script_id):
         selected_dominios = list(set(data.getlist('dominios')))
         selected_subdominios = list(set(data.getlist('subdominios')))
         selected_conceitos = list(set(data.getlist('conceitos')))
+        outros_conceitos = data.get('keywords').split(',') if data.get('keywords') else []
+        selected_conceitos.extend(outros_conceitos)
         descricao = data.get('descricao', '')  # Fetch updated descricao from form
         print("Submitted Descricao:", descricao)  # Debugging output
 

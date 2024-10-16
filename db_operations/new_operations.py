@@ -114,6 +114,7 @@ def update_script(resource_id, script_id, user_id, selected_anos, selected_disci
                 INSERT INTO script_terms (script_id, term_id, created_at, updated_at)
                 VALUES (%s, %s, NOW(), NOW())
             """
+            
             for term in term_list:
                 # Fetch term_id from Terms table based on term and taxonomy
                 get_term_id_query = """
@@ -121,13 +122,27 @@ def update_script(resource_id, script_id, user_id, selected_anos, selected_disci
                 """
                 cursor.execute(get_term_id_query, (term, taxonomy_slug))
                 term_row = cursor.fetchone()
-                
-                # Check if term_id exists and insert it
+
+                # If the term doesn't exist, insert it into the `Terms` table
+                if not term_row:
+                    print(f"Term '{term}' for taxonomy '{taxonomy_slug}' not found. Inserting new term.")
+
+                    # Insert new term into Terms table
+                    insert_term_query = """
+                        INSERT INTO Terms (title, taxonomy_id, created_at, updated_at)
+                        VALUES (%s, (SELECT id FROM Taxonomies WHERE slug = %s), NOW(), NOW())
+                    """
+                    cursor.execute(insert_term_query, (term, taxonomy_slug))
+                    conn.commit()  # Commit the insert operation
+
+                    # Fetch the new term_id
+                    cursor.execute(get_term_id_query, (term, taxonomy_slug))
+                    term_row = cursor.fetchone()
+
+                # Insert the term_id into script_terms if the term exists
                 if term_row:
                     term_id = term_row[0]  # Accessing the first element of the tuple (term_id)
                     cursor.execute(term_insert_query, (script_id, term_id))
-                else:
-                    print(f"Term '{term}' for taxonomy '{taxonomy_slug}' not found in database.")
 
             conn.commit()  # Commit after inserting terms
 

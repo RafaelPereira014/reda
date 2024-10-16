@@ -403,53 +403,61 @@
         }
     
         let keywords = [];  // Initialize the keywords array
-    
+
+        // Function to add a keyword
         function addKeyword() {
             const keywordInput = document.getElementById('keywordInput');
             const keywordsContainer = document.getElementById('keywordsContainer');
-            
-            if (keywordInput.value.trim() === '') {
-                return; // No keyword entered, exit function
-            }
-            
+            const hiddenKeywordsInput = document.getElementById('keywords'); // Hidden input field
+
+            // Trim the input and check if it's not empty
             const keyword = keywordInput.value.trim();
+            if (keyword === '') {
+                return; // Exit if no keyword entered
+            }
+
+            // Prevent duplicate keywords
+            if (keywords.includes(keyword)) {
+                return; // Exit if the keyword already exists
+            }
+
+            // Add the keyword to the array
+            keywords.push(keyword);
+
+            // Clear the input field
             keywordInput.value = '';
-            
+
+            // Create the keyword span with a remove button
             const keywordSpan = document.createElement('span');
             keywordSpan.className = 'keyword';
             keywordSpan.textContent = keyword;
-    
+
             const removeButton = document.createElement('button');
-            removeButton.textContent = 'x';
+            removeButton.textContent = 'x'; // Button to remove the keyword
             removeButton.onclick = function() {
-                keywordSpan.remove(); // Remove the keyword span
-                updateKeywords();
+                keywordSpan.remove(); // Remove the keyword span from DOM
+                keywords = keywords.filter(k => k !== keyword); // Remove from array
+                updateHiddenInput(); // Update hidden input field
             };
-            
+
             keywordSpan.appendChild(removeButton);
             keywordsContainer.appendChild(keywordSpan);
-            
-            updateKeywords();
+
+            updateHiddenInput(); // Update hidden input field with new list of keywords
         }
-    
-        function removeKeyword(keyword) {
-            keywords = keywords.filter(k => k !== keyword);
-            updateKeywordsContainer();
+
+        // Function to update the hidden input field with the list of keywords
+        function updateHiddenInput() {
+            const hiddenKeywordsInput = document.getElementById('keywords');
+            hiddenKeywordsInput.value = keywords.join(','); // Join array into a comma-separated string
         }
-    
-        function updateKeywordsContainer() {
-            const keywordsContainer = document.getElementById('keywordsContainer');
-            keywordsContainer.innerHTML = ''; // Clear current keywords
-    
-            keywords.forEach(keyword => {
-                const keywordItem = document.createElement('div');
-                keywordItem.className = 'keyword-item';
-                keywordItem.innerHTML = `
-                    ${keyword}
-                    <button type="button" onclick="removeKeyword('${keyword}')">X</button>
-                `;
-                keywordsContainer.appendChild(keywordItem);
-            });
+
+        // Function to handle Enter key press
+        function checkEnterKey(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent form submission
+                addKeyword(); // Add the keyword when Enter is pressed
+            }
         }
     </script>
 </head>
