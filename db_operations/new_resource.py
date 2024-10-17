@@ -22,6 +22,7 @@ def get_formatos():
             Taxonomies tax ON t.taxonomy_id = tax.id
         WHERE
             tax.title = 'Formato' AND t.title != 'none'
+        ORDER BY t.title 
     """)
     formatos = cursor.fetchall()
     cursor.close()
@@ -71,6 +72,7 @@ def get_modos_utilizacao():
             Taxonomies tax ON t.taxonomy_id = tax.id
         WHERE
             tax.title = 'Modos de utilização' AND t.title != 'none'
+        ORDER BY t.title
     """)
     modos_utilizacao = cursor.fetchall()
     cursor.close()
@@ -92,6 +94,7 @@ def get_requisitos_tecnicos():
             Taxonomies tax ON t.taxonomy_id = tax.id
         WHERE
             tax.title = 'Requisitos técnicos' AND t.title!='none'
+        ORDER BY t.title
     """)
     requisitos_tecnicos = cursor.fetchall()
     cursor.close()

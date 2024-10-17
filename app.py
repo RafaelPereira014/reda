@@ -63,11 +63,22 @@ def login():
         cursor = conn.cursor()
         cursor.execute("SELECT id, role_id, password FROM Users WHERE email = %s", (email,))
         user_data = cursor.fetchone()  # Fetch the user ID, type, and hashed password from the database
-        cursor.close()
+        
+        if user_data:
+            # Consuming unread results before closing the cursor
+            cursor.fetchall()  
+            
+        cursor.close()  # Now it's safe to close the cursor
         
         if user_data:
             stored_password = user_data[2].encode('utf-8')  # Ensure stored password is encoded as bytes
+            
+            # Log for debugging
+            print("Password entered: ", password)
+            print("Stored password: ", stored_password.decode('utf-8'))  # Decode for better readability
+            
             if bcrypt.checkpw(password.encode('utf-8'), stored_password):
+                print("Password match!")
                 session['user_id'] = user_data[0]  # Store user ID in session
                 session['user_type'] = user_data[1]  # Store user type in session
                 return redirect('/')  # Redirect to dashboard or another page upon successful login
