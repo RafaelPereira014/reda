@@ -39,13 +39,12 @@ def get_idiomas():
         SELECT DISTINCT
             t.title AS idiomas_title
         FROM
-            resource_terms rt
-        JOIN
-            Terms t ON rt.term_id = t.id
+            Terms t
         JOIN
             Taxonomies tax ON t.taxonomy_id = tax.id
         WHERE
             tax.title = 'Idiomas'
+        ORDER BY t.title
     """)
     
     idiomas = cursor.fetchall()
