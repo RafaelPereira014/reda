@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    
 </head>
 <body>
     <div class="login-container">
-        <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="Platform Logo">
+        <a href="/"> <!-- Link to the home page -->
+            <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="Platform Logo">
+        </a>
         <h1>Entrar na REDA</h1>
         <form id="loginForm" method="POST" action="/login"> <!-- Ensure action attribute points to correct endpoint -->
             <input type="text" id="username" name="username" placeholder="Email" required>
@@ -17,6 +20,8 @@
             <div class="error">{{ error }}</div>
             {% endif %}
             <button type="submit">Login</button>
+            <a href="/register" class="register-link">Ainda não está registado? Registe-se aqui!</a> <!-- Added link to register page -->
+            <a href="/recoverpassword" class="forgot-password-link">Esqueceu-se da sua password?</a>
         </form>
     </div>
 

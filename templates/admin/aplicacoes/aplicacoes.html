@@ -113,21 +113,40 @@
                     <td>{{ app.created_at}}</td>
                     <td>{{ app.author }}</td>
                     <td>
-                        <i class="fa fa-pencil"></i>
+                        <!-- Pencil icon with link to edit -->
+                        <a href="/resources/edit_app/{{ app.id }}">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                    
+                        <!-- Trash icon with delete functionality -->
+                        
                         <i class="fas fa-trash"></i>
+                        
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         <div class="pagination" id="pagination"></div>
-       
+        
+        <!-- Delete resource modal -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeDeleteModal()">&times;</span>
+                <h2>Atenção</h2>
+                <p>Tem a certeza de que deseja eliminar este recurso?</p>
+                <button id="confirmDeleteButton">Sim</button>
+                <button onclick="closeDeleteModal()">Não</button>
+            </div>
+        </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const table = document.getElementById("apps_table");
             const pagination = document.getElementById("pagination");
+            const deleteModal = document.getElementById("deleteModal");
+
             const rowsPerPage = 15;
             const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
             const totalPages = Math.ceil(rows.length / rowsPerPage);
@@ -176,6 +195,89 @@
                 submenu.style.display = "block";
             }
         }
+        // Open and close modals
+        function openModal(modal) {
+            modal.style.display = "block";
+        }
+    
+        function closeModal(modal) {
+            modal.style.display = "none";
+        }
+    
+
+        function openDeleteModal(button) {
+            resourceIdToDelete = button.getAttribute('data-id');
+            openModal(deleteModal);
+        }
+    
+        function closeDeleteModal() {
+            closeModal(deleteModal);
+            resourceIdToDelete = null;
+        }
+    
+        // Delete resource
+        function deleteResource() {
+            if (!resourceIdToDelete) {
+                alert('Resource ID not found');
+                return;
+            }
+    
+            fetch(`/delete_resource/${resourceIdToDelete}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json().then(data => ({
+                status: response.status,
+                body: data
+            })))
+            .then(response => {
+                if (response.status === 200) {
+                    alert(response.body.message);
+                    window.location.reload();
+                } else {
+                    alert("Error deleting the resource: " + response.body.message);
+                }
+                closeDeleteModal();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error deleting the resource: " + error.message);
+                closeDeleteModal();
+            });
+        }
+    
+        // Event listeners for modals
+        document.querySelectorAll('.eliminar').forEach(button => {
+            button.addEventListener('click', () => openDeleteModal(button));
+        });
+    
+        document.querySelectorAll('.close').forEach(span => {
+            span.addEventListener('click', () => closeModal(span.closest('.modal')));
+        });
+    
+        document.getElementById('confirmDeleteButton').addEventListener('click', deleteResource);
+
+        // Show specific section
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            const sectionToShow = document.getElementById(sectionId);
+            if (sectionToShow) {
+                sectionToShow.style.display = 'block';
+            }
+        }
+    
+        // Menu navigation event listeners
+        document.querySelectorAll('.options-menu a').forEach(option => {
+            option.addEventListener('click', (event) => {
+                event.preventDefault();
+                const targetSectionId = option.getAttribute('href').substring(1);
+                showSection(targetSectionId);
+            });
+        });
     </script>
 </body>
 </html>

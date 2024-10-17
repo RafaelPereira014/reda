@@ -68,3 +68,14 @@ body {
     color: red;
     margin: 10px 0;
 }
+
+.login-link {
+    display: block; /* Make it a block-level element to have it on a new line */
+    margin-top: 10px; /* Add some space above the link */
+    color: #a0af3b; /* Change the text color to a blue shade */
+    text-decoration: none; /* Remove underline */
+}
+
+.login-link:hover {
+    text-decoration: underline; /* Underline on hover for better visibility */
+}

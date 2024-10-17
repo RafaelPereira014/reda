@@ -1,6 +1,10 @@
-from datetime import date
+import datetime
+from datetime import date, timedelta
+import hashlib
 from itertools import islice
+from mailbox import Message
 import math
+import datetime  # Imports the datetime module
 import random
 import bcrypt
 import re
@@ -34,6 +38,9 @@ def allowed_file(filename):
     allowed_extensions = {'png', 'jpg', 'jpeg', 'gif','pdf','doc','docx'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
+def generate_random_token():
+    """Generate a random token."""
+    return hashlib.sha256(os.urandom(32)).hexdigest()
 
 
 config = {
@@ -129,6 +136,96 @@ def register():
     
     # Handle GET request
     return render_template('register.html')
+
+@app.route('/recoverpassword', methods=['GET', 'POST'])
+def recoverpassword():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        
+        if not email:
+            flash('Email is required', 'error')
+            return redirect('/recoverpassword')
+        
+        # Establish a database connection
+        conn = connect_to_database()
+        cursor = conn.cursor()
+
+        # Retrieve username and user_id from the Users table based on the email
+        cursor.execute("SELECT id, name FROM Users WHERE email = %s", (email,))
+        user_data = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if user_data:
+            user_id, username = user_data  # Extract user_id and username
+            
+            # Generate a secure random token
+            token = generate_random_token()
+            expiration_time = datetime.utcnow() + timedelta(hours=1)
+
+            # Store the token and expiration time in the database
+            conn = connect_to_database()
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO PasswordRecoveryTokens (user_id, token, expiration_time) VALUES (%s, %s, %s)",
+                           (user_id, token, expiration_time))
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            # Create the password reset link
+            reset_link = f"http://127.0.0.1:5000/reset_password?token={token}"
+
+            recipients = [email]
+            # Send the password recovery email
+            send_email_on_password_recovery(username, recipients, reset_link)
+
+            flash('An email has been sent to your address with instructions to reset your password.', 'success')
+        else:
+            flash('No account found with that email address.', 'error')
+
+        return redirect('/recoverpassword')
+
+    return render_template('recoverpassword.html')
+
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    token = request.args.get('token')  # Get the token from the URL
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+
+        if not new_password:
+            flash('New password is required', 'error')
+            return redirect(f'/reset_password?token={token}')
+
+        # Verify the token
+        conn = connect_to_database()
+        cursor = conn.cursor()
+        cursor.execute("SELECT user_id FROM PasswordRecoveryTokens WHERE token = %s AND expiration_time > NOW()", (token,))
+        user_data = cursor.fetchone()
+
+        if user_data:
+            user_id = user_data[0]
+
+            # Hash the new password
+            hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
+            # Update the password in the database
+            cursor.execute("UPDATE Users SET password = %s WHERE id = %s", (hashed_password, user_id))
+            conn.commit()
+
+            # Optionally delete the used token
+            cursor.execute("DELETE FROM PasswordRecoveryTokens WHERE token = %s", (token,))
+            conn.commit()
+
+            flash('Your password has been reset successfully.', 'success')
+            return redirect('/login')
+        else:
+            flash('Invalid or expired token. Please request a new password recovery email.', 'error')
+
+        cursor.close()
+        conn.close()
+
+    return render_template('reset_password.html', token=token)
 
 
 

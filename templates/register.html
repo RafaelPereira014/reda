@@ -9,7 +9,9 @@
 <body>
 
     <div class="register-container">
-        <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="Platform Logo"> <!-- Ensure the correct path to the logo image -->
+        <a href="/"> <!-- Link to the home page -->
+            <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="Platform Logo">
+        </a>        
         <h1>Registar</h1>
         <form id="registerForm">
             <input type="text" id="username" name="username" placeholder="Nome" required>
@@ -30,6 +32,8 @@
             
             <div class="error" id="error" style="display: none;">Error message</div>
             <button type="submit">Registar</button>
+            <a href="/login" class="login-link">Já possui conta? Entre aqui!</a> <!-- Added link to register page -->
+
         </form>
     </div>
 

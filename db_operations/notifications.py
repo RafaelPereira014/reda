@@ -29,9 +29,12 @@ def send_email(to_emails, subject, message, attachments=[]):
         with smtplib.SMTP(smtp_server, smtp_port) as server:
             server.starttls()  # Upgrade the connection to a secure encrypted SSL/TLS connection
             server.login(user, password)
+            print(f"Sending email to: {to_emails}")  # Add this to debug the recipient email
 
             for to_email in to_emails:
                 # Create a MIMEMultipart object to represent the email
+                print(f"Sending email to: {to_email}")  # Add this to debug the recipient email
+
                 msg = MIMEMultipart()
                 msg['From'] = from_email
                 msg['To'] = to_email
@@ -361,7 +364,36 @@ def send_email_on_speakwus_received(assunto, mensagem, nome, email,recipient_ema
     """
     send_email(recipient_emails, subject, message)
 
-
+def send_email_on_password_recovery(username, recipient_email, reset_link):
+    subject = "Recuperação de Password"
+    message = f"""
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; }}
+            .email-container {{ padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9; }}
+            .header {{ font-size: 18px; font-weight: bold; color: #333; }}
+            .content {{ margin-top: 10px; }}
+            .footer {{ margin-top: 20px; font-size: 12px; color: #666; }}
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <div class="header">Recuperação de Password</div>
+            <div class="content">
+                <p>Olá <strong>{username}</strong>,</p>
+                <p>Recebemos um pedido para recuperar a sua password. Para redefinir a sua password, por favor clique no link abaixo:</p>
+                <p><a href="{reset_link}">Redefinir Password</a></p>
+                <p>Se não fez este pedido, pode ignorar este email.</p>
+            </div>
+            <div class="footer">
+                <p>Obrigado,<br>A Equipa REDA</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    send_email(recipient_email, subject, message)
 
 
 
