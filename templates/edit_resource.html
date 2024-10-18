@@ -202,6 +202,12 @@
                     <input type="url" id="link" name="link" class="form-control custom-link-input" value="{{ resource_details.link }}">
                 </div>
                 
+                {% if resource_details.embed %}
+                    <div class="form-group custom-embed-group">
+                        <label for="embed_code">Embed Code</label>
+                        <textarea id="embed_code" name="embed_code" class="form-control custom-embed-textarea">{{ resource_details.embed }}</textarea>
+                    </div>
+                {% endif %}
 
                
                 <!-- 
