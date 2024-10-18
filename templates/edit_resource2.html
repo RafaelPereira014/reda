@@ -627,8 +627,9 @@
                     <!-- Your form inputs here -->
                     <input type="hidden" name="resource_id" value="{{ resource_id }}"> <!-- Add hidden field for resource_id -->
                     <button type="submit">Gravar alterações</button> <!-- Change button text to reflect editing action -->
-                    <button onclick="window.location.href='/myaccount'; return false;">Cancelar</button> <!-- Add return false to prevent form submission -->
+                                 
                 </form>
+                <a href="/resources/details/{{ resource_id }}"><button>Cancelar</button></a>   
             </form>
         </div>
                 

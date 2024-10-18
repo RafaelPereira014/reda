@@ -411,11 +411,12 @@ def resource_details(resource_id):
     # Extract combined details
     resource_details = combined_details
 
+
+
     # Fetch and append additional details
     resource_details['image_url'] = get_resource_image_url(slug)
     resource_details['embed'] = get_resource_embed(resource_id)
     resource_details['files'] = get_resource_files(slug)
-    print(resource_details['image_url'])
     resource_details['link'] = get_resource_link(resource_id)
     resource_details['operations'] = get_propostasOp(resource_id)
     resource_details['username'] = get_username(resource_details['user_id'])
@@ -763,7 +764,7 @@ def resource_edit(resource_id):
             #recipients=[admin_emails]
 
             resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
-            send_email_on_resource_update(resource_id, slug, author, resource_link, recipients)
+            send_email_on_resource_update(resource_id, slug, user, resource_link, recipients)
 
             conn.commit()
             print("Resource updated successfully")
@@ -916,7 +917,7 @@ def resource_edit2(script_id):
         selected_disciplinas=selected_disciplinas, all_dominios=all_dominios, all_conceitos=all_conceitos,
         selected_dominios=selected_dominios, all_subdominios=all_subdominios,
         selected_subdominios=selected_subdominios, selected_conceitos=selected_conceitos, script_id=script_id,
-        resource_details=resource_details, admin=admin, is_logged_in=is_logged_in, slug=slug, descricao=initial_description
+        resource_details=resource_details, admin=admin, is_logged_in=is_logged_in, slug=slug, descricao=initial_description,resource_id=resource_id
     )
 @app.route('/apps', methods=['GET'])
 def apps():
