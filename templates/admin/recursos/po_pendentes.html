@@ -174,6 +174,7 @@
                     <th>Recurso</th>
                     <th>Data de criação</th>
                     <th>Submetido por</th>
+                    <th>Ações</th> <!-- New Actions Column -->
                 </tr>
             </thead>
             <tbody>
@@ -187,6 +188,11 @@
                     </td>
                     <td>{{ resource.created_at }}</td>
                     <td>{{ resource.author }}</td>
+                    <td>
+                        <button onclick="editProposta({{ resource.id }})" class="edit-button"><i class="fas fa-edit"></i> Editar</button>
+                        <button onclick="approveProposta({{ resource.id }})" class="approve-button"><i class="fas fa-check"></i> Aprovar</button>
+                        <button onclick="deleteProposta({{ resource.id }})" class="delete-button"><i class="fas fa-trash"></i> Eliminar</button>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -370,6 +376,51 @@
                 });
             });
         });
+    </script>
+    <script>
+        function editProposta(id) {
+            // Redirect to the edit page or open a modal with the edit form
+            window.location.href = `/resources/edit2/${id}`; // Adjust the URL according to your routes
+        }
+        
+        function approveProposta(id) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", `/approve_proposta/${id}`, true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send();
+        
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        alert("Proposta aprovada com sucesso!");
+                        location.reload(); // Reload the page to see changes
+                    } else {
+                        alert(`Error approving proposta: ${xhr.responseText}`);
+                    }
+                }
+            };
+        }
+        
+        function deleteProposta(id) {
+            const confirmation = confirm("Tem certeza que deseja eliminar esta proposta?");
+            if (confirmation) {
+                const xhr = new XMLHttpRequest();
+                xhr.open("DELETE", `/delete_proposta/${id}`, true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.send();
+        
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            alert("Proposta eliminada com sucesso!");
+                            location.reload(); // Reload the page to see changes
+                        } else {
+                            alert(`Error deleting proposta: ${xhr.responseText}`);
+                        }
+                    }
+                };
+            }
+        }
     </script>
 </body>
 </html>
