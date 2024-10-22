@@ -230,13 +230,6 @@
         border-radius: 5px;
     }
     
-    
-  
-
-
-
-    
-    
 </style>
 <style>
     /* Popup Container */
@@ -355,6 +348,8 @@
         }
     }
 </style>
+
+
 <body>
     <div class="header-governo">
         <img src="/static/images/logo.GOV-AZORES.2019.png" alt="Governo dos Açores">
@@ -550,8 +545,10 @@
                             {% if script.approved or admin %}
                                 <div class="button-container">
                                     <button onclick="showProposta({{ loop.index }})">Proposta  {{ loop.index }} </button>
+                                    <button onclick="deleteProposta({{ script_id }})">Eliminar proposta</button>
                                     {% if admin and not script.approved %}
                                         <button onclick="aprovarProposta({{ script_id }})">Aprovar proposta de operacionalização {{script_id}}</button>
+                                        
                                     {% endif %}
                                     {% if admin %}
                                         <a href="/resources/edit2/{{ script_id }}"><button>Editar proposta</button></a>
@@ -792,6 +789,15 @@
             <button onclick="closeErrorModal()">OK</button>
         </div>
     </div>
+        <!-- Popup container for delete confirmation -->
+    <div id="deletePopup" class="popup-container">
+        <div class="popup-content">
+            <span class="close-button" onclick="closeDeletePopup()">&times;</span>
+            <h2>Confirmar </h2>
+            <p>Tem certeza de que deseja eliminar esta proposta?</p>
+            <button id="confirmDeleteButton">Eliminar</button>
+        </div>
+    </div>
 
      <!-- Footer -->
      <footer class="footer">
@@ -883,6 +889,47 @@
             }
         });
 
+    </script>
+    <script>
+        let currentDeleteId = null; // Variable to store the ID of the proposal to delete
+
+        function deleteProposta(script_id) {
+            currentDeleteId = script_id; // Set the current ID to delete
+            document.getElementById('deletePopup').style.display = 'block'; // Show the delete confirmation modal
+        }
+
+        function closeDeletePopup() {
+            document.getElementById('deletePopup').style.display = 'none'; // Close the modal
+            currentDeleteId = null; // Reset the ID
+        }
+
+        // Confirm deletion
+        document.getElementById('confirmDeleteButton').addEventListener('click', function() {
+            if (currentDeleteId) {
+                fetch(`/delete_script/${currentDeleteId}`, {
+                    method: 'POST', // Use DELETE method for deletion
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Proposta eliminada com sucesso!');
+                        location.reload(); // Reload the page to see changes
+                    } else {
+                        alert('Erro ao eliminar proposta.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Ocorreu um erro ao eliminar a proposta.');
+                })
+                .finally(() => {
+                    closeDeletePopup(); // Close the modal after the action
+                });
+            }
+        });
     </script>
     
     <script>

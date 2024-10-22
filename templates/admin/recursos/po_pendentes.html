@@ -84,6 +84,70 @@
         }
 
     </style>
+    <style>
+        /* Popup container */
+        .popup-container {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+        }
+    
+        /* Popup content */
+        .popup-content {
+            background-color: #fff; /* White background */
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px; /* Padding inside the popup */
+            border: 1px solid #ccc; /* Light grey border */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+            max-width: 400px; /* Max width of the popup */
+        }
+    
+        /* Close button */
+        .close-button {
+            color: #aaa; /* Light grey */
+            float: right; /* Position the close button to the right */
+            font-size: 28px; /* Font size for the close button */
+            font-weight: bold; /* Bold text */
+        }
+    
+        .close-button:hover,
+        .close-button:focus {
+            color: black; /* Dark grey on hover */
+            text-decoration: none; /* Remove underline */
+            cursor: pointer; /* Pointer cursor */
+        }
+    
+        /* Title */
+        .popup-content h2 {
+            margin-top: 0; /* Remove top margin */
+        }
+    
+        /* Button styles */
+        button {
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            border: none; /* No border */
+            padding: 10px 20px; /* Padding */
+            text-align: center; /* Centered text */
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Align buttons inline */
+            font-size: 16px; /* Font size */
+            margin: 10px 2px; /* Margin between buttons */
+            cursor: pointer; /* Pointer cursor */
+            border-radius: 4px; /* Rounded corners */
+        }
+    
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+    </style>
+    
 
     
 </head>
@@ -190,8 +254,8 @@
                     <td>{{ resource.author }}</td>
                     <td>
                         <button onclick="editProposta({{ resource.id }})" class="edit-button"><i class="fas fa-edit"></i> Editar</button>
-                        <button onclick="approveProposta({{ resource.id }})" class="approve-button"><i class="fas fa-check"></i> Aprovar</button>
-                        <button onclick="deleteProposta({{ resource.id }})" class="delete-button"><i class="fas fa-trash"></i> Eliminar</button>
+                        <button onclick="aprovarProposta({{ resource.id }})">Aprovar </button>
+                        <button onclick="deleteProposta({{ resource.id }})">Eliminar</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -202,6 +266,25 @@
 
         
        
+    </div>
+     <!-- Popup container for approval confirmation -->
+    <div id="approvePopup" class="popup-container">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup()">&times;</span>
+            <h2>Confirmar Aprovação</h2>
+            <p>Tem certeza de que deseja aprovar esta proposta?</p>
+            <button id="confirmApproveButton">Aprovar</button>
+        </div>
+    </div>
+
+    <!-- Popup container for delete confirmation -->
+    <div id="deletePopup" class="popup-container">
+        <div class="popup-content">
+            <span class="close-button" onclick="closeDeletePopup()">&times;</span>
+            <h2>Confirmar </h2>
+            <p>Tem certeza de que deseja eliminar esta proposta?</p>
+            <button id="confirmDeleteButton">Excluir</button>
+        </div>
     </div>
 
     <script>
@@ -216,6 +299,48 @@
 
         
     </script>
+
+    <script>
+        let currentScriptId = null;
+
+        function aprovarProposta(script_id) {
+            currentScriptId = script_id;
+            document.getElementById('approvePopup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('approvePopup').style.display = 'none';
+            currentScriptId = null;
+        }
+
+        document.getElementById('confirmApproveButton').addEventListener('click', function() {
+            if (currentScriptId) {
+                fetch(`/approve_script/${currentScriptId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Proposta de operacionalização atualizada.');
+                        location.reload(); // This will reload the page
+                    } else {
+                        alert('Erro ao atualizar proposta.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    closePopup();
+                });
+            }
+        });
+
+    </script>
+    
     <script>
         // Function to show description modal
         function showDescription(description, created_at, title, author) {
@@ -378,6 +503,16 @@
         });
     </script>
     <script>
+        function deleteProposta(id) {
+            currentDeleteId = id; // Set the current ID to delete
+            document.getElementById('deletePopup').style.display = 'block'; // Show the delete confirmation modal
+        }
+        
+        function closeDeletePopup() {
+            document.getElementById('deletePopup').style.display = 'none'; // Close the modal
+            currentDeleteId = null; // Reset the ID
+        }
+        
         function editProposta(id) {
             // Redirect to the edit page or open a modal with the edit form
             window.location.href = `/resources/edit2/${id}`; // Adjust the URL according to your routes
@@ -401,14 +536,14 @@
             };
         }
         
-        function deleteProposta(id) {
-            const confirmation = confirm("Tem certeza que deseja eliminar esta proposta?");
-            if (confirmation) {
+        // Confirm deletion
+        document.getElementById('confirmDeleteButton').addEventListener('click', function() {
+            if (currentDeleteId) {
                 const xhr = new XMLHttpRequest();
-                xhr.open("DELETE", `/delete_proposta/${id}`, true);
+                xhr.open("POST", `/delete_script/${currentDeleteId}`, true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhr.send();
-        
+
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (xhr.status === 200) {
@@ -420,7 +555,8 @@
                     }
                 };
             }
-        }
+            closeDeletePopup(); // Close the modal after the deletion is confirmed
+        });
     </script>
 </body>
 </html>

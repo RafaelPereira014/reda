@@ -114,7 +114,7 @@
                 -->
                 <small class="small-text"><span class="text-danger">*</span>Campo obrigatório</small>
                 <button type="submit">Editar aplicação</button>
-                <button onclick="window.location.href='/'">Cancelar</button>
+                <button onclick="goBack()">Cancelar</button>
             </form>
         </div>
     </main>
@@ -162,4 +162,8 @@
                 var tagElement = document.createElement("span");
             }
         }
+        function goBack() {
+            window.history.back(); // Go back to the previous page
+        }
     </script>      
+</body>

@@ -629,7 +629,7 @@
                     <button type="submit">Gravar alterações</button> <!-- Change button text to reflect editing action -->
                                  
                 </form>
-                <a href="/resources/details/{{ resource_id }}"><button>Cancelar</button></a>   
+                <button onclick="goBack()">Cancelar</button>
             </form>
         </div>
                 
@@ -720,6 +720,9 @@
                 console.error('Erro:', error); // Log any fetch errors
             });
         });
+        function goBack() {
+            window.history.back(); // Go back to the previous page
+        }
     </script>
     
     <script>

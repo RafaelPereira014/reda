@@ -31,6 +31,49 @@
             color: white;
         }
     </style>
+    <style>
+        /* Modal Overlay */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px; /* Limit max width */
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+        }
+
+        /* Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        
+    </style>
 </head>
 <body>
    
@@ -120,7 +163,8 @@
                     
                         <!-- Trash icon with delete functionality -->
                         
-                        <i class="fas fa-trash"></i>
+                        <i class="fas fa-trash eliminar" data-id="{{ app.id }}" style="cursor: pointer;"></i>
+
                         
                     </td>
                 </tr>
@@ -130,7 +174,7 @@
         <div class="pagination" id="pagination"></div>
         
         <!-- Delete resource modal -->
-        <div id="deleteModal" class="modal">
+        <div id="deleteModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" onclick="closeDeleteModal()">&times;</span>
                 <h2>Atenção</h2>
