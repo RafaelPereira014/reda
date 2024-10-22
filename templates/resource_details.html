@@ -551,7 +551,7 @@
                             {% if script.approved or admin %}
                                 <div class="button-container">
                                     <button onclick="showProposta({{ loop.index }})">Proposta  {{ loop.index }} </button>
-                                    <button onclick="deleteProposta({{ script_id }})">Eliminar proposta</button>
+                                    <!--<button onclick="deleteProposta({{ script_id }})">Eliminar proposta</button>-->
                                     
                                     {% if admin %}
                                         <a href="/resources/edit2/{{ script_id }}"><button>Editar proposta</button></a>
@@ -559,7 +559,7 @@
                                     {% if admin and not script.approved %}
                                     
                                         <!--<button onclick="aprovarProposta({{ script_id }})">Aprovar proposta de operacionalização {{script_id}}</button>-->                  
-                                        <small>Proposta pendente de aprovação.</small>                  
+                                        <small>Proposta pendente de aprovação.(ID:{{script_id}})</small>                  
                                     {% endif %}
                                 </div>
                             
