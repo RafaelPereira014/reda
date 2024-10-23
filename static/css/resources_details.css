@@ -73,6 +73,7 @@ header .container img {
     cursor: pointer; /* Add cursor pointer on hover */
     margin-top: 10px;
     display: inline;
+    font-size: 12px;
 }
 
 .actions button.Contact {

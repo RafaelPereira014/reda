@@ -550,11 +550,11 @@ def delete_resource(resource_id):
 @app.route('/delete_script/<int:script_id>', methods=['POST'])
 def delete_script(script_id):
     try:
-        delete_scripts(script_id)  # Ensure this function handles the script_id correctly
-        response = jsonify(message='Script deleted successfully')
+        delete_scripts(script_id)  # Assuming this function deletes the script based on the script_id
+        response = jsonify(success=True, message='Script deleted successfully')  # Include success=True
         response.status_code = 200
     except Exception as e:
-        response = jsonify(message=f'Error occurred: {str(e)}')
+        response = jsonify(success=False, message=f'Error occurred: {str(e)}')  # Include success=False
         response.status_code = 500
     
     return response

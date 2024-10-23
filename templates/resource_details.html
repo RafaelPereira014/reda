@@ -551,7 +551,7 @@
                             {% if script.approved or admin %}
                                 <div class="button-container">
                                     <button onclick="showProposta({{ loop.index }})">Proposta  {{ loop.index }} </button>
-                                    <!--<button onclick="deleteProposta({{ script_id }})">Eliminar proposta</button>-->
+                                    <button onclick="deleteProposta({{ script_id }})">Eliminar proposta</button>
                                     
                                     {% if admin %}
                                         <a href="/resources/edit2/{{ script_id }}"><button>Editar proposta</button></a>
@@ -797,13 +797,19 @@
             <button onclick="closeErrorModal()">OK</button>
         </div>
     </div>
-        <!-- Popup container for delete confirmation -->
-    <div id="deletePopup" class="popup-container">
-        <div class="popup-content">
-            <span class="close-button" onclick="closeDeletePopup()">&times;</span>
-            <h2>Confirmar </h2>
-            <p>Tem certeza de que deseja eliminar esta proposta?</p>
-            <button id="confirmDeleteButton">Eliminar</button>
+    <div class="container mt-4">
+        <!-- Placeholder for alert -->
+        <div id="alertPlaceholder"></div>
+    </div>
+    
+    <!-- Delete Confirmation Modal (example) -->
+    <div id="deletePopup" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDeletePopup()">&times;</span> <!-- Close button -->
+            <h2>Atenção</h2> <!-- Title -->
+            <p>Tem a certeza de que deseja eliminar esta proposta?</p> <!-- Message -->
+            <button class="btn btn-danger" id="confirmDeleteButton">Sim</button> <!-- Yes button -->
+            <button class="btn btn-secondary" onclick="closeDeletePopup()">Não</button> <!-- No button -->
         </div>
     </div>
 
@@ -911,11 +917,37 @@
             currentDeleteId = null; // Reset the ID
         }
 
+        // Function to show Bootstrap alert dynamically
+        function showAlert(message, type = 'success') {
+            const alertPlaceholder = document.getElementById('alertPlaceholder');
+
+            // Create the alert div
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            `;
+
+            // Append the alert to the placeholder
+            alertPlaceholder.appendChild(alertDiv);
+
+            // Auto-remove the alert after 5 seconds
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                alertDiv.classList.add('hide');
+                alertPlaceholder.removeChild(alertDiv);
+            }, 5000);
+        }
+
         // Confirm deletion
         document.getElementById('confirmDeleteButton').addEventListener('click', function() {
             if (currentDeleteId) {
                 fetch(`/delete_script/${currentDeleteId}`, {
-                    method: 'POST', // Use DELETE method for deletion
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -923,15 +955,15 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Proposta eliminada com sucesso!');
+                        showAlert('Proposta eliminada com sucesso!', 'success'); // Show success alert
                         location.reload(); // Reload the page to see changes
                     } else {
-                        alert('Erro ao eliminar proposta.');
+                        showAlert('Erro ao eliminar proposta.', 'danger'); // Show error alert
                     }
                 })
                 .catch((error) => {
                     console.error('Error:', error);
-                    alert('Ocorreu um erro ao eliminar a proposta.');
+                    showAlert('Ocorreu um erro ao eliminar a proposta.', 'danger'); // Show error alert
                 })
                 .finally(() => {
                     closeDeletePopup(); // Close the modal after the action
