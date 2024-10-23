@@ -146,6 +146,16 @@
         button:hover {
             background-color: #45a049; /* Darker green on hover */
         }
+
+        .edit-button,
+        .approve-button,
+        .delete-button{
+            
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Align buttons inline */
+            font-size: 12px; /* Font size */
+          
+        }
     </style>
     
 
@@ -254,8 +264,8 @@
                     <td>{{ resource.author }}</td>
                     <td>
                         <button onclick="editProposta({{ resource.id }})" class="edit-button"><i class="fas fa-edit"></i> Editar</button>
-                        <button onclick="aprovarProposta({{ resource.id }})">Aprovar </button>
-                        <button onclick="deleteProposta({{ resource.id }})">Eliminar</button>
+                        <button onclick="aprovarProposta({{ resource.id }})"class="approve-button">Aprovar </button>
+                        <button onclick="deleteProposta({{ resource.id }})"class="delete-button">Eliminar</button>
                     </td>
                 </tr>
                 {% endfor %}

@@ -489,6 +489,15 @@ button[type=submit]:hover {
     text-decoration: underline;
 }
 
+h3 a {
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s ease; /* Smooth transition effect */
+}
+
+h3 a:hover {
+    color: #aec03f; /* Change color on hover */
+}
+
 /* Testimonial Carousel Styles */
 .testimonial-carousel {
     width: 100%;
