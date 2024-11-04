@@ -25,6 +25,20 @@ def get_title(resource_id):
     else:
         return None
     
+def get_author(resource_id):
+    """Get the user ID for the given username."""
+    conn = connect_to_database()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT author FROM Resources WHERE id=%s", (resource_id,))
+    author = cursor.fetchone()  # fetchone is used because we expect only one user with the given username
+    cursor.close()
+    conn.close()
+    
+    if author:
+        return author['author']
+    else:
+        return None
+    
 def get_title(resource_id):
     """Get the user ID for the given username."""
     conn = connect_to_database()
@@ -355,7 +369,7 @@ def get_combined_details(resource_id):
             WHERE
                 Scripts.resource_id = %s
             AND
-                Taxonomies.slug IN ('macro_areas_resources', 'dominios_resources', 'areas_resources', 'anos_resources', 'subdominios', 'hashtags')
+                Taxonomies.slug IN ('macro_areas_resources', 'dominios_resources', 'areas_resources', 'anos_resources', 'subdominios', 'hashtags','tags_resources')
             ORDER BY
                 Taxonomies.id ASC, Terms.slug+0 ASC;
         """
@@ -388,7 +402,8 @@ def get_combined_details(resource_id):
                     'dominios_resources': [],
                     'macro_areas': [],
                     'subdominios': [],
-                    'hashtags': []
+                    'hashtags': [],
+                    'tags_resources':[]
                 }
                 user_ids.append(user_id)
             scripts_by_id[script_id][tax_slug].append(term_title)
@@ -520,7 +535,7 @@ def insert_script_details(cursor, resource_id, scripts_by_id):
 
         # Insert into script_terms (for each taxonomy slug and term title combination)
         for tax_slug, term_titles in script_data.items():
-            if tax_slug in ['idiomas', 'anos_resources', 'formato', 'modo_utilizacao', 'requisitos_tecnicos', 'anos_escolaridade', 'areas_resources', 'dominios_resources', 'macro_areas', 'subdominios', 'hashtags']:
+            if tax_slug in ['idiomas', 'anos_resources', 'formato', 'modo_utilizacao', 'requisitos_tecnicos', 'anos_escolaridade', 'areas_resources', 'dominios_resources', 'macro_areas', 'subdominios', 'hashtags','tags_resources']:
                 taxonomy_id = get_taxonomy_id_for_slug(tax_slug)
                 for term_title in term_titles:
                     term_id = get_term_id_for_title(term_title)

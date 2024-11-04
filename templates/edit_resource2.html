@@ -395,70 +395,7 @@
             counterEle.innerHTML = `${currentLength}/${maxLength}`;
         }
     
-        function checkEnterKey(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default action (like form submission)
-                addKeyword(); // Trigger the same function as the "Adicionar" button
-            }
-        }
-    
-        let keywords = [];  // Initialize the keywords array
-
-        // Function to add a keyword
-        function addKeyword() {
-            const keywordInput = document.getElementById('keywordInput');
-            const keywordsContainer = document.getElementById('keywordsContainer');
-            const hiddenKeywordsInput = document.getElementById('keywords'); // Hidden input field
-
-            // Trim the input and check if it's not empty
-            const keyword = keywordInput.value.trim();
-            if (keyword === '') {
-                return; // Exit if no keyword entered
-            }
-
-            // Prevent duplicate keywords
-            if (keywords.includes(keyword)) {
-                return; // Exit if the keyword already exists
-            }
-
-            // Add the keyword to the array
-            keywords.push(keyword);
-
-            // Clear the input field
-            keywordInput.value = '';
-
-            // Create the keyword span with a remove button
-            const keywordSpan = document.createElement('span');
-            keywordSpan.className = 'keyword';
-            keywordSpan.textContent = keyword;
-
-            const removeButton = document.createElement('button');
-            removeButton.textContent = 'x'; // Button to remove the keyword
-            removeButton.onclick = function() {
-                keywordSpan.remove(); // Remove the keyword span from DOM
-                keywords = keywords.filter(k => k !== keyword); // Remove from array
-                updateHiddenInput(); // Update hidden input field
-            };
-
-            keywordSpan.appendChild(removeButton);
-            keywordsContainer.appendChild(keywordSpan);
-
-            updateHiddenInput(); // Update hidden input field with new list of keywords
-        }
-
-        // Function to update the hidden input field with the list of keywords
-        function updateHiddenInput() {
-            const hiddenKeywordsInput = document.getElementById('keywords');
-            hiddenKeywordsInput.value = keywords.join(','); // Join array into a comma-separated string
-        }
-
-        // Function to handle Enter key press
-        function checkEnterKey(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent form submission
-                addKeyword(); // Add the keyword when Enter is pressed
-            }
-        }
+        
     </script>
 </head>
 <body>
@@ -1002,6 +939,88 @@
                     console.log('Selected Subdominios on error:', selectedSubdominios);
                 });
         }
+    </script>
+    <script>
+        function checkEnterKey(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default action (like form submission)
+                addKeyword(); // Trigger the same function as the "Adicionar" button
+            }
+        }
+    
+        // Initialize the keywords array with selected tags from the backend
+        let keywords = [{% for tag in selected_tags %}"{{ tag }}"{% if not loop.last %}, {% endif %}{% endfor %}]; 
+
+        // Function to display existing keywords on page load
+        function displayKeywords() {
+            const keywordsContainer = document.getElementById('keywordsContainer');
+            keywords.forEach(keyword => {
+                const keywordSpan = document.createElement('span');
+                keywordSpan.className = 'keyword';
+                keywordSpan.textContent = keyword;
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'x'; // Button to remove the keyword
+                removeButton.onclick = function() {
+                    keywordSpan.remove(); // Remove the keyword span from DOM
+                    keywords = keywords.filter(k => k !== keyword); // Remove from array
+                    updateHiddenInput(); // Update hidden input field
+                };
+
+                keywordSpan.appendChild(removeButton);
+                keywordsContainer.appendChild(keywordSpan);
+            });
+            updateHiddenInput(); // Update hidden input field with initial list of keywords
+        }
+
+        // Function to add a new keyword
+        function addKeyword() {
+            const keywordInput = document.getElementById('keywordInput');
+            const keywordsContainer = document.getElementById('keywordsContainer');
+            const keyword = keywordInput.value.trim();
+
+            if (keyword === '' || keywords.includes(keyword)) {
+                return; // Exit if no keyword entered or if it's a duplicate
+            }
+
+            keywords.push(keyword);
+            keywordInput.value = ''; // Clear the input
+
+            // Create the keyword span with remove button
+            const keywordSpan = document.createElement('span');
+            keywordSpan.className = 'keyword';
+            keywordSpan.textContent = keyword;
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'x';
+            removeButton.onclick = function() {
+                keywordSpan.remove();
+                keywords = keywords.filter(k => k !== keyword);
+                updateHiddenInput();
+            };
+
+            keywordSpan.appendChild(removeButton);
+            keywordsContainer.appendChild(keywordSpan);
+
+            updateHiddenInput();
+        }
+
+        // Function to update the hidden input field with the list of keywords
+        function updateHiddenInput() {
+            const hiddenKeywordsInput = document.getElementById('keywords');
+            hiddenKeywordsInput.value = keywords.join(',');
+        }
+
+        // Function to handle Enter key press
+        function checkEnterKey(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addKeyword();
+            }
+        }
+
+        // Call displayKeywords on page load to show initial tags
+        document.addEventListener("DOMContentLoaded", displayKeywords);
     </script>
 </body>
 </html>

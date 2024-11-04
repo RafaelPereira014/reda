@@ -500,6 +500,9 @@
                                     {% for hashtag in script.hashtags %}
                                         <a href="/resources?search={{ hashtag }}">{{ hashtag }}</a>{% if not loop.last %}, {% endif %}
                                     {% endfor %}
+                                    {% for hashtag in script.tags_resources %}
+                                        <a href="/resources?search={{ hashtag }}">{{ hashtag }}</a>{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
                                 {% endfor %}
                             </span>
                         </div>
@@ -594,7 +597,9 @@
                                     </div>
                                     <div class="separator">
                                         <span class="label">Conceitos:</span>
-                                        <span class="value">{{ script.hashtags | join(', ') }}</span>
+                                        <span class="value">
+                                            {{ (script.hashtags + script.tags_resources) | join(', ') }}
+                                        </span>
                                     </div>
                                     <div class="separator">
                                         <span class="label">Ficheiros associados:</span>

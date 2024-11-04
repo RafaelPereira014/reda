@@ -9,7 +9,7 @@ def connect_to_database():
     return mysql.connector.connect(**DB_CONFIG)
 
 
-def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao):
+def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao, selected_tags):
     conn = connect_to_database()
     cursor = conn.cursor()
     current_date = datetime.now()
@@ -31,11 +31,14 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
             """
             
             def get_or_create_term(term, taxonomy_slug):
-                get_term_id_query = """
-                    SELECT id FROM Terms WHERE title = %s AND taxonomy_id = (SELECT id FROM Taxonomies WHERE slug = %s)
-                """
-                cursor.execute(get_term_id_query, (term, taxonomy_slug))
-                term_row = cursor.fetchone()
+                # Use a separate cursor to avoid interference with inserts
+                with conn.cursor() as select_cursor:
+                    get_term_id_query = """
+                        SELECT id FROM Terms WHERE title = %s AND taxonomy_id = (SELECT id FROM Taxonomies WHERE slug = %s)
+                    """
+                    select_cursor.execute(get_term_id_query, (term, taxonomy_slug))
+                    term_row = select_cursor.fetchone()
+                    
                 if term_row:
                     return term_row[0]  # Return existing term_id
                 else:
@@ -57,6 +60,7 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
         insert_terms(selected_dominios, 'dominios_resources')
         insert_terms(selected_subdominios, 'subdominios')
         insert_terms(selected_conceitos, 'hashtags')
+        insert_terms(selected_tags, 'tags_resources')
         
         # Commit the transaction
         conn.commit()
@@ -77,9 +81,8 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
             conn.close()
 
 
-
 def update_script(resource_id, script_id, user_id, selected_anos, selected_disciplinas, 
-                 selected_dominios, selected_subdominios, selected_conceitos, descricao):
+                 selected_dominios, selected_subdominios, selected_conceitos, descricao,selected_tags):
     conn = connect_to_database()
     cursor = conn.cursor()
     current_date = datetime.now()
@@ -151,6 +154,8 @@ def update_script(resource_id, script_id, user_id, selected_anos, selected_disci
         update_terms(selected_dominios, 'dominios_resources', script_id)
         update_terms(selected_subdominios, 'subdominios', script_id)
         update_terms(selected_conceitos, 'hashtags', script_id)
+        update_terms(selected_tags, 'tags_resources', script_id)
+
 
         # Return the script_id after successful updates
         return script_id

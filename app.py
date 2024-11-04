@@ -600,11 +600,11 @@ def nova_proposta(slug):
         selected_disciplinas = list(set(data.getlist('disciplinas')))  # Use set to remove duplicates
         selected_dominios = list(set(data.getlist('dominios')))  # Use set to remove duplicates
         selected_subdominios = list(set(data.getlist('subdominios')))  # Use set to remove duplicates
-        selected_conceitos = list(set(data.getlist('conceitos')))  # Use set to remove duplicates
-        outros_conceitos = data.get('outros_conceitos', '')
+        selected_conceitos = list(set(data.getlist('conceitos')))
+        selected_tags = data.get('keywords').split(',') if data.get('keywords') else []
         descricao = data.get('descricao', '')
         
-        insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao)
+        insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao,selected_tags)
         conn.commit()
         recipients=["rafaelpereira0808@gmail.com"]
         #recipients=[admin_emails]
@@ -833,7 +833,7 @@ def resource_edit2(script_id):
     anos = get_unique_terms(level=1)
 
     # Initialize lists for script-specific terms
-    selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos = [], [], [], [], []
+    selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos,selected_tags = [], [], [], [], [],[]
 
     if resource_details:
         # Get only the specific script's details
@@ -844,8 +844,10 @@ def resource_edit2(script_id):
         selected_dominios = script.get('dominios_resources', [])
         selected_subdominios = script.get('subdominios', [])
         selected_conceitos = script.get('hashtags', [])
+        selected_tags = script.get('tags_resources',[])
+        print(selected_tags)
     else:
-        selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos = [], [], [], [], []
+        selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos,selected_tags = [], [], [], [], [], []
     
     # Flatten and remove duplicates for lists (if needed)
     selected_anos = list(set(selected_anos))
@@ -853,6 +855,7 @@ def resource_edit2(script_id):
     selected_dominios = list(set(selected_dominios))
     selected_subdominios = list(set(selected_subdominios))
     selected_conceitos = list(set(selected_conceitos))
+    selected_tags = list(set(selected_tags))
 
     # Fetch all disciplinas based on the selected anos
     all_disciplinas = set()
@@ -889,8 +892,8 @@ def resource_edit2(script_id):
         selected_dominios = list(set(data.getlist('dominios')))
         selected_subdominios = list(set(data.getlist('subdominios')))
         selected_conceitos = list(set(data.getlist('conceitos')))
-        outros_conceitos = data.get('keywords').split(',') if data.get('keywords') else []
-        selected_conceitos.extend(outros_conceitos)
+        selected_tags = data.get('keywords').split(',') if data.get('keywords') else []
+                
         descricao = data.get('descricao', '')  # Fetch updated descricao from form
         print("Submitted Descricao:", descricao)  # Debugging output
 
@@ -901,7 +904,7 @@ def resource_edit2(script_id):
                     update_script(
                         resource_id, script_id, user_id, selected_anos, selected_disciplinas,
                         selected_dominios, selected_subdominios, selected_conceitos,
-                        descricao  # Pass the updated descricao
+                        descricao,selected_tags  # Pass the updated descricao
                     )
                     conn.commit()
         except Exception as e:
@@ -917,7 +920,7 @@ def resource_edit2(script_id):
         selected_disciplinas=selected_disciplinas, all_dominios=all_dominios, all_conceitos=all_conceitos,
         selected_dominios=selected_dominios, all_subdominios=all_subdominios,
         selected_subdominios=selected_subdominios, selected_conceitos=selected_conceitos, script_id=script_id,
-        resource_details=resource_details, admin=admin, is_logged_in=is_logged_in, slug=slug, descricao=initial_description,resource_id=resource_id
+        resource_details=resource_details, admin=admin, is_logged_in=is_logged_in, slug=slug, descricao=initial_description,resource_id=resource_id,selected_tags=selected_tags
     )
 @app.route('/apps', methods=['GET'])
 def apps():
@@ -1558,13 +1561,13 @@ def novo_recurso():
             insert_taxonomy_details(cursor, resource_id, taxonomy_details)
             conn.commit()
             # After commit, send the email
-            recipients = ["rafaelpereira0808@gmail.com"]
-                            #recipients=[admin_emails]
+            # recipients = ["rafaelpereira0808@gmail.com"]
+            #                 #recipients=[admin_emails]
 
-            resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
-            #resource_link = "www.google.com"
-            send_email_on_resource_create(resource_id, autor, resource_link, recipients)
-            print("Email sent successfully after resource creation")
+            # resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
+            # #resource_link = "www.google.com"
+            # send_email_on_resource_create(resource_id, autor, resource_link, recipients)
+            # print("Email sent successfully after resource creation")
             
             # Store resource_id in session
             session['resource_id'] = resource_id
@@ -1597,6 +1600,8 @@ def novo_recurso2():
     resource_id = session.get('resource_id')
     titulo = get_title(resource_id)
     slug = generate_slug(titulo)
+    autor = get_author(resource_id)
+    
 
     # Debugging outputs
     print(f"User ID: {user_id}, Resource ID: {resource_id}, Title: {titulo}, Slug: {slug}")
@@ -1620,19 +1625,25 @@ def novo_recurso2():
         selected_disciplinas = list(set(data.getlist('disciplinas')))  # Use set to remove duplicates
         selected_dominios = list(set(data.getlist('dominios')))  # Use set to remove duplicates
         selected_subdominios = list(set(data.getlist('subdominios')))  # Use set to remove duplicates
-        selected_conceitos = list(set(data.getlist('conceitos')))  # Use set to remove duplicates
-        outros_conceitos = data.get('keywords').split(',') if data.get('keywords') else []
-        selected_conceitos.extend(outros_conceitos)
+        selected_conceitos = list(set(data.getlist('conceitos')))
+        selected_tags = data.get('keywords').split(',') if data.get('keywords') else []
 
         # Ensure descricao is assigned before using it
         descricao = data.get('descricao', '')
 
         # Debugging output for form data
-        print(f"Selected Anos: {selected_anos}, Selected Disciplinas: {selected_disciplinas}, Description: {descricao}")
+        # print(f"Selected Anos: {selected_anos}, Selected Disciplinas: {selected_disciplinas}, Description: {descricao}")
+        recipients = ["rafaelpereira0808@gmail.com"]
+                            #recipients=[admin_emails]
+
+        resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
+        #resource_link = "www.google.com"
+        send_email_on_resource_create(resource_id, autor, resource_link, recipients)
+        print("Email sent successfully after resource creation")
 
         try:
             # Attempt to insert script
-            script_id = insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao)
+            script_id = insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao,selected_tags)
             print(f"Inserted script with ID: {script_id}")
 
             conn.commit()
