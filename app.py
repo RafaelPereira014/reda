@@ -8,7 +8,11 @@ import datetime  # Imports the datetime module
 import random
 import bcrypt
 import re
+import redis
 from flask import Flask, flash, jsonify, redirect, render_template, request
+from flask_wtf import CSRFProtect
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from markupsafe import Markup
 import mysql.connector
 from db_operations.resources import *
@@ -43,6 +47,17 @@ def generate_random_token():
     return hashlib.sha256(os.urandom(32)).hexdigest()
 
 
+# Initialize CSRF Protection
+#csrf = CSRFProtect(app)
+
+# Initialize Rate Limiter
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    #storage_uri="redis://localhost:6379/0",  # Redis connection URI
+    default_limits=["5 per minute"]  # Default rate limit for the entire app
+)
+
 config = {
     'host': 'localhost',
     'user': 'root',
@@ -54,13 +69,15 @@ connection = mysql.connector.connect(**config)
 
 admin_emails = get_emails_admins()
 
+
+
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")  # Apply a custom rate limit specifically for the login route
 def login():
     error = None
     if request.method == 'POST':
         email = request.form.get('username')
         password = request.form.get('password')
-        
         
         if not email or not password:
             error = 'Username and password are required'
@@ -69,26 +86,17 @@ def login():
         conn = connect_to_database()
         cursor = conn.cursor()
         cursor.execute("SELECT id, role_id, password FROM Users WHERE email = %s", (email,))
-        user_data = cursor.fetchone()  # Fetch the user ID, type, and hashed password from the database
-        
+        user_data = cursor.fetchone()
+        cursor.close()
+
         if user_data:
-            # Consuming unread results before closing the cursor
-            cursor.fetchall()  
-            
-        cursor.close()  # Now it's safe to close the cursor
-        
-        if user_data:
-            stored_password = user_data[2].encode('utf-8')  # Ensure stored password is encoded as bytes
-            
-            # Log for debugging
-            print("Password entered: ", password)
-            print("Stored password: ", stored_password.decode('utf-8'))  # Decode for better readability
+            stored_password = user_data[2].encode('utf-8')
             
             if bcrypt.checkpw(password.encode('utf-8'), stored_password):
-                print("Password match!")
                 session['user_id'] = user_data[0]  # Store user ID in session
                 session['user_type'] = user_data[1]  # Store user type in session
-                return redirect('/')  # Redirect to dashboard or another page upon successful login
+                session.permanent = True
+                return redirect('/')  # Redirect to dashboard on success
             else:
                 error = 'Invalid username or password'
         else:

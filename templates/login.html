@@ -17,7 +17,7 @@
             <input type="text" id="username" name="username" placeholder="Email" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
             {% if error %}
-            <div class="error">{{ error }}</div>
+                <p>{{ error }}</p>
             {% endif %}
             <button type="submit">Login</button>
             <a href="/register" class="register-link">Ainda não está registado? Registe-se aqui!</a> <!-- Added link to register page -->
