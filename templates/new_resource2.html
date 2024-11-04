@@ -676,7 +676,7 @@
                     Campo obrigatório
                 </small>
                 <button type="submit">Criar recurso</button>
-                <button type="submit">Cancelar</button>
+                <button id="cancelButton" data-resource-id="{{ resource_id }}">Cancelar</button>
 
             
             </form>
@@ -807,9 +807,41 @@
             }
         });
         
-        // Cancel button function
-        function cancel() {
-            window.history.back(); // This will take the user back to the previous page
+        
+    </script>
+    <script>
+        document.getElementById('cancelButton').addEventListener('click', handleCancel);
+    
+        function handleCancel() {
+            const resourceId = this.getAttribute('data-resource-id');
+            deleteResource(resourceId);
+        }
+    
+        function deleteResource(resourceId) {
+            // Make an AJAX request to delete the resource
+            fetch(`/delete_resource/${resourceId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json().then(data => ({
+                status: response.status,
+                body: data
+            })))
+            .then(response => {
+                if (response.status === 200) {
+                    
+                    // Redirect to the main page after deletion
+                    window.location.href = '/';
+                } else {
+                    alert("Error deleting the resource: " + response.body.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error deleting the resource: " + error.message);
+            });
         }
     </script>
     

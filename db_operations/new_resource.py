@@ -131,7 +131,7 @@ def get_unique_terms(level):
     query = f"""
     SELECT DISTINCT
         tx.title AS term_title
-    FROM redav3.TermRelationships tr
+    FROM TermRelationships tr
     INNER JOIN terms_relations trs ON trs.term_relationship_id = tr.id
     INNER JOIN Terms tx ON tx.id = trs.term_id
     WHERE trs.level = {level}

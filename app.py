@@ -1694,7 +1694,7 @@ def novo_recurso2():
     conn.close()
     
     # Render template on GET request
-    return render_template('new_resource2.html', anos=anos, admin=admin, is_logged_in=is_logged_in)
+    return render_template('new_resource2.html', anos=anos, admin=admin, is_logged_in=is_logged_in,resource_id=resource_id)
 
 
 @app.route('/fetch_disciplinas')

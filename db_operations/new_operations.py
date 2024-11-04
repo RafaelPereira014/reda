@@ -41,8 +41,8 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
                 else:
                     # Insert the new term
                     insert_term_query = """
-                        INSERT INTO Terms (title, taxonomy_id,created_at,updated_at) 
-                        VALUES (%s, (SELECT id FROM Taxonomies WHERE slug = %s),NOW(),NOW())
+                        INSERT INTO Terms (title, taxonomy_id, created_at, updated_at) 
+                        VALUES (%s, (SELECT id FROM Taxonomies WHERE slug = %s), NOW(), NOW())
                     """
                     cursor.execute(insert_term_query, (term, taxonomy_slug))
                     return cursor.lastrowid  # Return the newly inserted term_id
@@ -75,7 +75,6 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
             cursor.close()
         if conn and conn.is_connected():
             conn.close()
-
 
 
 
