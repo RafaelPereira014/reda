@@ -55,7 +55,7 @@ limiter = Limiter(
     key_func=get_remote_address,
     app=app,
     #storage_uri="redis://localhost:6379/0",  # Redis connection URI
-    default_limits=["5 per minute"]  # Default rate limit for the entire app
+    default_limits=["200 per minute"]  # Default rate limit for the entire app
 )
 
 config = {
@@ -72,7 +72,7 @@ admin_emails = get_emails_admins()
 
 
 @app.route('/login', methods=['GET', 'POST'])
-@limiter.limit("5 per minute")  # Apply a custom rate limit specifically for the login route
+@limiter.limit("10 per minute")  # Apply a custom rate limit specifically for the login route
 def login():
     error = None
     if request.method == 'POST':
