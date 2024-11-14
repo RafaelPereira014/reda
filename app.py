@@ -1719,7 +1719,7 @@ def novo_recurso2():
 @app.route('/fetch_disciplinas')
 def fetch_disciplinas():
     # Fetch selected anos from query parameters
-    anos = request.args.get('ano', '').split(',')
+    anos = request.args.get('ano', '').split(';')
 
     # If 'all' is in the anos list, fetch all disciplinas without filtering
     if 'all' in anos:
@@ -1742,7 +1742,7 @@ def fetch_dominios():
     # Fetch selected disciplinas from query parameters
     disciplinas = request.args.get('disciplinas', '')
     if disciplinas:
-        disciplinas_list = disciplinas.split(',')
+        disciplinas_list = disciplinas.split(';')
         dominios_set = set()
         
         # Collect all dominios based on selected disciplinas
@@ -1765,17 +1765,20 @@ def fetch_subdominios():
     print("Received Dominios:", dominios)  # Log the received dominios
     
     if dominios:
-        dominios_list = dominios.split(',')
+        # Split by semicolon instead of comma
+        dominios_list = dominios.split(';')
         print("Dominios List:", dominios_list)  # Log the processed list
         subdominios_set = set()
         
         # Collect all subdominios based on selected dominios
         for dominio in dominios_list:
             if dominio:  # Ensure dominio is not empty
+                print(dominio)
                 subdominios_set.update(get_filtered_terms(level=4, parent_level=3, parent_term=dominio))
         
         # Convert the set to a sorted list
         subdominios = sorted(subdominios_set)
+        print(subdominios)
         return jsonify(subdominios)
     
     # Return an empty list if no dominios are provided
@@ -1786,7 +1789,7 @@ def fetch_conceitos():
     # Fetch selected subdominios from query parameters
     subdominios = request.args.get('subdominios', '')
     if subdominios:
-        subdominios_list = subdominios.split(',')
+        subdominios_list = subdominios.split(';')
         conceitos_set = set()
 
         # Collect all conceitos based on selected subdominios
