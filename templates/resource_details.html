@@ -353,6 +353,28 @@
         font-weight: bold; /* Make text bold */
         margin-top: 5px; /* Space above the text */
     }
+
+    
+    
+    .report-error-btn {
+        display: inline-flex;
+        align-items: center;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 10px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    .report-error-btn i {
+        margin-right: 8px; /* Space between the icon and text */
+    }
+    
+    .report-error-btn:hover {
+        
+        transform: scale(1.05); /* Slight zoom effect */
+    }
 </style>
 
 
@@ -529,6 +551,12 @@
                     
                     </div>
                     {%endif%}
+
+                    <div class="report-error">
+                        <a href="/faleconnosco" class="btn btn-danger report-error-btn">
+                            <i class="fas fa-exclamation-triangle"></i> Encontrei um Erro
+                        </a>
+                    </div>
                     <!-- Ficha Técnica -->
                     <div class="ficha-tecnica">
                         <h3>Ficha Técnica</h3>
@@ -829,23 +857,16 @@
                 <a href="/faleconnosco">
                     <button>Fale connosco</button>
                 </a>
-
             </div>
-            
             <div class="social-icons">
                 <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
                 <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-pinterest"></i></a>
             </div>
-            
             <div class="additional-images">
-                <img src="/static/images/dre_transparent.png" alt="Image 1">
-                <img src="/static/images/gov_acores_transparent.png" alt="Image 2">
+                <img src="{{ url_for('static', filename='images/LogoDREAE-1.png') }}" alt="Image 1">
+                <img src="{{ url_for('static', filename='images/gov_acores_transparent.png') }}" alt="Image 2">
             </div>
-            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
-
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação,Cultura e Desporto </span>
         </div>
     </footer>
 

@@ -419,11 +419,15 @@ def resource_details(resource_id):
     # Extract combined details
     resource_details = combined_details
 
-
-
+    
+    print(slug)
+    
+    print(get_resource_image_url(slug))
     # Fetch and append additional details
     resource_details['image_url'] = get_resource_image_url(slug)
+    print(resource_details['image_url'])
     resource_details['embed'] = get_resource_embed(resource_id)
+    print(resource_details['embed'])
     resource_details['files'] = get_resource_files(slug)
     resource_details['link'] = get_resource_link(resource_id)
     resource_details['operations'] = get_propostasOp(resource_id)
@@ -1456,7 +1460,7 @@ def novo_recurso():
         requisitos_tecnicos_title = request.form.getlist('requirements')
         anos_escolaridade_title = request.form.getlist('anos')
         endereco = request.form.get('endereco')
-        embebed = request.form.get('embebed')
+        embebed = request.form.get('embebed') or None        
         slug = generate_slug(title)
         duration = request.form.get('duration')
 
@@ -1480,6 +1484,7 @@ def novo_recurso():
                 # Generate new file name
                 random_int = random.randint(1000, 9999)
                 new_file_filename = f"{slug}_{random_int}.{file_extension}"
+                
                 
                 # Create the directory /static/files/resources/slug/
                 slug_dir = os.path.join('static', 'files', 'resources', slug)
@@ -1507,6 +1512,8 @@ def novo_recurso():
                 # Generate new file name
                 random_int = random.randint(1000, 9999)
                 new_image_filename = f"{slug}_{random_int}.{image_extension}"
+                
+                print(slug)
                 
                 # Create the directory /static/files/resources/slug/
                 slug_dir = os.path.join('static', 'files', 'resources', slug)
@@ -1610,7 +1617,7 @@ def novo_recurso2():
     slug = generate_slug(titulo)
     autor = get_author(resource_id)
     
-
+    print(anos)
     # Debugging outputs
     print(f"User ID: {user_id}, Resource ID: {resource_id}, Title: {titulo}, Slug: {slug}")
 

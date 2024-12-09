@@ -150,7 +150,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container footer-container">
-            <nav class="footer-nav">
+            <div class="footer-nav">
                 <a href="/sobre">Sobre</a>
                 <a href="/ajuda">Ajuda</a>
                 <a href="/fichatecnica">Ficha Técnica</a>
@@ -158,19 +158,16 @@
                 <a href="/faleconnosco">
                     <button>Fale connosco</button>
                 </a>
-            </nav>
+            </div>
             <div class="social-icons">
-                <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
             </div>
             <div class="additional-images">
-                <img src="static/images/dre_transparent.png" alt="Direção Regional da Educação">
-                <img src="static/images/gov_acores_transparent.png" alt="Governo dos Açores">
+                <img src="{{ url_for('static', filename='images/LogoDREAE-1.png') }}" alt="Image 1">
+                <img src="{{ url_for('static', filename='images/gov_acores_transparent.png') }}" alt="Image 2">
             </div>
-            <span> © Direção Regional da Educação - Secretaria Regional da Educação e dos Assuntos Culturais </span>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação,Cultura e Desporto </span>
         </div>
     </footer>
 
