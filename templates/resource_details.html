@@ -1182,7 +1182,7 @@
                 if (response.status === 200) {
                     alert(response.body.message);
                     // Redirect to the main page after deletion
-                    window.location.href = '/';
+                    window.location.href = '/myaccount';
                 } else {
                     alert("Error deleting the resource: " + response.body.message);
                 }

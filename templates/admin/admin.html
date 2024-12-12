@@ -145,26 +145,36 @@
     <div class="content">
         <h2>Resumo da REDA - {{current_month}}</h2>
         <div class="panels">
-            <div class="panel panel-resources">
-                <i class="fas fa-book"></i> <!-- Icon for resources -->
-                <h2>Novos recursos</h2>
-                <p>{{monthly_resources}}</p>
-            </div>
-            <div class="panel panel-apps">
-                <i class="fas fa-cogs"></i> <!-- Icon for apps -->
-                <h2>Novas aplicações</h2>
-                <p>{{monthly_apps}}</p>
-            </div>
-            <div class="panel panel-tools">
-                <i class="fas fa-tools"></i> <!-- Icon for tools -->
-                <h2>Novas ferramentas</h2>
-                <p>{{monthly_tools}}</p>
-            </div>
-            <div class="panel panel-users">
-                <i class="fas fa-users"></i> <!-- Icon for users -->
-                <h2>Novos utilizadores</h2>
-                <p>{{monthly_users}}</p>
-            </div>
+            <a href="/dashboard/recursos/pendentes" style="text-decoration: none; color: inherit;">
+                <div class="panel panel-resources">
+                    <i class="fas fa-book"></i> <!-- Icon for resources -->
+                    <h2>Novos recursos</h2>
+                    <p>{{monthly_resources}}</p>
+                </div>
+            </a>
+            <a href="/dashboard/aplicacoes/pendentes" style="text-decoration: none; color: inherit;">
+                <div class="panel panel-apps">
+                    <i class="fas fa-cogs"></i> <!-- Icon for apps -->
+                    <h2>Novas aplicações</h2>
+                    <p>{{monthly_apps}}</p>
+                </div>
+            </a>
+            
+            <a href="/dashboard/ferramentas/pendentes" style="text-decoration: none; color: inherit;">
+                <div class="panel panel-tools">
+                    <i class="fas fa-tools"></i> <!-- Icon for tools -->
+                    <h2>Novas ferramentas</h2>
+                    <p>{{monthly_tools}}</p>
+                </div>
+            </a>
+            
+            <a href="/dashboard/utilizadores" style="text-decoration: none; color: inherit;">
+                <div class="panel panel-users">
+                    <i class="fas fa-users"></i> <!-- Icon for users -->
+                    <h2>Novos utilizadores</h2>
+                    <p>{{monthly_users}}</p>
+                </div>
+            </a>
         </div>
 
 
