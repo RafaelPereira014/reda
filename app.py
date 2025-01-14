@@ -1960,11 +1960,16 @@ def admin():
 
 @app.route('/dashboard/recursos/pendentes')
 def rec_pendentes():
+    search_term = request.args.get('search', '')
     recursos_pendentes = get_pendent_resources()
-    
-    
-    
 
+    # Filter resources if a search term is provided
+    if search_term:
+        recursos_pendentes = [
+            resource for resource in recursos_pendentes 
+            if search_term.lower() in resource['username'].lower()
+        ]
+    
     return render_template('admin/recursos/pendentes.html', recursos_pendentes=recursos_pendentes)
 
 @app.route('/update_approved_scientific/<int:resource_id>', methods=['POST'])

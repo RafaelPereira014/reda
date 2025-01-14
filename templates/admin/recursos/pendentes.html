@@ -42,6 +42,59 @@
             color: red;
         }
     </style>
+
+    <style>
+        /* Style for the form container */
+        div form {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px; /* Spacing between elements */
+            margin-bottom: 20px;
+        }
+    
+        /* Style for the input field */
+        div form input[type="text"] {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 300px;
+            transition: border-color 0.3s ease-in-out;
+        }
+    
+        /* Highlight input on focus */
+        div form input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+    
+        /* Style for the buttons */
+        div form button {
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #aec03f;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+    
+        /* Hover effect for buttons */
+        div form button:hover {
+            background-color:rgb(136, 150, 50);
+        }
+    
+        /* Clear button alternative style */
+        div form button[type="button"] {
+            background-color: #dc3545; /* Red for clear */
+        }
+    
+        div form button[type="button"]:hover {
+            background-color: #a71d2a;
+        }
+    </style>
 </head>
 <body>
 
@@ -95,14 +148,23 @@
             
         </ul>
     </div>
+    
 
     <div class="content">
+        
         <h2>Recursos pendentes de aprovação</h2>
         <!--
         <div>
             <input type="text" id="search" placeholder="Pesquisar...">
         </div>
         -->
+        <div>
+            <form method="get" action="/dashboard/recursos/pendentes">
+                <input type="text" name="search" placeholder="Pesquisar por 'Submetido por'..." value="{{ request.args.get('search', '') }}">
+                <button type="submit">Pesquisar</button>
+                <button type="button" onclick="clearSearch()">Limpar</button>
+            </form>
+        </div>
         <hr>
 
         <table id="resourcesTable">
@@ -281,5 +343,16 @@
             });
         });
     </script>
+    <script>
+        function clearSearch() {
+            // Clear the search input
+            const searchInput = document.querySelector('input[name="search"]');
+            searchInput.value = '';
+    
+            // Redirect to the main page without search parameters
+            window.location.href = '/dashboard/recursos/pendentes';
+        }
+    </script>
 </body>
+
 </html>

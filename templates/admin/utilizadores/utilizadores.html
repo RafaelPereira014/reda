@@ -49,7 +49,64 @@
             color: #6c757d;
             font-size: 14px;
         }
-    </style>    
+    </style> 
+    <style>
+        .search-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: flex-start;
+            align-items: center;
+        }
+    
+        .search-container input[type="text"], 
+        .search-container select {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 250px;
+            transition: border-color 0.3s ease-in-out;
+        }
+    
+        .search-container input[type="text"]:focus, 
+        .search-container select:focus {
+            border-color: #aec03f;
+            outline: none;
+        }
+    
+        .search-container select {
+            cursor: pointer;
+            background-color: #fff;
+        }
+    
+        .search-container button {
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+    
+        .search-container #searchButton {
+            background-color:  #aec03f;
+        }
+    
+        .search-container #searchButton:hover {
+            background-color:rgb(130, 142, 48);
+        }
+    
+        .search-container button[type="button"] {
+            background-color: #dc3545;
+        }
+    
+        .search-container button[type="button"]:hover {
+            background-color: #a71d2a;
+        }
+    </style>   
 </head>
 <body>
     <div class="sidebar">
@@ -110,6 +167,8 @@
                 <option value="3">Convidado</option>
             </select>
             <button id="searchButton">Pesquisar</button>
+            <button type="button" id="clearButton" onclick="clearSearch()">Limpar</button>
+
         </div>
         
         <hr>
@@ -278,6 +337,14 @@
             // Attach the search function to the button click
             document.getElementById('searchButton').addEventListener('click', searchUsers);
         });
+    </script>
+    <script>
+        function clearSearch() {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('name_email');
+            url.searchParams.delete('user_type');
+            window.location.href = url;
+        }
     </script>
 </body>
 </html>
