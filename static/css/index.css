@@ -688,3 +688,21 @@ h3 a:hover {
         width: 90%;
     }
 }
+
+/* Default link style */
+li a {
+    text-decoration: none;
+    color: black;
+}
+
+/* Hover effect */
+li a:hover {
+    color: blue;
+}
+
+/* Apply hover effect when the link is active */
+li.active a {
+    color:#83ae03;  /* Change color to red or any other style when on the 'Aplicações' page */
+    font-weight: bold;
+    text-decoration:underline;
+}

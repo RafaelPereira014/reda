@@ -293,6 +293,8 @@
             cursor: pointer;
         }
 
+        
+
 
 
     </style>
@@ -444,10 +446,10 @@
                     <li><a href="/">Inicio</a></li>
                     <li><a href="/apps">Aplicações</a></li>
                     <li><a href="/tools">Ferramentas</a></li>
-                    <li>
-                        <button class="resource-button" onclick="location.href='/resources'">
+                    <li class="{% if request.path == '/resources' %} active {% endif %}">
+                        <a href="/resources">
                             <i class="fa fa-search"></i> Recursos
-                        </button>
+                        </a>
                     </li>
                     {%if admin%}
                     <li>

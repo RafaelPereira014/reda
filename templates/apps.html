@@ -77,6 +77,23 @@
             font-size: 14px;
             text-align: center;
         }
+        /* Default link style */
+        li a {
+            text-decoration: none;
+            color: black;
+        }
+
+        /* Hover effect */
+        li a:hover {
+            color: blue;
+        }
+
+        /* Apply hover effect when the link is active */
+        li.active a {
+            color:#83ae03;  /* Change color to red or any other style when on the 'Aplicações' page */
+            font-weight: bold;
+            text-decoration:underline;
+        }
         
     </style>
     <style>
@@ -138,7 +155,9 @@
             <nav>
                 <ul>
                     <li><a href="/">Inicio</a></li>
-                    <li><a href="/apps">Aplicações</a></li>
+                    <li class="{% if request.path == '/apps' %} active {% endif %}">
+                        <a href="/apps">Aplicações</a>
+                    </li>
                     <li><a href="/tools">Ferramentas</a></li>
                     <li>
                         <button class="resource-button" onclick="location.href='/resources'">

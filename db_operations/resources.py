@@ -734,8 +734,8 @@ def resource_has_embed_code(resource_slug):
         
 def get_resource_image_url(resource_slug):
     # Check if the resource has an embed_code
-    if resource_has_embed_code(resource_slug):
-        return None  # No image if there is an embed_code
+    # if resource_has_embed_code(resource_slug):
+    #     return None  # No image if there is an embed_code
 
     image_extensions = ['png', 'jpg', 'JPG', 'PNG']
     directory_path = os.path.join(current_app.root_path, 'static', 'files', 'resources', resource_slug)

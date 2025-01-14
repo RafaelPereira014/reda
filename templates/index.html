@@ -112,7 +112,9 @@
             
             <nav>
                 <ul>
-                    <li><a href="/">Inicio</a></li>
+                    <li class="{% if request.path == '/' %} active {% endif %}">
+                        <a href="/">Inicio</a>
+                    </li>
                     <li><a href="/apps">Aplicações</a></li>
                     <li><a href="/tools">Ferramentas</a></li>
                     <li>
