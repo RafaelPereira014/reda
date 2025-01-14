@@ -733,7 +733,7 @@ def resource_has_embed_code(resource_slug):
         connection.close()
         
 def get_resource_image_url(resource_slug):
-    # Check if the resource has an embed_code
+
     if resource_has_embed_code(resource_slug):
         return None  # No image if there is an embed_code
 
