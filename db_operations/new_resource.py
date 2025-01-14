@@ -201,6 +201,42 @@ def get_filtered_terms(level, parent_level, parent_term):
 
     return [row['term_title'] for row in result]
 
+def delete_dominio_from_filtered_terms(level, parent_level, parent_term, dominio_title):
+    conn = connect_to_database()
+    cursor = conn.cursor()
+
+    # Get the filtered terms based on the parent term
+    filtered_terms = get_filtered_terms(level, parent_level, parent_term)
+
+    # Check if the domínio exists in the filtered terms
+    if dominio_title in filtered_terms:
+        # Delete the domínio from the relations
+        query = """
+        DELETE trs
+        FROM terms_relations trs
+        INNER JOIN Terms tx ON tx.id = trs.term_id
+        INNER JOIN Terms parent_tx ON parent_tx.id = trs.term_relationship_id
+        WHERE trs.level = %s AND
+              tx.title = %s AND
+              parent_tx.title = %s
+        """
+        cursor.execute(query, (level, dominio_title, parent_term))
+        conn.commit()
+        rows_deleted = cursor.rowcount
+        conn.close()
+
+        return {
+            "message": f"'{dominio_title}' deleted successfully from parent '{parent_term}'.",
+            "rows_deleted": rows_deleted,
+        }
+    else:
+        conn.close()
+        return {
+            "message": f"'{dominio_title}' does not exist under parent '{parent_term}'.",
+            "rows_deleted": 0,
+        }
+
+
 def create_slug(title):
     return title.replace(" ", "-").lower()
 

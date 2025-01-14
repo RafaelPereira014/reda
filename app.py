@@ -312,9 +312,7 @@ def resources():
     subdominio = request.args.getlist('subdominios')  
     
 
-    # Split search terms into a list, if search_term is not empty
-    # search_terms = [term.strip() for term in search_term.split(',')] if search_term else []
-    # print(search_terms)
+    
 
     # If ano is "all", get all anos_resources, otherwise filter by the specific ano
     if ano.lower() == "all":
@@ -323,6 +321,7 @@ def resources():
         disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=ano) if ano else []
     # Filter the dominios based on the selected `disciplina`
     dominios = get_filtered_terms(level=3, parent_level=2, parent_term=disciplina) if disciplina else []
+
     # Filter the subdominios based on the selected `dominio`
     subdominios = get_filtered_terms(level=4, parent_level=3, parent_term=dominio) if dominio else []
 
@@ -335,6 +334,7 @@ def resources():
         total_resources = get_total_resource_count()
 
     total_pages = math.ceil(total_resources / per_page)
+
 
     for resource in paginated_resources:
         resource['image_url'] = get_resource_image_url(resource['slug'])
@@ -420,12 +420,10 @@ def resource_details(resource_id):
     resource_details = combined_details
 
     
-    print(slug)
     
-    print(get_resource_image_url(slug))
     # Fetch and append additional details
     resource_details['image_url'] = get_resource_image_url(slug)
-    print(resource_details['image_url'])
+   
     resource_details['embed'] = get_resource_embed(resource_id)
     print(resource_details['embed'])
     resource_details['files'] = get_resource_files(slug)

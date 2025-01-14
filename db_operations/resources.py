@@ -1059,7 +1059,7 @@ def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=N
         # Execute the query
         cursor.execute(query, params)
         resources = cursor.fetchall()
-
+    
         # Get the total number of results
         cursor.execute("SELECT FOUND_ROWS() AS total_count")
         total_results = cursor.fetchone()["total_count"]

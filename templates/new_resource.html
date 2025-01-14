@@ -555,6 +555,16 @@
         function checkVideoAnimation(checkbox) {
             const durationBox = document.getElementById('duration-box');
             const videoAnimationCheckbox = document.querySelector('input[name="formato"][value="Vídeo/Animação"]');
+            const selectedCheckboxes = document.querySelectorAll('input[name="formato"]:checked');
+        
+            // Check if more than 2 checkboxes are selected
+            if (selectedCheckboxes.length > 2) {
+                // Uncheck the current checkbox
+                checkbox.checked = false;
+                alert("Pode selecionar no máximo 2 formatos.");
+            }
+        
+            // Show or hide the duration box based on the "Vídeo/Animação" checkbox
             if (videoAnimationCheckbox.checked) {
                 durationBox.classList.remove('hidden');
             } else {

@@ -51,6 +51,18 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .required {
+            position: relative;
+        }
+        .required::after {
+            content: '*';
+            position: absolute;
+            top: 0;
+            right: absolute;
+            color: red;
+            font-size: 1.4rem;
+            line-height: 0.3;
+        }
     </style>
     
     <style>
@@ -174,20 +186,20 @@
         <div class="container">
             <h1>Detalhes</h1>
             <form method="POST" enctype="multipart/form-data" action="/resources/edit/{{ resource_details.resource_id }}">
-                <div class="input-group">
+                <div class="input-group required">
                     <h2>Título:</h2>
                     <div id="titulo-editor-container"></div>
                     <input type="hidden" id="titulo" name="titulo" value="{{ resource_details.title  }}">
                 </div>
-                <div class="input-group ">
+                <div class="input-group-aut required">
                     <h2>Autor/fonte:</h2>
                     <input type="text" id="autor" name="autor" placeholder="Nome do autor/fonte do recurso" value="{{ resource_details.author }}" >
                 </div>
-                <div class="input-group-org ">
+                <div class="input-group-org required">
                     <h2>Organização:</h2>
                     <input type="text" id="organizacao" name="organizacao" placeholder="Escola/organização/nome do sítio do autor do recurso" value="{{ resource_details.organization }}" >
                 </div>
-                <div class="input-group-format ">
+                <div class="input-group-format required">
                     <h2>Formato (MAX. 2):</h2>
                     {% for formato in formatos %}
                         <input type="checkbox" id="formato{{ loop.index }}" name="formato" value="{{ formato }}" 
@@ -197,13 +209,13 @@
                 </div>
 
                 
-                <div class="form-group custom-link-group">
+                <div class="form-group custom-link-group required">
                     <label for="link">Link</label>
                     <input type="url" id="link" name="link" class="form-control custom-link-input" value="{{ resource_details.link }}">
                 </div>
                 
                 {% if resource_details.embed %}
-                    <div class="form-group custom-embed-group">
+                    <div class="form-group custom-embed-group required">
                         <label for="embed_code">Embed Code</label>
                         <textarea id="embed_code" name="embed_code" class="form-control custom-embed-textarea">{{ resource_details.embed }}</textarea>
                     </div>
@@ -218,7 +230,7 @@
                 -->
                 
 
-                <div class="input-group-use">
+                <div class="input-group-use required">
                     <h2>Modos de Utilização:</h2>
                     {% for modo in use_mode %}
                         <input type="checkbox" id="modo{{ loop.index }}" name="use_mode" value="{{ modo }}" 
@@ -226,7 +238,7 @@
                         <label for="modo{{ loop.index }}">{{ modo }}</label>
                     {% endfor %}
                 </div>
-                <div class="input-group-req">
+                <div class="input-group-req required">
                     <h2>Requisitos Técnicos:</h2>
                     {% for requirement in requirements %}
                         <input type="checkbox" id="requirement{{ loop.index }}" name="requirements" value="{{ requirement }}" 
@@ -235,14 +247,14 @@
                     {% endfor %}
                 </div>
                 
-                <div class="input-group ">
+                <div class="input-group required ">
                     <h2>Descrição:</h2>
                     <div id="editor-container"></div>
                     <textarea id="descricao" name="descricao" rows="5" style="display:none;">{{ resource_details.description }}</textarea>
                     <div id="counter"></div>
                     <small class="small-text">Deve ter no mínimo 20 caracteres e no máximo 2000</small>
                 </div>
-                <div class="input-group-lang">
+                <div class="input-group-lang required">
                     <h2>Idiomas:</h2>
                     {% for idioma in idiomas %}
                         <input type="checkbox" id="idioma{{ loop.index }}" name="idiomas" value="{{ idioma }}"
@@ -265,6 +277,11 @@
                 
                 <button type="submit">Gravar alterações</button>
                 <button type="button" onclick="window.location.href='/resources/details/{{resource_details.resource_id}}'">Cancelar</button>
+
+                <small class="small-text">
+                    <span class="text-danger">*</span>
+                    Campo obrigatório
+                </small>
             </form>
         </div>
     </main>
