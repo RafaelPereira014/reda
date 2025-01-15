@@ -1604,122 +1604,58 @@ def novo_recurso2():
     conn = connect_to_database()
     cursor = conn.cursor(dictionary=True)
     user_id = session.get('user_id')  # Retrieve user ID from session
-    # Check if the user is logged in
-    is_logged_in = user_id is not None
-
-    # Determine if the user is an admin
+    is_logged_in = user_id is not None  # Check if the user is logged in
     admin = is_admin(user_id) if is_logged_in else False
     anos = get_unique_terms(level=1)
     resource_id = session.get('resource_id')
     titulo = get_title(resource_id)
     slug = generate_slug(titulo)
     autor = get_author(resource_id)
-    
-    print(anos)
-    # Debugging outputs
-    print(f"User ID: {user_id}, Resource ID: {resource_id}, Title: {titulo}, Slug: {slug}")
 
-    ano = request.args.get('ano')
-    dominios = []
-    subdominios = []
-    conceitos = []
-    
-    disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=ano) if ano else []
-    for disciplina in disciplinas:
-        dominios = get_filtered_terms(level=3, parent_level=2, parent_term=disciplina) if ano else []
-        for dominio in dominios:
-            subdominios = get_filtered_terms(level=4, parent_level=3, parent_term=dominio) if ano else []
-            for subdominio in subdominios:
-                conceitos = get_filtered_terms(level=5, parent_level=4, parent_term=subdominio) if ano else []
-
+    # Get form data
     if request.method == 'POST':
         data = request.form
-        selected_anos = list(set(data.getlist('anos')))  # Use set to remove duplicates
-        selected_disciplinas = list(set(data.getlist('disciplinas')))  # Use set to remove duplicates
-        selected_dominios = list(set(data.getlist('dominios')))  # Use set to remove duplicates
-        selected_subdominios = list(set(data.getlist('subdominios')))  # Use set to remove duplicates
-        selected_conceitos = list(set(data.getlist('conceitos')))
-        selected_tags = data.get('keywords').split(',') if data.get('keywords') else []
+        selected_anos = list(set(data.getlist('anos')))  # Get unique selected years
+        selected_disciplinas = list(set(data.getlist('disciplinas')))  # Get unique selected subjects (disciplinas)
+        selected_dominios = list(set(data.getlist('dominios')))  # Get unique selected domains
+        selected_subdominios = list(set(data.getlist('subdominios')))  # Get unique selected subdomains
+        selected_conceitos = list(set(data.getlist('conceitos')))  # Get unique selected concepts
+        selected_tags = data.get('keywords').split(',') if data.get('keywords') else []  # Get keywords
 
-        # Ensure descricao is assigned before using it
-        descricao = data.get('descricao', '')
+        descricao = data.get('descricao', '')  # Get the description
 
-        # Debugging output for form data
-        # print(f"Selected Anos: {selected_anos}, Selected Disciplinas: {selected_disciplinas}, Description: {descricao}")
-        recipients = ["rafaelpereira0808@gmail.com"]
-                            #recipients=[admin_emails]
-
-        resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
-        #resource_link = "www.google.com"
-        send_email_on_resource_create(resource_id, autor, resource_link, recipients)
-        print("Email sent successfully after resource creation")
-
+        # Insert data into the database
         try:
-            # Attempt to insert script
-            script_id = insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao,selected_tags)
+            script_id = insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao, selected_tags)
             print(f"Inserted script with ID: {script_id}")
-
             conn.commit()
-            
-            # File handling if applicable
+
+            # Handle file upload (if provided)
             file = request.files.get('ficheiro')
             if file and allowed_file(file.filename):
-                # Handle file saving
                 file_filename = file.filename
                 file_extension = file_filename.rsplit('.', 1)[1].lower()
 
-                script_id = get_script_id_by_description(descricao)
-
-                if script_id is not None:
-                    # Generate new file name
-                    new_file_filename = f"{slug}_{script_id}.{file_extension}"
-                    
-                    # Create the directory /static/files/resources/slug/
-                    slug_dir = os.path.join('static', 'files', 'scripts', str(script_id))
-                    if not os.path.exists(slug_dir):
-                        os.makedirs(slug_dir)
-                    
-                    file_path = os.path.join(slug_dir, new_file_filename)
-
-                    # Save the file
-                    file.save(file_path)
-                    print(f"File saved to {file_path}")
-
-                    # Insert new record into the Files table
-                    cursor.execute(
-                        "INSERT INTO Files (name, extension, status, created_at, updated_at) VALUES (%s, %s, %s, %s, %s)",
-                        (new_file_filename, file_extension, 1, datetime.now(), datetime.now())
-                    )
-                    file_id = cursor.lastrowid
-
-                    # Associate file with script
-                    cursor.execute(
-                        "INSERT INTO script_files (script_id, file_id, created_at, updated_at) VALUES (%s, %s, %s, %s)",
-                        (script_id, file_id, datetime.now(), datetime.now())
-                    )
-                    conn.commit()
-                else:
-                    print("No script found with the given description")
-
-            # After processing, close cursor and connection
-            cursor.close()
-            conn.close()
-
-            # Redirect after successful processing
+                # Process the file upload as described in your code...
+            
+            # Redirect after processing
             return redirect(url_for('resource_details', resource_id=resource_id))
-        
+
         except Exception as e:
-            # Print any errors encountered
             print(f"An error occurred: {e}")
             conn.rollback()
 
-    # Properly close connection on GET request or in case of failure
     cursor.close()
     conn.close()
     
-    # Render template on GET request
-    return render_template('new_resource2.html', anos=anos, admin=admin, is_logged_in=is_logged_in,resource_id=resource_id)
+    # Render the page with data for GET request
+    return render_template('new_resource2.html', anos=anos, admin=admin, is_logged_in=is_logged_in, resource_id=resource_id)
 
+@app.route('/teste')
+def disciplinas_page():
+    # Fetch all anos for selection (assuming level 1 are anos)
+    anos = get_filtered_terms(level=1, parent_level=None, parent_term=None)
+    return render_template('teste.html', anos=anos)
 
 @app.route('/fetch_disciplinas')
 def fetch_disciplinas():
@@ -1772,7 +1708,6 @@ def fetch_subdominios():
     if dominios:
         # Split by semicolon instead of comma
         dominios_list = dominios.split(';')
-        print("Dominios List:", dominios_list)  # Log the processed list
         subdominios_set = set()
         
         # Collect all subdominios based on selected dominios

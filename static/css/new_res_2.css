@@ -1,0 +1,89 @@
+/* General Styles for Custom Checkbox */
+.ano-selection {
+    margin-bottom: 20px;
+  }
+  
+  .ano-selection h2 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #343a40;
+  }
+  
+  /* Hide Default Checkboxes */
+  .ano-selection input[type="checkbox"] {
+    display: none;
+  }
+  
+  /* Style the Label */
+  .ano-selection label {
+    display: inline-block;
+    font-size: 1.1rem;
+    color: #343a40;
+    cursor: pointer;
+    margin-right: 15px;
+    padding-left: 30px;
+    position: relative;
+    line-height: 20px;
+  }
+  
+  /* Create Custom Checkbox */
+  .ano-selection label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  /* Checked State of the Checkbox */
+  .ano-selection input[type="checkbox"]:checked + label::before {
+    background-color: #aec03f;
+    border-color: #aec03f;
+  }
+  
+  /* Add Custom Checkmark Inside the Box when Checked */
+  .ano-selection input[type="checkbox"]:checked + label::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 10px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+  }
+  
+  /* Hover Effect */
+  .ano-selection label:hover::before {
+    border-color: #88a836;
+  }
+  
+  /* Focus Style (when tabbing through form) */
+  .ano-selection input[type="checkbox"]:focus + label::before {
+    box-shadow: 0 0 0 2px rgba(173, 204, 63, 0.5);
+    border-color: #aec03f;
+  }
+  
+  /* Disabled Checkbox */
+  .ano-selection input[type="checkbox"]:disabled + label::before {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+  }
+  
+  /* Disabled Checked Checkbox */
+  .ano-selection input[type="checkbox"]:disabled:checked + label::before {
+    background-color: #b7b7b7;
+    border-color: #aaa;
+  }
+  
+  /* Accessibility Focus */
+  .ano-selection input[type="checkbox"]:focus + label {
+    outline: 2px solid #aec03f;
+  }
