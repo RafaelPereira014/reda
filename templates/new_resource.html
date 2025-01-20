@@ -248,7 +248,7 @@
                     <div id="titulo-editor-container" style="height: 100px;"></div>
                     <textarea id="titulo" name="titulo" style="display: none;" ></textarea>
                     <div id="titulo-counter"></div>
-                    <small class="small-text">Deve ter no mínimo 5 caracteres e no máximo 255</small>
+                    <small class="small-text">Deve ter no mínimo 5 caracteres e no máximo 50</small>
                     <div id="titulo-error" style="color: red; display: none;">O título deve ter no mínimo 5 caracteres.</div>
                 </div>
                 
@@ -409,12 +409,12 @@
             // Validate "Título"
             const titulo = document.getElementById('titulo').value.trim();
             const minTituloLength = 5; // Minimum length for título
-            const maxTituloLength = 255; // Maximum length for título
+            const maxTituloLength = 50; // Maximum length for título
     
             if (titulo.length < minTituloLength || titulo.length > maxTituloLength) {
                 hasError = true; // Indicate there is an error
                 document.getElementById('titulo-error').style.display = 'block'; // Show error message for título
-                errorMessage += "O título deve ter entre 5 e 255 caracteres.\n"; // Append to error message
+                errorMessage += "O título deve ter entre 5 e 50 caracteres.\n"; // Append to error message
             } else {
                 document.getElementById('titulo-error').style.display = 'none'; // Hide error message
             }
@@ -504,7 +504,7 @@
         });
 
         function updateTituloCounter() {
-            const maxLength = 1500;
+            const maxLength = 50;
             const content = tituloQuill.getText().trim();
             const currentLength = content.length;
             const counterEle = document.getElementById('titulo-counter');

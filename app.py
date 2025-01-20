@@ -1620,8 +1620,9 @@ def novo_recurso2():
         selected_dominios = list(set(data.getlist('dominios')))  # Get unique selected domains
         selected_subdominios = list(set(data.getlist('subdominios')))  # Get unique selected subdomains
         selected_conceitos = list(set(data.getlist('conceitos')))  # Get unique selected concepts
+        print(selected_conceitos)
         selected_tags = data.get('keywords').split(',') if data.get('keywords') else []  # Get keywords
-
+    
         descricao = data.get('descricao', '')  # Get the description
 
         # Insert data into the database
@@ -1703,7 +1704,7 @@ def fetch_dominios():
 def fetch_subdominios():
     # Fetch selected dominios from query parameters
     dominios = request.args.get('dominios', '')
-    print("Received Dominios:", dominios)  # Log the received dominios
+    #print("Received Dominios:", dominios)  # Log the received dominios
     
     if dominios:
         # Split by semicolon instead of comma
@@ -1713,12 +1714,12 @@ def fetch_subdominios():
         # Collect all subdominios based on selected dominios
         for dominio in dominios_list:
             if dominio:  # Ensure dominio is not empty
-                print(dominio)
+                #print(dominio)
                 subdominios_set.update(get_filtered_terms(level=4, parent_level=3, parent_term=dominio))
         
         # Convert the set to a sorted list
         subdominios = sorted(subdominios_set)
-        print(subdominios)
+       #print(subdominios)
         return jsonify(subdominios)
     
     # Return an empty list if no dominios are provided

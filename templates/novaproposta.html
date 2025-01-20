@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource2.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new_res_2.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
@@ -254,6 +255,7 @@
             }
         }
     </style>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -735,6 +737,89 @@
             const currentLength = content.length;
             const counterEle = document.getElementById('counter');
             counterEle.innerHTML = `${currentLength}/${maxLength}`;
+        }
+    </script>
+    <script>
+        // Function to update the character counter
+        function updateCounter(editor) {
+            const maxLength = editor.getElement().maxLength || 2000;
+            const content = editor.getContent({ format: 'text' }).trim();
+            const currentLength = content.length;
+            const counterEle = document.getElementById('counter');
+            counterEle.innerHTML = `${currentLength}/${maxLength}`;
+        }
+
+        function checkEnterKey(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default action (like form submission)
+                addKeyword(); // Trigger the same function as the "Adicionar" button
+            }
+        }
+
+        let keywords = [];  // Initialize the keywords array
+
+        function addKeyword() {
+            const keywordInput = document.getElementById('keywordInput');
+            const keywordsContainer = document.getElementById('keywordsContainer');
+            const keywordsInput = document.getElementById('keywords');
+        
+            if (keywordInput.value.trim() === '') {
+                return;
+            }
+        
+            const keyword = keywordInput.value.trim();
+            keywordInput.value = '';
+        
+            const keywordSpan = document.createElement('span');
+            keywordSpan.className = 'keyword';
+            keywordSpan.textContent = keyword;
+            
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'x';
+            removeButton.onclick = function() {
+                keywordsContainer.removeChild(keywordSpan);
+                updateKeywords();
+            };
+        
+            keywordSpan.appendChild(removeButton);
+            keywordsContainer.appendChild(keywordSpan);
+        
+            updateKeywords();
+        }
+        function updateKeywords() {
+            const keywordsContainer = document.getElementById('keywordsContainer');
+            const keywordsInput = document.getElementById('keywords');
+        
+            const keywords = [];
+            const keywordSpans = keywordsContainer.getElementsByClassName('keyword');
+            for (let span of keywordSpans) {
+                keywords.push(span.childNodes[0].nodeValue);
+            }
+        
+            keywordsInput.value = keywords.join(',');
+        }
+
+        function removeKeyword(keyword) {
+            keywords = keywords.filter(k => k !== keyword);
+            updateKeywordsContainer();
+        }
+
+        function updateKeywordsContainer() {
+            const keywordsContainer = document.getElementById('keywordsContainer');
+            keywordsContainer.innerHTML = '';
+            keywords.forEach(keyword => {
+                const keywordElement = document.createElement('div');
+                keywordElement.className = 'keyword-item';
+                keywordElement.innerHTML = `
+                    ${keyword} <button type="button" onclick="removeKeyword('${keyword}')">X</button>
+                `;
+                keywordsContainer.appendChild(keywordElement);
+            });
+        }
+
+        function updateHiddenKeywords() {
+            const hiddenKeywords = document.getElementById('hiddenKeywords');
+            hiddenKeywords.value = keywords.join(',');
         }
     </script>
     

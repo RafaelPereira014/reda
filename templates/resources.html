@@ -581,9 +581,9 @@
                     <h2>
                         <strong>
                             {% if resource.title|length > 25 %}
-                            {{ resource.title[:25] | strip_html ~ '...' }}
-                            {% else %}
-                            {{ resource.title | strip_html }}
+                                    {{ resource.title | strip_html}}
+                                {% else %}
+                                    {{ resource.title | strip_html }}
                             {% endif %}
                         </strong>
                     </h2>

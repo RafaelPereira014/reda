@@ -267,6 +267,7 @@
             }
         }
     </style>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     
 
@@ -456,6 +457,7 @@
             let selectedDisciplinas = [];
             let selectedDominios = [];
             let selectedSubdominios = [];
+            let selectedConceitos = [];
         
             function fetchDisciplinas() {
                 const selectedAnos = Array.from(anoCheckboxes)
@@ -467,6 +469,7 @@
                 selectedDisciplinas = [];
                 selectedDominios = [];
                 selectedSubdominios = [];
+                selectedConceitos = [];
                 if (loadingIndicator) loadingIndicator.style.display = "block";
         
                 fetch(`/fetch_disciplinas?ano=${selectedAnos}`)
@@ -495,6 +498,7 @@
                 conceitosList.innerHTML = "";
                 selectedDominios = [];
                 selectedSubdominios = [];
+                selectedConceitos = [];
                 if (loadingIndicator) loadingIndicator.style.display = "block";
         
                 fetch(`/fetch_dominios?disciplinas=${selectedDisciplinasString}`)
@@ -521,6 +525,7 @@
                 subdominiosList.innerHTML = "";
                 conceitosList.innerHTML = "";
                 selectedSubdominios = [];
+                selectedConceitos = [];
                 if (loadingIndicator) loadingIndicator.style.display = "block";
         
                 fetch(`/fetch_subdominios?dominios=${selectedDominiosString}`)
