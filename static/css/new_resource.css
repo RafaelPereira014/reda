@@ -104,9 +104,10 @@ button {
     color: white;
     border: none;
     cursor: pointer;
+    border-radius: 5%;
     font-size: 16px;
     transition: background-color 0.3s ease;
-    margin-top: 50px;
+    margin-top: 20px;
 }
 
 button:hover {

@@ -139,3 +139,15 @@ button[type="button"]:hover {
 
 
 
+.required {
+  position: relative;
+}
+.required::after {
+  content: '*';
+  position: absolute;
+  top: 0;
+  right: absolute;
+  color: red;
+  font-size: 1.4rem;
+  line-height: 0.3;
+}

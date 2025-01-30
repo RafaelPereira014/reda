@@ -533,7 +533,8 @@
         <div class="container">
     
             <form id="propostaForm" action="/novaproposta/{{ slug }}" method="POST">
-                <div class="ano-selection">
+                <div class="ano-selection required">
+                    <h2>Ano de Escolaridade</h2>
                     {% for ano in anos %}
                         <input type="checkbox" id="ano{{ loop.index }}" name="anos" value="{{ ano }}" class="ano-checkbox">
                         <label for="ano{{ loop.index }}">{{ ano }}</label>
@@ -588,7 +589,7 @@
                 </div>
     
                 <!-- Terms and Conditions -->
-                <div class="terms-and-conditions">
+                <div class="terms-and-conditions required">
                     <p><strong>Termos e condições</strong></p>
                     <p>
                         Aceito os "Termos e condições" e autorizo que o conteúdo seja distribuído sob os termos da licença Creative Commons com a Atribuição designada como Atribuição-Não Comercial-Compartilha Igual (CC BY-NC-SA).
@@ -607,7 +608,7 @@
                 </div>
                 
                 <div class="accept-terms">
-                    <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+                    <input type="checkbox" id="acceptTerms" name="acceptTerms" >
                     <label for="acceptTerms">Aceito os Termos e Condições</label>
                 </div>
                 <small class="small-text">
@@ -618,11 +619,10 @@
                 <p id="loading" class="loading" style="display: none;">Carregando...</p>
     
                 <div class="submit-section">
-                    <button type="submit">Criar Recurso</button>
-                    <button id="cancelButton" data-resource-id="{{ resource_id }}">Cancelar</button>
-
+                    <button type="submit">Criar nova proposta</button>
                 </div>
             </form>
+            <button id="cancelButton" data-resource-id="{{ resource_id }}">Cancelar</button>
     
             
         </div>
@@ -686,29 +686,62 @@
             }, 3000); // 3000 milliseconds = 3 seconds
         }
     
-        // Add event listener to form submission
         document.getElementById("propostaForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Prevent default form submission
     
-            // Perform AJAX request or any necessary form submission logic here
-            fetch('/novaproposta/<slug>', {
+            // Get values of required fields
+            const anosSelected = Array.from(document.querySelectorAll('.ano-checkbox:checked')).length > 0;
+            const descricao = document.getElementById("descricao").value.trim();
+            const acceptTerms = document.getElementById("acceptTerms").checked;
+    
+            // Validation
+            if (!anosSelected) {
+                alert("Por favor, selecione pelo menos um Ano de Escolaridade.");
+                return;
+            }
+    
+            if (descricao.length < 20) {
+                alert("A descrição deve ter no mínimo 20 caracteres.");
+                return;
+            }
+    
+            if (!acceptTerms) {
+                alert("Você deve aceitar os Termos e Condições.");
+                return;
+            }
+    
+            // Show loading indicator
+            document.getElementById("loading").style.display = "block";
+    
+            // Submit the form using fetch API
+            fetch(`/novaproposta/{{ slug }}`, {
                 method: 'POST',
                 body: new FormData(event.target)
             })
             .then(response => {
+                document.getElementById("loading").style.display = "none"; // Hide loading
                 if (response.ok) {
-                    showSuccessMessage(); // Show success pop-up
-                    // Assuming you have resource_id available in your context
-                    const resource_id = /* Obtain resource_id from somewhere */;
-                    redirectToResourceDetails(resource_id); // Redirect after 3 seconds
+                    alert("Proposta adicionada com sucesso!");
+                    const resource_id = document.getElementById("cancelButton").getAttribute("data-resource-id");
+                    setTimeout(() => {
+                        window.location.href = `/resources/details/${resource_id}`;
+                    }, 3000); // Redirect after 3 seconds
                 } else {
-                    alert('Erro ao adicionar proposta. Por favor, tente novamente.'); // Handle errors
+                    alert("Erro ao adicionar proposta. Por favor, tente novamente.");
                 }
             })
             .catch(error => {
-                console.error('Erro:', error); // Log any fetch errors
+                document.getElementById("loading").style.display = "none"; // Hide loading
+                console.error("Erro:", error);
             });
         });
+    
+        // Cancel button functionality
+        document.getElementById("cancelButton").addEventListener("click", function(event) {
+            const resource_id = event.target.getAttribute("data-resource-id");
+            window.location.href = `/resources/details/${resource_id}`;
+        });
+    </script>
     </script>
     
     <script>
