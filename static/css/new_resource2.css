@@ -151,3 +151,72 @@ button[type="button"]:hover {
   font-size: 1.4rem;
   line-height: 0.3;
 }
+
+/* General styles for the checkbox and label container */
+li {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+/* Style the checkboxes */
+input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #8a8a8a; /* Blue border */
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Checkbox checked state */
+input[type="checkbox"]:checked {
+  background-color: #aec03f;
+  border-color: #8a8a8a; /* Darker blue */
+  position: relative;
+}
+
+/* Add a checkmark when checked */
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 8px;
+  height: 16px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Style the checkbox label */
+li label {
+  margin-left: 10px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Hover state for checkbox */
+input[type="checkbox"]:hover {
+  border-color: #aec03f;
+}
+
+/* Disabled checkbox state */
+input[type="checkbox"]:disabled {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+  cursor: not-allowed;
+}
+
+input[type="checkbox"]:disabled + label {
+  color: #adb5bd;
+}
+
+/* Optional: Add focus styles for keyboard navigation */
+input[type="checkbox"]:focus {
+  outline: 2px solid #80bdff;
+  outline-offset: 2px;
+}
