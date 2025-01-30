@@ -325,7 +325,7 @@
     <main>
         <div class="container">
     
-            <form  action="{{ url_for('novo_recurso2') }}" method="POST" enctype="multipart/form-data">
+            <form id="resource-form"  action="{{ url_for('novo_recurso2') }}" method="POST" enctype="multipart/form-data">
                 <div class="ano-selection">
                     {% for ano in anos %}
                         <input type="checkbox" id="ano{{ loop.index }}" name="anos" value="{{ ano }}" class="ano-checkbox">
@@ -408,7 +408,7 @@
                     Campo obrigatório
                 </small>
     
-                <p id="loading" class="loading" style="display: none;">Carregando...</p>
+                <p id="loading" class="loading" style="display: none;">A Carregar...</p>
     
                 <div class="submit-section">
                     <button type="submit">Criar Recurso</button>
@@ -728,26 +728,7 @@
                 event.preventDefault(); // Prevent form submission
                 return; // Exit the function
             }
-            if (!isChecked(disciplinas)) {
-                alert('Para avançar, selecione pelo menos uma "Disciplina".');
-                event.preventDefault(); // Prevent form submission
-                return; // Exit the function
-            }
-            if (!isChecked(dominios)) {
-                alert('Para avançar, selecione pelo menos um "Dominio".');
-                event.preventDefault(); // Prevent form submission
-                return; // Exit the function
-            }
-            if (!isChecked(subdominios)) {
-                alert('Para avançar, selecione pelo menos um "Subdomínio".');
-                event.preventDefault(); // Prevent form submission
-                return; // Exit the function
-            }
-            if (!isChecked(conceitos)) {
-                alert('Para avançar, selecione pelo menos um "Conceito".');
-                event.preventDefault(); // Prevent form submission
-                return; // Exit the function
-            }
+            
         
             // Validate descricao
             if (descricao.length < minDescricaoLength || descricao.length > maxDescricaoLength) {

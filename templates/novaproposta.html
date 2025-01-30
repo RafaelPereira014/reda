@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novo/Editar recurso - REDA</title>
+    <title>Disciplinas, Domínios, Subdomínios e Conceitos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource2.css') }}">
@@ -16,8 +17,19 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    <script src="https://cdn.tiny.cloud/1/agr3kxwxb5hnsedd9yd0re9bxz0346mtqq1xe1u6ethrlj9a/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <style>
+        .required {
+            position: relative;
+        }
+        .required::after {
+            content: '*';
+            position: absolute;
+            top: 0;
+            right: absolute;
+            color: red;
+            font-size: 1.4rem;
+            line-height: 0.3;
+        }
         .container2 {
             background-image: url('{{ url_for('static', filename='images/new-form-bg.jpg') }}');
             background-size: cover;
@@ -257,6 +269,181 @@
     </style>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+
+
+    
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header-governo">
+        <img src="{{ url_for('static', filename='images/logo.GOV-AZORES.2019.png') }}" alt="Governo dos Açores">
+        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
+    </div>
+    <header>
+        <div class="container">
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/apps">Aplicações</a></li>
+                    <li><a href="/tools">Ferramentas</a></li>
+                </ul>
+            </nav>
+            <nav class="top-nav">
+                <ul>
+                    {% if admin and is_logged_in %}
+                        <!-- Render admin-specific links or buttons -->
+                        <li><a href="/myaccount">Minha Conta</a></li>
+
+                        <li><a href="/dashboard" target="_blank">Administração</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                    {% elif not admin and is_logged_in %}
+                        <li><a href="/myaccount">Minha Conta</a></li>
+                        <li><a href="/logout">Sair</a></li>
+                        
+                    {%else%}
+                        <!-- Render non-admin links or buttons -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Registar</a></li>
+
+                    {% endif %}
+
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container2">
+        <h1>Nova proposta de operacionalização</h1>
+        <p>Detalhes > {{slug}} </p>
+    </div>
+
+    <main>
+        <div class="container">
+    
+            <form id="resource-form"  action="{{ url_for('novo_recurso2') }}" method="POST" enctype="multipart/form-data">
+                <div class="ano-selection">
+                    {% for ano in anos %}
+                        <input type="checkbox" id="ano{{ loop.index }}" name="anos" value="{{ ano }}" class="ano-checkbox">
+                        <label for="ano{{ loop.index }}">{{ ano }}</label>
+                    {% endfor %}
+                </div>
+                <hr></hr>
+    
+                <div class="disciplinas-list list-section">
+                    <h2>Disciplinas:</h2>
+                    <ul id="disciplinasList"></ul>
+                </div>
+                <hr></hr>
+                <div class="dominios-list list-section">
+                    <h2>Domínios:</h2>
+                    <ul id="dominiosList"></ul>
+                </div>
+                <hr></hr>
+                <div class="subdominios-list list-section">
+                    <h2>Subdomínios:</h2>
+                    <ul id="subdominiosList"></ul>
+                </div>
+                <hr></hr>
+                <div class="conceitos-list list-section">
+                    <h2>Conceitos:</h2>
+                    <ul id="conceitosList"></ul>
+                </div>
+    
+                <hr></hr>
+    
+                <div class="input-group-conceitos">
+                    <h2>Outros conceitos:</h2>
+                    <div class="keyword-input-container">
+                        <input type="text" id="keywordInput" placeholder="Digite uma palavra-chave" maxlength="100" onkeydown="checkEnterKey(event)">
+                        <button type="button" onclick="addKeyword()">Adicionar</button>
+                    </div>
+                    <div id="keywordsContainer"></div>
+                    <input type="hidden" name="keywords" id="keywords">
+                    <small class="small-text">Deve escrever algumas palavras ou expressões, no mínimo de 5 palavras ou expressões.</small>
+                </div>
+    
+                <div class="input-group-descricao-proposta required">
+                    <h2>Descrição da proposta de operacionalização:</h2>
+                    <div id="editor-container" style="height: 300px;"></div>
+                    <textarea id="descricao" name="descricao" style="display: none;"></textarea>
+                    <div id="counter"></div>
+                    <small class="small-text">Deve ter no mínimo 20 caracteres e no máximo 2000</small>
+                </div>
+    
+                <div class="file-section">
+                    <h2>Upload de Ficheiro (opcional):</h2>
+                    <input type="file" name="ficheiro" accept=".pdf,.doc,.docx,.txt,.zip,.jpg,.jpeg,.png,.gif,.csv,.xls,.xlsx,.ppt,.pptx">
+                </div>
+    
+                <!-- Terms and Conditions -->
+                <div class="terms-and-conditions">
+                    <p><strong>Termos e condições</strong></p>
+                    <p>
+                        Aceito os "Termos e condições" e autorizo que o conteúdo seja distribuído sob os termos da licença Creative Commons com a Atribuição designada como Atribuição-Não Comercial-Compartilha Igual (CC BY-NC-SA).
+                    </p>
+                    <ul>
+                        <li>Mantenho os direitos autorais do trabalho submetido;</li>
+                        <li>Sou o autor ou o proprietário da obra ou tenho a permissão do autor para a distribuir;</li>
+                        <li>Pretendo que este trabalho seja distribuído sob os termos da licença CC-BY-NC-SA.</li>
+                    </ul>
+                    <!-- Image linking to CC BY-NC-SA license -->
+                    <div class="cc-license">
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">
+                            <img src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA 4.0 License">
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="accept-terms">
+                    <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+                    <label for="acceptTerms">Aceito os Termos e Condições</label>
+                </div>
+                <small class="small-text">
+                    <span class="text-danger">*</span>
+                    Campo obrigatório
+                </small>
+    
+                <p id="loading" class="loading" style="display: none;">A Carregar...</p>
+    
+                <div class="submit-section">
+                    <button type="submit">Criar nova proposta</button>
+                    
+
+                </div>
+            </form>
+            <button id="cancelButton" data-resource-id="{{ resource_id }}">Cancelar</button>
+    
+            
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-nav">
+                <a href="/sobre">Sobre</a>
+                <a href="/ajuda">Ajuda</a>
+                <a href="/fichatecnica">Ficha Técnica</a>
+                <a href="/politica-privacidade">Política de Privacidade</a>
+                <a href="/faleconnosco">
+                    <button>Fale connosco</button>
+                </a>
+            </div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="additional-images">
+                <img src="{{ url_for('static', filename='images/LogoDREAE-1.png') }}" alt="Image 1">
+                <img src="{{ url_for('static', filename='images/gov_acores_transparent.png') }}" alt="Image 2">
+            </div>
+            <span> © Direção Regional da Educação - Secretaria Regional da Educação,Cultura e Desporto </span>
+        </div>
+    </footer>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const anoCheckboxes = document.querySelectorAll(".ano-checkbox");
@@ -271,6 +458,7 @@
             let selectedDisciplinas = [];
             let selectedDominios = [];
             let selectedSubdominios = [];
+            let selectedConceitos = [];
         
             function fetchDisciplinas() {
                 const selectedAnos = Array.from(anoCheckboxes)
@@ -282,6 +470,7 @@
                 selectedDisciplinas = [];
                 selectedDominios = [];
                 selectedSubdominios = [];
+                selectedConceitos = [];
                 if (loadingIndicator) loadingIndicator.style.display = "block";
         
                 fetch(`/fetch_disciplinas?ano=${selectedAnos}`)
@@ -310,6 +499,7 @@
                 conceitosList.innerHTML = "";
                 selectedDominios = [];
                 selectedSubdominios = [];
+                selectedConceitos = [];
                 if (loadingIndicator) loadingIndicator.style.display = "block";
         
                 fetch(`/fetch_dominios?disciplinas=${selectedDisciplinasString}`)
@@ -336,6 +526,7 @@
                 subdominiosList.innerHTML = "";
                 conceitosList.innerHTML = "";
                 selectedSubdominios = [];
+                selectedConceitos = [];
                 if (loadingIndicator) loadingIndicator.style.display = "block";
         
                 fetch(`/fetch_subdominios?dominios=${selectedDominiosString}`)
@@ -481,288 +672,33 @@
                 checkbox.addEventListener("change", fetchDisciplinas);
             });
         });
-    </script>
-</head>
-<body>
-    <div class="header-governo">
-        <img src="{{ url_for('static', filename='images/logo.GOV-AZORES.2019.png') }}" alt="Governo dos Açores">
-        <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
-    </div>
-    <header>
-        <div class="container">
-            <a href="/">
-                <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="logo-reda">
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="/">Inicio</a></li>
-                    <li><a href="/apps">Aplicações</a></li>
-                    <li><a href="/tools">Ferramentas</a></li>
-                </ul>
-            </nav>
-            <nav class="top-nav">
-                <ul>
-                    {% if admin and is_logged_in %}
-                        <!-- Render admin-specific links or buttons -->
-                        <li><a href="/myaccount">Minha Conta</a></li>
 
-                        <li><a href="/dashboard" target="_blank">Administração</a></li>
-                        <li><a href="/logout">Sair</a></li>
-                    {% elif not admin and is_logged_in %}
-                        <li><a href="/myaccount">Minha Conta</a></li>
-                        <li><a href="/logout">Sair</a></li>
-                        
-                    {%else%}
-                        <!-- Render non-admin links or buttons -->
-                        <li><a href="/login">Login</a></li>
-                        <li><a href="/register">Registar</a></li>
-
-                    {% endif %}
-
-
-                    
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <div class="container2">
-        <h1>Nova proposta de operacionalização</h1>
-        <p> {{slug}} > <strong>Nova proposta de operacionalização</strong> </p>
-    </div>
-    <main>
-        <div class="container">
-    
-            <form id="propostaForm" action="/novaproposta/{{ slug }}" method="POST">
-                <div class="ano-selection required">
-                    <h2>Ano de Escolaridade</h2>
-                    {% for ano in anos %}
-                        <input type="checkbox" id="ano{{ loop.index }}" name="anos" value="{{ ano }}" class="ano-checkbox">
-                        <label for="ano{{ loop.index }}">{{ ano }}</label>
-                    {% endfor %}
-                </div>
-                <hr></hr>
-    
-                <div class="disciplinas-list list-section">
-                    <h2>Disciplinas:</h2>
-                    <ul id="disciplinasList"></ul>
-                </div>
-                <hr></hr>
-                <div class="dominios-list list-section">
-                    <h2>Domínios:</h2>
-                    <ul id="dominiosList"></ul>
-                </div>
-                <hr></hr>
-                <div class="subdominios-list list-section">
-                    <h2>Subdomínios:</h2>
-                    <ul id="subdominiosList"></ul>
-                </div>
-                <hr></hr>
-                <div class="conceitos-list list-section">
-                    <h2>Conceitos:</h2>
-                    <ul id="conceitosList"></ul>
-                </div>
-    
-                <hr></hr>
-    
-                <div class="input-group-conceitos">
-                    <h2>Outros conceitos:</h2>
-                    <div class="keyword-input-container">
-                        <input type="text" id="keywordInput" placeholder="Digite uma palavra-chave" maxlength="100" onkeydown="checkEnterKey(event)">
-                        <button type="button" onclick="addKeyword()">Adicionar</button>
-                    </div>
-                    <div id="keywordsContainer"></div>
-                    <input type="hidden" name="keywords" id="keywords">
-                    <small class="small-text">Deve escrever algumas palavras ou expressões, no mínimo de 5 palavras ou expressões.</small>
-                </div>
-    
-                <div class="input-group-descricao-proposta required">
-                    <h2>Descrição da proposta de operacionalização:</h2>
-                    <div id="editor-container" style="height: 300px;"></div>
-                    <textarea id="descricao" name="descricao" style="display: none;"></textarea>
-                    <div id="counter"></div>
-                    <small class="small-text">Deve ter no mínimo 20 caracteres e no máximo 2000</small>
-                </div>
-    
-                <div class="file-section">
-                    <h2>Upload de Ficheiro (opcional):</h2>
-                    <input type="file" name="ficheiro" accept=".pdf,.doc,.docx,.txt,.zip,.jpg,.jpeg,.png,.gif,.csv,.xls,.xlsx,.ppt,.pptx">
-                </div>
-    
-                <!-- Terms and Conditions -->
-                <div class="terms-and-conditions required">
-                    <p><strong>Termos e condições</strong></p>
-                    <p>
-                        Aceito os "Termos e condições" e autorizo que o conteúdo seja distribuído sob os termos da licença Creative Commons com a Atribuição designada como Atribuição-Não Comercial-Compartilha Igual (CC BY-NC-SA).
-                    </p>
-                    <ul>
-                        <li>Mantenho os direitos autorais do trabalho submetido;</li>
-                        <li>Sou o autor ou o proprietário da obra ou tenho a permissão do autor para a distribuir;</li>
-                        <li>Pretendo que este trabalho seja distribuído sob os termos da licença CC-BY-NC-SA.</li>
-                    </ul>
-                    <!-- Image linking to CC BY-NC-SA license -->
-                    <div class="cc-license">
-                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">
-                            <img src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA 4.0 License">
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="accept-terms">
-                    <input type="checkbox" id="acceptTerms" name="acceptTerms" >
-                    <label for="acceptTerms">Aceito os Termos e Condições</label>
-                </div>
-                <small class="small-text">
-                    <span class="text-danger">*</span>
-                    Campo obrigatório
-                </small>
-    
-                <p id="loading" class="loading" style="display: none;">Carregando...</p>
-    
-                <div class="submit-section">
-                    <button type="submit">Criar nova proposta</button>
-                </div>
-            </form>
-            <button id="cancelButton" data-resource-id="{{ resource_id }}">Cancelar</button>
-    
-            
-        </div>
-                
-    </main>
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeLoginModal()">&times;</span>
-            <i class="fas fa-user user-icon"></i>
-            <h2>Login</h2>
-            <form>
-                <div class="login-input">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="login-input">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="button-container">
-                    <button type="submit">Login</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container footer-container">
-            <div class="footer-nav">
-                <a href="/sobre">Sobre</a>
-                <a href="/ajuda">Ajuda</a>
-                <a href="/fichatecnica">Ficha Técnica</a>
-                <a href="/politica-privacidade">Política de Privacidade</a>
-                <a href="/faleconnosco">
-                    <button>Fale connosco</button>
-                </a>
-            </div>
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-            </div>
-            <div class="additional-images">
-                <img src="{{ url_for('static', filename='images/LogoDREAE-1.png') }}" alt="Image 1">
-                <img src="{{ url_for('static', filename='images/gov_acores_transparent.png') }}" alt="Image 2">
-            </div>
-            <span> © Direção Regional da Educação - Secretaria Regional da Educação,Cultura e Desporto </span>
-        </div>
-    </footer>
-    <script>
-        // Function to show pop-up message
-        function showSuccessMessage() {
-            alert("Proposta adicionada com sucesso!");
-        }
-    
-        // Function to redirect after 3 seconds
-        function redirectToResourceDetails(resource_id) {
-            setTimeout(function() {
-                window.location.href = `/resources/details/${resource_id}`;
-            }, 3000); // 3000 milliseconds = 3 seconds
-        }
-    
-        document.getElementById("propostaForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent default form submission
-    
-            // Get values of required fields
-            const anosSelected = Array.from(document.querySelectorAll('.ano-checkbox:checked')).length > 0;
-            const descricao = document.getElementById("descricao").value.trim();
-            const acceptTerms = document.getElementById("acceptTerms").checked;
-    
-            // Validation
-            if (!anosSelected) {
-                alert("Por favor, selecione pelo menos um Ano de Escolaridade.");
-                return;
-            }
-    
-            if (descricao.length < 20) {
-                alert("A descrição deve ter no mínimo 20 caracteres.");
-                return;
-            }
-    
-            if (!acceptTerms) {
-                alert("Você deve aceitar os Termos e Condições.");
-                return;
-            }
-    
-            // Show loading indicator
-            document.getElementById("loading").style.display = "block";
-    
-            // Submit the form using fetch API
-            fetch(`/novaproposta/{{ slug }}`, {
-                method: 'POST',
-                body: new FormData(event.target)
-            })
-            .then(response => {
-                document.getElementById("loading").style.display = "none"; // Hide loading
-                if (response.ok) {
-                    alert("Proposta adicionada com sucesso!");
-                    const resource_id = document.getElementById("cancelButton").getAttribute("data-resource-id");
-                    setTimeout(() => {
-                        window.location.href = `/resources/details/${resource_id}`;
-                    }, 3000); // Redirect after 3 seconds
-                } else {
-                    alert("Erro ao adicionar proposta. Por favor, tente novamente.");
-                }
-            })
-            .catch(error => {
-                document.getElementById("loading").style.display = "none"; // Hide loading
-                console.error("Erro:", error);
-            });
-        });
-    
         // Cancel button functionality
         document.getElementById("cancelButton").addEventListener("click", function(event) {
             const resource_id = event.target.getAttribute("data-resource-id");
             window.location.href = `/resources/details/${resource_id}`;
         });
     </script>
-    </script>
-    
     <script>
+        
         var quill = new Quill('#editor-container', {
-            theme: 'snow',  // Use 'snow' theme for a cleaner editor interface
+            theme: 'snow',
             modules: {
                 toolbar: [
                     ['bold', 'italic', 'underline'],
                     [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                     ['link', 'image'],
-                    ['clean']                                         // Remove formatting button.
+                    ['clean'] // Remove formatting button.
                 ]
             }
         });
-    
+
         // Sync Quill's content to the hidden textarea
         quill.on('text-change', function() {
             document.getElementById('descricao').value = quill.root.innerHTML;
             updateCounter();
         });
-    
+
         // Function to update the character counter
         function updateCounter() {
             const maxLength = 2000;
@@ -771,7 +707,47 @@
             const counterEle = document.getElementById('counter');
             counterEle.innerHTML = `${currentLength}/${maxLength}`;
         }
+
+        document.getElementById('resource-form').addEventListener('submit', function (event) {
+            // Update the textarea content with Quill's HTML content before form submission
+            document.getElementById('descricao').value = quill.root.innerHTML;
+        
+            // Get all checkboxes for each group
+            const anos = document.querySelectorAll('input[name="anos"]');
+            const disciplinas = document.querySelectorAll('#disciplinasContainer input[type="checkbox"]:checked');
+            const dominios = document.querySelectorAll('#dominiosContainer input[type="checkbox"]:checked');
+            const subdominios = document.querySelectorAll('#subdominiosContainer input[type="checkbox"]:checked');
+            const conceitos = document.querySelectorAll('#conceitosContainer input[type="checkbox"]:checked');
+        
+            // Validate textarea for descricao
+            const descricao = document.getElementById('descricao').value.trim();
+            const minDescricaoLength = 20; // Minimum length for descricao
+            const maxDescricaoLength = 2000; // Maximum length for descricao
+        
+            // Helper function to check if at least one checkbox is checked
+            function isChecked(checkboxes) {
+                return checkboxes.length > 0; // Now using the `:checked` selector ensures we count only selected checkboxes
+            }
+        
+            // Validate if at least one checkbox is checked for each group
+            if (!isChecked(anos)) {
+                alert('Para avançar, selecione pelo menos um "Ano de Escolaridade".');
+                event.preventDefault(); // Prevent form submission
+                return; // Exit the function
+            }
+            
+        
+            // Validate descricao
+            if (descricao.length < minDescricaoLength || descricao.length > maxDescricaoLength) {
+                alert(`Descrição deve ter entre ${minDescricaoLength} e ${maxDescricaoLength} caracteres.`);
+                event.preventDefault(); // Prevent form submission
+                return; // Exit the function
+            }
+        });
+        
+        
     </script>
+
     <script>
         // Function to update the character counter
         function updateCounter(editor) {
@@ -855,10 +831,6 @@
             hiddenKeywords.value = keywords.join(',');
         }
     </script>
-    
-    
-
-    
     
 </body>
 </html>
