@@ -400,7 +400,7 @@
                 </div>
                 
                 <div class="accept-terms">
-                    <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+                    <input type="checkbox" id="acceptTerms" name="acceptTerms" >
                     <label for="acceptTerms">Aceito os Termos e Condições</label>
                 </div>
                 <small class="small-text">
@@ -739,6 +739,32 @@
         });
         
         
+    </script>
+    <script>
+        document.getElementById('cancelButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            const resourceId = this.getAttribute('data-resource-id');
+    
+            if (confirm('Tem a certeza de que deseja cancelar e eliminar este recurso?')) {
+                fetch(`/delete_resource/${resourceId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/';
+                    } else {
+                        alert('Ocorreu um erro ao tentar eliminar o recurso.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao eliminar o recurso:', error);
+                    alert('Não foi possível processar o pedido.');
+                });
+            }
+        });
     </script>
 
     <script>

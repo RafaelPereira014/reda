@@ -402,85 +402,109 @@
     </script>
 
     <script>
-        document.getElementById('resource-form').addEventListener('submit', function(event) {
+        document.getElementById('resource-form').addEventListener('submit', function (event) {
             let errorMessage = '';
             let hasError = false;
-    
+        
             // Validate "Título"
             const titulo = document.getElementById('titulo').value.trim();
-            const minTituloLength = 5; // Minimum length for título
-            const maxTituloLength = 50; // Maximum length for título
-    
+            const minTituloLength = 5;
+            const maxTituloLength = 50;
+        
             if (titulo.length < minTituloLength || titulo.length > maxTituloLength) {
-                hasError = true; // Indicate there is an error
-                document.getElementById('titulo-error').style.display = 'block'; // Show error message for título
-                errorMessage += "O título deve ter entre 5 e 50 caracteres.\n"; // Append to error message
+                hasError = true;
+                document.getElementById('titulo-error').style.display = 'block';
+                errorMessage += "O título deve ter entre 5 e 50 caracteres.\n";
             } else {
-                document.getElementById('titulo-error').style.display = 'none'; // Hide error message
+                document.getElementById('titulo-error').style.display = 'none';
             }
-    
+        
             // Validate "Autor/fonte"
             const autor = document.getElementById('autor').value.trim();
             if (autor === '') {
-                hasError = true; // Indicate there is an error
-                errorMessage += "O autor/fonte é obrigatório.\n"; // Append to error message
+                hasError = true;
+                errorMessage += "O autor/fonte é obrigatório.\n";
             }
-    
+        
             // Validate "Organização"
             const organizacao = document.getElementById('organizacao').value.trim();
             if (organizacao === '') {
-                hasError = true; // Indicate there is an error
-                errorMessage += "A organização é obrigatória.\n"; // Append to error message
+                hasError = true;
+                errorMessage += "A organização é obrigatória.\n";
             }
-    
+        
             // Validate "Formato"
             const formatoCheckboxes = document.querySelectorAll('input[name="formato"]');
             const isFormatoChecked = Array.from(formatoCheckboxes).some(checkbox => checkbox.checked);
             if (!isFormatoChecked) {
-                hasError = true; // Indicate there is an error
-                errorMessage += "Por favor selecione um formato.\n"; // Append to error message
+                hasError = true;
+                errorMessage += "Por favor selecione um formato.\n";
             }
-    
+
+            // Validate "Localização"
+            const localizacao1 = document.getElementById('localizacao1');
+            const localizacao2 = document.getElementById('localizacao2');
+            if (!localizacao1.checked && !localizacao2.checked) {
+                hasError = true;
+                errorMessage += "Por favor selecione a localização do recurso.\n";
+            } else {
+                if (localizacao1.checked) {
+                    const endereco = document.getElementById('endereco').value.trim();
+                    if (endereco === '') {
+                        hasError = true;
+                        errorMessage += "Por favor preencha o endereço do recurso.\n";
+                    }
+                } else if (localizacao2.checked) {
+                    const file = document.getElementById('file').value.trim();
+                    if (file === '') {
+                        hasError = true;
+                        errorMessage += "Por favor carregue um ficheiro.\n";
+                    }
+                }
+            }
+        
             // Validate "Modos de Utilização"
             const useModeCheckboxes = document.querySelectorAll('.use-mode-checkbox');
             const isUseModeChecked = Array.from(useModeCheckboxes).some(checkbox => checkbox.checked);
             if (!isUseModeChecked) {
-                hasError = true; // Indicate there is an error
-                document.getElementById('checkbox-error').style.display = 'block'; // Show error message for "Modos de Utilização"
-                errorMessage += "Por favor selecione um modo de utilização.\n"; // Append to error message
+                hasError = true;
+                document.getElementById('checkbox-error').style.display = 'block';
+                errorMessage += "Por favor selecione um modo de utilização.\n";
             } else {
-                document.getElementById('checkbox-error').style.display = 'none'; // Hide error message
+                document.getElementById('checkbox-error').style.display = 'none';
             }
-    
+        
             // Validate "Descrição do recurso"
             const descricao = document.getElementById('descricao').value.trim();
-            const minDescricaoLength = 20; // Minimum length for descricao
-            const maxDescricaoLength = 1500; // Maximum length for descricao
+            const minDescricaoLength = 20;
+            const maxDescricaoLength = 1500;
             if (descricao.length < minDescricaoLength || descricao.length > maxDescricaoLength) {
-                hasError = true; // Indicate there is an error
-                errorMessage += `Descrição deve ter entre ${minDescricaoLength} e ${maxDescricaoLength} caracteres.\n`; // Append to error message
+                hasError = true;
+                errorMessage += `Descrição deve ter entre ${minDescricaoLength} e ${maxDescricaoLength} caracteres.\n`;
             }
-    
+        
             // Validate "Idiomas"
             const idiomasCheckboxes = document.querySelectorAll('.idiomas-checkbox');
             const isIdiomasChecked = Array.from(idiomasCheckboxes).some(checkbox => checkbox.checked);
             if (!isIdiomasChecked) {
-                hasError = true; // Indicate there is an error
-                document.getElementById('idiomas-error').style.display = 'block'; // Show error message for "Idiomas"
-                errorMessage += "Por favor selecione um idioma.\n"; // Append to error message
+                hasError = true;
+                document.getElementById('idiomas-error').style.display = 'block';
+                errorMessage += "Por favor selecione um idioma.\n";
             } else {
-                document.getElementById('idiomas-error').style.display = 'none'; // Hide error message
+                document.getElementById('idiomas-error').style.display = 'none';
             }
-    
+        
+            
+        
             if (hasError) {
                 event.preventDefault(); // Prevent form submission
                 document.getElementById('modal-message').innerText = errorMessage; // Set the modal message
                 document.getElementById('error-modal').style.display = 'block'; // Show the modal
             }
         });
-    
+        
         // Close modal when the button is clicked
-        document.getElementById('close-modal').addEventListener('click', function() {
+        document.getElementById('close-modal').addEventListener('click', function () {
             document.getElementById('error-modal').style.display = 'none'; // Hide the modal
         });
     </script>

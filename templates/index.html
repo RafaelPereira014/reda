@@ -194,99 +194,102 @@
             <div class="rectangles">
 
                 {% for resource in recent_resources %}
+                <a href="/resources/details/{{ resource.id }}" class="rectangle-link">
                 
-                <div class="rectangle {% if not admin %} smaller-rectangle {% endif %}">
-                    {% if resource.image_url %}
-                        <div class="media-container">
-                            <img src="{{ resource.image_url }}" alt="Resource Image" class="responsive-image">
-                        </div>
-                    {% else %}
-                        <div class="video-container">
-                            {{ resource.embed | safe }}
-                        </div>
-                    {% endif %}
-                    <div class="image-container">
-                        {% for script_id, script in resource.details.scripts_by_id.items() %}
-                            <div class="areas-resources">
-                                {{ resource.areas_resources_display }}
+                    <div class="rectangle {% if not admin %} smaller-rectangle {% endif %}">
+                        {% if resource.image_url %}
+                            <div class="media-container">
+                                <img src="{{ resource.image_url }}" alt="Resource Image" class="responsive-image">
                             </div>
+                        {% else %}
+                            <div class="video-container">
+                                {{ resource.embed | safe }}
+                            </div>
+                        {% endif %}
+                        <div class="image-container">
+                            {% for script_id, script in resource.details.scripts_by_id.items() %}
+                                <div class="areas-resources">
+                                    {{ resource.areas_resources_display }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <h2>
+
+                            <strong>
+                                <a href="/resources/details/{{ resource.id }}">
+                                    {% if resource.title|length > 25 %}
+                                        {{ resource.title}}
+                                    {% else %}
+                                        {{ resource.title | strip_html }}
+                                    {% endif %}
+                                </a>
+                            </strong>
+                        </h2>
+                        <p>
+                            {% if resource.description|length > 100 %}
+                            {{ resource.description[:100] | strip_html ~ '...' }}
+                            {% else %}
+                            {{ resource.description | strip_html }}
+                            {% endif %}
+                        </p>
+                        <div class="buttons">
+                            <a href="/resources/details/{{ resource.id }}"><button>Ver recurso</button></a>
+                            {% if admin %}
+                            <a href="/resources/edit/{{ resource.id }}"><button>Editar recurso</button></a>
+                            <a href="/novaproposta/{{ resource.slug }}"><button>Adicionar proposta de operacionalização</button></a>
+                            {% endif %}
+                        </div>
+                        
+                        
+                        
+
+
+                    
+                        {% if resource.details and resource.details.formato_title %}
+                        <p class="formato_title">{{ resource.details.formato_title | strip_html }}</p>
+                        {% if resource.details and resource.details.formato_title %}
+                            {% if resource.details.formato_title == 'Vídeo/Animação' %}
+                                <p class="formato_title video">
+                                    {{ resource.duration | strip_html }}
+                                </p>
+                            {% endif %}
+                        {% endif %}
+
+                        {% set ciclos = [] %}
+
+                        {% for script_id, script in resource.details.scripts_by_id.items() %}
+                            {% if '1.º' in script.anos_resources or '2.º' in script.anos_resources or '3.º' in script.anos_resources or '4.º' in script.anos_resources %}
+                                {% set _ = ciclos.append('1º ciclo') %}
+                            {% endif %}
+                            {% if '5.º' in script.anos_resources or '6.º' in script.anos_resources %}
+                                {% set _ = ciclos.append('2º ciclo') %}
+                            {% endif %}
+                            {% if '7.º' in script.anos_resources or '8.º' in script.anos_resources or '9.º' in script.anos_resources %}
+                                {% set _ = ciclos.append('3º ciclo') %}
+                            {% endif %}
+                            {% if '10.º' in script.anos_resources or '11.º' in script.anos_resources or '12.º' in script.anos_resources %}
+                                {% set _ = ciclos.append('Secundário') %}
+                            {% endif %}
                         {% endfor %}
+
+                        {% set unique_ciclos = ciclos | unique %}
+
+                        <div class="ciclo-container">
+                            {% if unique_ciclos %}
+                                <p class="ciclo">{{ unique_ciclos | join(', ') }}</p>
+                            {% else %}
+                                <p class="ciclo">No cycle information found</p>
+                            {% endif %}
+                        </div>
+
+
+                        {% endif %}
+                        <p class="created_at">{{ resource.created_at }}</p>
                     </div>
-                    
-                    <h2>
-
-                        <strong>
-                            <a href="/resources/details/{{ resource.id }}">
-                                {% if resource.title|length > 25 %}
-                                    {{ resource.title}}
-                                {% else %}
-                                    {{ resource.title | strip_html }}
-                                {% endif %}
-                            </a>
-                        </strong>
-                    </h2>
-                    <p>
-                        {% if resource.description|length > 100 %}
-                        {{ resource.description[:100] | strip_html ~ '...' }}
-                        {% else %}
-                        {{ resource.description | strip_html }}
-                        {% endif %}
-                    </p>
-                    <div class="buttons">
-                        <a href="/resources/details/{{ resource.id }}"><button>Ver recurso</button></a>
-                        {% if admin %}
-                        <a href="/resources/edit/{{ resource.id }}"><button>Editar recurso</button></a>
-                        <a href="/novaproposta/{{ resource.slug }}"><button>Adicionar proposta de operacionalização</button></a>
-                        {% endif %}
-                    </div>
-                    
-                    
-                    
-
-
-                
-                    {% if resource.details and resource.details.formato_title %}
-                    <p class="formato_title">{{ resource.details.formato_title | strip_html }}</p>
-                    {% if resource.details and resource.details.formato_title %}
-                        {% if resource.details.formato_title == 'Vídeo/Animação' %}
-                            <p class="formato_title video">
-                                {{ resource.duration | strip_html }}
-                            </p>
-                        {% endif %}
-                    {% endif %}
-
-                    {% set ciclos = [] %}
-
-                    {% for script_id, script in resource.details.scripts_by_id.items() %}
-                        {% if '1.º' in script.anos_resources or '2.º' in script.anos_resources or '3.º' in script.anos_resources or '4.º' in script.anos_resources %}
-                            {% set _ = ciclos.append('1º ciclo') %}
-                        {% endif %}
-                        {% if '5.º' in script.anos_resources or '6.º' in script.anos_resources %}
-                            {% set _ = ciclos.append('2º ciclo') %}
-                        {% endif %}
-                        {% if '7.º' in script.anos_resources or '8.º' in script.anos_resources or '9.º' in script.anos_resources %}
-                            {% set _ = ciclos.append('3º ciclo') %}
-                        {% endif %}
-                        {% if '10.º' in script.anos_resources or '11.º' in script.anos_resources or '12.º' in script.anos_resources %}
-                            {% set _ = ciclos.append('Secundário') %}
-                        {% endif %}
-                    {% endfor %}
-
-                    {% set unique_ciclos = ciclos | unique %}
-
-                    <div class="ciclo-container">
-                        {% if unique_ciclos %}
-                            <p class="ciclo">{{ unique_ciclos | join(', ') }}</p>
-                        {% else %}
-                            <p class="ciclo">No cycle information found</p>
-                        {% endif %}
-                    </div>
-
-
-                    {% endif %}
-                    <p class="created_at">{{ resource.created_at }}</p>
-                </div>
+                </a>
                 {% endfor %}
+
             </div>
         </div>
         
