@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novo/Editar recurso - REDA</title>
+    <title>Editar proposta de operacionalização</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource2.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new_res_2.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
@@ -15,8 +17,19 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    <script src="https://cdn.tiny.cloud/1/agr3kxwxb5hnsedd9yd0re9bxz0346mtqq1xe1u6ethrlj9a/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <style>
+        .required {
+            position: relative;
+        }
+        .required::after {
+            content: '*';
+            position: absolute;
+            top: 0;
+            right: absolute;
+            color: red;
+            font-size: 1.4rem;
+            line-height: 0.3;
+        }
         .container2 {
             background-image: url('{{ url_for('static', filename='images/new-form-bg.jpg') }}');
             background-size: cover;
@@ -253,152 +266,17 @@
                 margin-bottom: 10px;
             }
         }
+        
     </style>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        let selectedDisciplinas = [];
-        let selectedDominios = [];
-        let selectedSubdominios = [];
-        let selectedConceitos = [];
     
-        // Fetch disciplinas based on selected anos
-        function fetchDisciplinas() {
-            let selectedAnos = $('input[name="anos"]:checked').map(function() {
-                return $(this).val();
-            }).get(); // Get array of selected anos
+
+
     
-            if (selectedAnos.length === 0) {
-                $('#disciplinasContainer, #dominiosContainer, #subdominiosContainer, #conceitosContainer').empty();
-                return; // No anos selected, exit function
-            }
-    
-            $.get('/fetch_disciplinas', { ano: selectedAnos.join(',') }, function(data) {
-                let disciplinasContainer = $('#disciplinasContainer');
-                disciplinasContainer.empty();
-    
-                data.sort(); // Sort disciplinas alphabetically
-    
-                data.forEach(function(disciplina) {
-                    let checked = selectedDisciplinas.includes(disciplina) ? 'checked' : '';
-                    disciplinasContainer.append(`
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="disciplina${disciplina}" name="disciplinas" value="${disciplina}" ${checked} onchange="fetchDominios()">
-                            <label for="disciplina${disciplina}">${disciplina}</label>
-                        </div>
-                    `);
-                });
-            });
-        }
-    
-        function fetchDominios() {
-            // Capture the current selected disciplinas
-            selectedDisciplinas = $('input[name="disciplinas"]:checked').map(function() {
-                return $(this).val();
-            }).get(); // Get array of selected disciplinas
-        
-            if (selectedDisciplinas.length === 0) {
-                $('#dominiosContainer, #subdominiosContainer, #conceitosContainer').empty();
-                return; // No disciplinas selected, exit function
-            }
-        
-            // Fetch new dominios based on selected disciplinas
-            $.get('/fetch_dominios', { disciplinas: selectedDisciplinas.join(',') }, function(data) {
-                let dominiosContainer = $('#dominiosContainer');
-                dominiosContainer.empty();
-        
-                // Sort dominios alphabetically
-                data.sort();
-        
-                data.forEach(function(dominio) {
-                    let checked = selectedDominios.includes(dominio) ? 'checked' : '';
-                    dominiosContainer.append(`
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="dominio${dominio}" name="dominios" value="${dominio}" ${checked} onchange="fetchSubdominios()">
-                            <label for="dominio${dominio}">${dominio}</label>
-                        </div>
-                    `);
-                });
-        
-                // Update selectedDominios with the current selections
-                selectedDominios = $('input[name="dominios"]:checked').map(function() {
-                    return $(this).val();
-                }).get();
-            });
-        }
-    
-        // Fetch subdominios based on selected dominios
-        function fetchSubdominios() {
-            selectedDominios = $('input[name="dominios"]:checked').map(function() {
-                return $(this).val();
-            }).get(); // Get array of selected dominios
-    
-            if (selectedDominios.length === 0) {
-                $('#subdominiosContainer, #conceitosContainer').empty();
-                return; // No dominios selected, exit function
-            }
-    
-            $.get('/fetch_subdominios', { dominios: selectedDominios.join(',') }, function(data) {
-                let subdominiosContainer = $('#subdominiosContainer');
-                subdominiosContainer.empty();
-    
-                data.sort(); // Sort subdominios alphabetically
-    
-                data.forEach(function(subdominio) {
-                    let checked = selectedSubdominios.includes(subdominio) ? 'checked' : '';
-                    subdominiosContainer.append(`
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="subdominio${subdominio}" name="subdominios" value="${subdominio}" ${checked} onchange="fetchConceitos()">
-                            <label for="subdominio${subdominio}">${subdominio}</label>
-                        </div>
-                    `);
-                });
-            });
-        }
-    
-        function fetchConceitos() {
-            const selectedSubdominios = $('input[name="subdominios"]:checked').map(function() {
-                return $(this).val();
-            }).get(); // Get array of selected subdominios
-        
-            if (selectedSubdominios.length === 0) {
-                $('#conceitosContainer').empty();
-                return; // No subdominios selected, exit function
-            }
-        
-            $.get('/fetch_conceitos', { subdominios: selectedSubdominios.join(',') }, function(data) {
-                let conceitosContainer = $('#conceitosContainer');
-                conceitosContainer.empty();
-        
-                data.sort(); // Sort conceitos alphabetically
-        
-                data.forEach(function(conceito) {
-                    const checked = selectedConceitos.includes(conceito) ? 'checked' : '';
-                    conceitosContainer.append(`
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="conceito_${conceito}" name="conceitos" value="${conceito}" ${checked}>
-                            <label for="conceito_${conceito}">${conceito}</label>
-                        </div>
-                    `);
-                });
-            })
-            .fail(function(error) {
-                console.error('Error fetching conceitos:', error);
-            });
-        }
-    
-        // Function to update the character counter
-        function updateCounter(editor) {
-            const maxLength = editor.getElement().maxLength || 2000;
-            const content = editor.getContent({ format: 'text' }).trim();
-            const currentLength = content.length;
-            const counterEle = document.getElementById('counter');
-            counterEle.innerHTML = `${currentLength}/${maxLength}`;
-        }
-    
-        
-    </script>
 </head>
 <body>
+    <!-- Header Section -->
     <div class="header-governo">
         <img src="{{ url_for('static', filename='images/logo.GOV-AZORES.2019.png') }}" alt="Governo dos Açores">
         <span> Esta é uma presença oficial do <a href="https://portal.azores.gov.pt">Governo dos Açores</a> </span>
@@ -442,75 +320,48 @@
     </header>
     <div class="container2">
         <h1>Editar proposta de operacionalização</h1>
-        <p> {{slug}} > <strong>Nova proposta de operacionalização</strong> </p>
+        <p>Detalhes > {{slug}} </p>
     </div>
+
     <main>
         <div class="container">
-            <h1>Detalhes</h1>
+    
             <form method="POST" enctype="multipart/form-data" action="/resources/edit2/{{ script_id }}">
-                <div class="input-group-escolaridade required">
-                    <div class="input-group-escolaridade required">
-                        <h2>Ano de Escolaridade:</h2>
-                        {% for ano in anos %}
-                            <input type="checkbox" id="ano{{ loop.index }}" name="anos" value="{{ ano }}"
-                                {% if ano in selected_anos %}checked{% endif %}>
-                            <label for="ano{{ loop.index }}">{{ ano }}</label>
-                        {% endfor %}
-                    </div>
-                    
+                <div class="ano-selection">
+                    {% for ano in anos %}
+                        <input type="checkbox" 
+                               id="ano{{ loop.index }}" 
+                               name="anos" 
+                               value="{{ ano }}" 
+                               class="ano-checkbox" 
+                               {% if ano in selected_anos %}checked{% endif %}>
+                        <label for="ano{{ loop.index }}">{{ ano }}</label>
+                    {% endfor %}
                 </div>
                 <hr></hr>
-            
-                <div class="input-group-disci required">
+    
+                <div class="disciplinas-list list-section">
                     <h2>Disciplinas:</h2>
-                    <div id="disciplinasContainer">
-                        {% for disciplina in all_disciplinas %}
-                            <input type="checkbox" id="disciplina{{ loop.index }}" name="disciplinas" value="{{ disciplina }}"
-                                {% if disciplina in selected_disciplinas %}checked{% endif %}>
-                            <label for="disciplina{{ loop.index }}">{{ disciplina }}</label>
-                        {% endfor %}
-                    </div>
+                    <ul id="disciplinasList"></ul>
                 </div>
                 <hr></hr>
-            
-                <!-- Dominios -->
-                <div class="input-group-domain required">
-                    <h2>Dominios:</h2>
-                    <div id="dominiosContainer">
-                        {% for dominio in all_dominios %}
-                            <input type="checkbox" id="dominio{{ loop.index }}" name="dominios" value="{{ dominio }}"
-                                {% if dominio in selected_dominios %}checked{% endif %}
-                                onchange="updateSubdominios()">
-                            <label for="dominio{{ loop.index }}">{{ dominio }}</label>
-                        {% endfor %}
-                    </div>
+                <div class="dominios-list list-section">
+                    <h2>Domínios:</h2>
+                    <ul id="dominiosList"></ul>
                 </div>
                 <hr></hr>
-
-                <!-- Subdominios -->
-                <div class="input-group-domain required">
-                    <h2>Subdominios:</h2>
-                    <div id="subdominiosContainer">
-                        {% for subdominio in all_subdominios %}
-                            <input type="checkbox" id="subdominio{{ loop.index }}" name="subdominios" value="{{ subdominio }}"
-                                {% if subdominio in selected_subdominios %}checked{% endif %}>
-                            <label for="subdominio{{ loop.index }}">{{ subdominio }}</label>
-                        {% endfor %}
-                    </div>
+                <div class="subdominios-list list-section">
+                    <h2>Subdomínios:</h2>
+                    <ul id="subdominiosList"></ul>
                 </div>
                 <hr></hr>
-                
-                <div class="input-group-domain required">
+                <div class="conceitos-list list-section">
                     <h2>Conceitos:</h2>
-                    <div id="conceitosContainer">
-                        {% for conceito in all_conceitos %}
-                            <input type="checkbox" id="conceito{{ loop.index }}" name="conceitos" value="{{ conceito }}"
-                                {% if conceito in selected_conceitos %}checked{% endif %}>
-                            <label for="conceito{{ loop.index }}">{{ conceito }}</label>
-                        {% endfor %}
-                    </div>
+                    <ul id="conceitosList"></ul>
                 </div>
+    
                 <hr></hr>
+    
                 <div class="input-group-conceitos">
                     <h2>Outros conceitos:</h2>
                     <div class="keyword-input-container">
@@ -521,18 +372,20 @@
                     <input type="hidden" name="keywords" id="keywords">
                     <small class="small-text">Deve escrever algumas palavras ou expressões, no mínimo de 5 palavras ou expressões.</small>
                 </div>
-                
-                
+    
                 <div class="input-group-descricao-proposta required">
                     <h2>Descrição da proposta de operacionalização:</h2>
                     <div id="editor-container" style="height: 300px;"></div>
-                    <textarea id="descricao" name="descricao" style="display: none;">{{ descricao }}</textarea>
+                    <textarea id="descricao" name="descricao" style="display: none;"></textarea>
                     <div id="counter"></div>
                     <small class="small-text">Deve ter no mínimo 20 caracteres e no máximo 2000</small>
                 </div>
-                
-                
-               
+    
+                <div class="file-section">
+                    <h2>Upload de Ficheiro (opcional):</h2>
+                    <input type="file" name="ficheiro" accept=".pdf,.doc,.docx,.txt,.zip,.jpg,.jpeg,.png,.gif,.csv,.xls,.xlsx,.ppt,.pptx">
+                </div>
+    
                 <!-- Terms and Conditions -->
                 <div class="terms-and-conditions">
                     <p><strong>Termos e condições</strong></p>
@@ -552,7 +405,7 @@
                     </div>
                 </div>
                 
-                <div class="accept-terms" required>
+                <div class="accept-terms">
                     <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
                     <label for="acceptTerms">Aceito os Termos e Condições</label>
                 </div>
@@ -560,40 +413,20 @@
                     <span class="text-danger">*</span>
                     Campo obrigatório
                 </small>
-                <form id="propostaForm" method="POST">
-                    <!-- Your form inputs here -->
-                    <input type="hidden" name="resource_id" value="{{ resource_id }}"> <!-- Add hidden field for resource_id -->
-                    <button type="submit">Gravar alterações</button> <!-- Change button text to reflect editing action -->
-                                 
-                </form>
-                <button onclick="goBack()">Cancelar</button>
-            </form>
-        </div>
-                
-    </main>
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeLoginModal()">&times;</span>
-            <i class="fas fa-user user-icon"></i>
-            <h2>Login</h2>
-            <form>
-                <div class="login-input">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="login-input">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="button-container">
-                    <button type="submit">Login</button>
-                </div>
-            </form>
-        </div>
-    </div>
     
-    <!-- Footer -->
+                <p id="loading" class="loading" style="display: none;">A Carregar...</p>
+    
+                <div class="submit-section">
+                    <button type="submit">Guardar alterações</button>
+                    
+
+                </div>
+            </form>
+            <button id="cancelButton" data-resource-id="{{ resource_id }}">Cancelar</button>
+    
+            
+        </div>
+    </main>
     <footer class="footer">
         <div class="container footer-container">
             <div class="footer-nav">
@@ -616,370 +449,444 @@
             <span> © Direção Regional da Educação - Secretaria Regional da Educação,Cultura e Desporto </span>
         </div>
     </footer>
+
+   
     <script>
-        // Function to show pop-up message
-        function showSuccessMessage() {
-            alert("Proposta atualizada com sucesso!");
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+            // Pre-fill disciplinas
+            const allDisciplinas = {{ all_disciplinas | tojson }};
+            const selectedDisciplinas = {{ selected_disciplinas | tojson }};
+            const disciplinasList = document.getElementById("disciplinasList");
     
-        // Function to redirect after 3 seconds
-        function redirectToResourceDetails(resource_id) {
-            setTimeout(function() {
-                window.location.href = `/resources/details/${resource_id}`;
-            }, 3000); // 3000 milliseconds = 3 seconds
-        }
+            disciplinasList.innerHTML = allDisciplinas.map(disciplina => `
+                <li>
+                    <input type="checkbox" name="disciplinas" value="${disciplina}" 
+                           ${selectedDisciplinas.includes(disciplina) ? "checked" : ""}>
+                    ${disciplina}
+                </li>
+            `).join("");
     
-        // Add event listener to form submission
-        document.getElementById("propostaForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent default form submission
+            // Pre-fill dominios
+            const allDominios = {{ all_dominios | tojson }};
+            const selectedDominios = {{ selected_dominios | tojson }};
+            const dominiosList = document.getElementById("dominiosList");
     
-            // Obtain resource_id from hidden field
-            const script_id = document.querySelector('input[name="script_id"]').value;
-            const resource_id = document.querySelector('input[name="resource_id"]').value;
+            dominiosList.innerHTML = allDominios.map(dominio => `
+                <li>
+                    <input type="checkbox" name="dominios" value="${dominio}" 
+                           ${selectedDominios.includes(dominio) ? "checked" : ""}>
+                    ${dominio}
+                </li>
+            `).join("");
     
-            // Perform AJAX request or any necessary form submission logic here
-            fetch(`/resources/edit2/${script_id}`, {
-                method: 'POST',
-                body: new FormData(event.target)
-            })
-            .then(response => {
-                if (response.ok) {
-                    showSuccessMessage(); // Show success pop-up
-                    redirectToResourceDetails(resource_id); // Redirect after 3 seconds
-                } else {
-                    alert('Erro ao atualizar proposta. Por favor, tente novamente.'); // Handle errors
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error); // Log any fetch errors
+            // Similarly handle subdominios and conceitos
+            const allSubdominios = {{ all_subdominios | tojson }};
+            const selectedSubdominios = {{ selected_subdominios | tojson }};
+            const subdominiosList = document.getElementById("subdominiosList");
+    
+            subdominiosList.innerHTML = allSubdominios.map(subdominio => `
+                <li>
+                    <input type="checkbox" name="subdominios" value="${subdominio}" 
+                           ${selectedSubdominios.includes(subdominio) ? "checked" : ""}>
+                    ${subdominio}
+                </li>
+            `).join("");
+    
+            const allConceitos = {{ all_conceitos | tojson }};
+            const selectedConceitos = {{ selected_conceitos | tojson }};
+            const conceitosList = document.getElementById("conceitosList");
+    
+            conceitosList.innerHTML = allConceitos.map(conceito => `
+                <li>
+                    <input type="checkbox" name="conceitos" value="${conceito}" 
+                           ${selectedConceitos.includes(conceito) ? "checked" : ""}>
+                    ${conceito}
+                </li>
+            `).join("");
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectedTags = {{ selected_tags | tojson }};
+            const keywordsContainer = document.getElementById("keywordsContainer");
+            const keywordsInput = document.getElementById("keywords");
+    
+            // Populate the container with existing tags
+            selectedTags.forEach(tag => {
+                const tagElement = document.createElement("div");
+                tagElement.className = "keyword-tag";
+                tagElement.innerText = tag;
+                keywordsContainer.appendChild(tagElement);
+            });
+    
+            // Update hidden input with tags
+            keywordsInput.value = selectedTags.join(',');
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            
+            const descricao = {{ descricao | tojson }};
+            quill.root.innerHTML = descricao; // Pre-fill the editor
+    
+            const textarea = document.getElementById("descricao");
+            quill.on('text-change', () => {
+                textarea.value = quill.root.innerHTML;
             });
         });
-        function goBack() {
-            window.history.back(); // Go back to the previous page
-        }
     </script>
-    
     <script>
-        // Initialize Quill editor
+        
         var quill = new Quill('#editor-container', {
-            theme: 'snow',  // Use 'snow' theme for a cleaner editor interface
+            theme: 'snow',
             modules: {
                 toolbar: [
                     ['bold', 'italic', 'underline'],
                     [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                     ['link', 'image'],
-                    ['clean']  // Remove formatting button.
+                    ['clean'] // Remove formatting button.
                 ]
             }
         });
 
-        // Load initial content from the hidden textarea into Quill
-        quill.root.innerHTML = document.getElementById('descricao').value;
-
-        // Sync Quill's content to the hidden textarea on text change
+        // Sync Quill's content to the hidden textarea
         quill.on('text-change', function() {
             document.getElementById('descricao').value = quill.root.innerHTML;
-            updateCounter();  // Update the character counter each time content changes
+            updateCounter();
         });
 
         // Function to update the character counter
         function updateCounter() {
             const maxLength = 2000;
-            const content = quill.getText().trim();  // Get plain text content
+            const content = quill.getText().trim();
             const currentLength = content.length;
             const counterEle = document.getElementById('counter');
-            counterEle.innerHTML = `${currentLength}/${maxLength}`;  // Display current and max length
-            
-            // Optional: Change counter color if content length is out of range
-            if (currentLength < 20 || currentLength > maxLength) {
-                counterEle.style.color = 'red';
-            } else {
-                counterEle.style.color = 'green';
-            }
+            counterEle.innerHTML = `${currentLength}/${maxLength}`;
         }
 
-        // Initialize counter on page load
-        updateCounter();
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Bind update functions to elements
-            document.querySelectorAll('input[name="anos"]').forEach(checkbox => {
-                checkbox.addEventListener('change', updateDisciplinas);
-            });
+        document.getElementById('resource-form').addEventListener('submit', function (event) {
+            // Update the textarea content with Quill's HTML content before form submission
+            document.getElementById('descricao').value = quill.root.innerHTML;
+        
+            // Get all checkboxes for each group
+            const anos = document.querySelectorAll('input[name="anos"]');
+            const disciplinas = document.querySelectorAll('#disciplinasContainer input[type="checkbox"]:checked');
+            const dominios = document.querySelectorAll('#dominiosContainer input[type="checkbox"]:checked');
+            const subdominios = document.querySelectorAll('#subdominiosContainer input[type="checkbox"]:checked');
+            const conceitos = document.querySelectorAll('#conceitosContainer input[type="checkbox"]:checked');
+        
+            // Validate textarea for descricao
+            const descricao = document.getElementById('descricao').value.trim();
+            const minDescricaoLength = 20; // Minimum length for descricao
+            const maxDescricaoLength = 2000; // Maximum length for descricao
+        
+            // Helper function to check if at least one checkbox is checked
+            function isChecked(checkboxes) {
+                return checkboxes.length > 0; // Now using the `:checked` selector ensures we count only selected checkboxes
+            }
+        
+            // Validate if at least one checkbox is checked for each group
+            if (!isChecked(anos)) {
+                alert('Para avançar, selecione pelo menos um "Ano de Escolaridade".');
+                event.preventDefault(); // Prevent form submission
+                return; // Exit the function
+            }
+            
+        
+            // Validate descricao
+            if (descricao.length < minDescricaoLength || descricao.length > maxDescricaoLength) {
+                alert(`Descrição deve ter entre ${minDescricaoLength} e ${maxDescricaoLength} caracteres.`);
+                event.preventDefault(); // Prevent form submission
+                return; // Exit the function
+            }
         });
         
-        // Function to initialize the event listeners for 'anos' checkboxes
-        function bindAnosCheckboxes() {
-            const anosCheckboxes = document.querySelectorAll('input[name="anos"]');
-            anosCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateAnos); // Trigger updateAnos on change
-            });
-        }
-
-        function updateAnos() {
-            const selectedAnos = Array.from(document.querySelectorAll('input[name="anos"]:checked'))
-                .map(checkbox => checkbox.value);
-            console.log('Selected Anos:', selectedAnos);
         
-            fetch(`/fetch_disciplinas?ano=${selectedAnos.join(',')}`)
-                .then(response => response.json())
-                .then(disciplinas => {
-                    const disciplinasContainer = document.getElementById('disciplinasContainer');
-                    const previouslyCheckedDisciplinas = Array.from(document.querySelectorAll('input[name="disciplinas"]:checked'))
-                        .map(checkbox => checkbox.value);
-        
-                    // Use a set to avoid adding duplicate disciplinas
-                    const uniqueDisciplinas = new Set();
-        
-                    disciplinas.forEach((disciplina, index) => {
-                        if (!uniqueDisciplinas.has(disciplina)) {
-                            uniqueDisciplinas.add(disciplina);
-        
-                            const checkbox = document.createElement('input');
-                            checkbox.type = 'checkbox';
-                            checkbox.id = `disciplina${index}`;
-                            checkbox.name = 'disciplinas';
-                            checkbox.value = disciplina;
-        
-                            checkbox.checked = previouslyCheckedDisciplinas.includes(disciplina);
-        
-                            checkbox.addEventListener('change', updateDominios);
-        
-                            const label = document.createElement('label');
-                            label.setAttribute('for', `disciplina${index}`);
-                            label.textContent = disciplina;
-        
-                            disciplinasContainer.appendChild(checkbox);
-                            disciplinasContainer.appendChild(label);
-                            disciplinasContainer.appendChild(document.createElement('br'));
-                        }
-                    });
-                })
-                .catch(error => console.error('Error fetching disciplinas:', error));
-        }
-        
-        function updateDominios() {
-            const selectedDisciplinas = Array.from(document.querySelectorAll('input[name="disciplinas"]:checked'))
-                .map(checkbox => checkbox.value);
-        
-            const previouslyCheckedDominios = Array.from(document.querySelectorAll('input[name="dominios"]:checked'))
-                .map(checkbox => checkbox.value);
-        
-            if (selectedDisciplinas.length === 0) {
-                document.getElementById('dominiosContainer').innerHTML = '';
-                document.getElementById('subdominiosContainer').innerHTML = '';
-                return;
-            }
-        
-            fetch(`/fetch_dominios?disciplina=${selectedDisciplinas.join(',')}`)
-                .then(response => response.json())
-                .then(dominios => {
-                    const dominiosContainer = document.getElementById('dominiosContainer');
-                    const uniqueDominios = new Set();
-        
-                    dominios.forEach((dominio, index) => {
-                        if (!uniqueDominios.has(dominio)) {
-                            uniqueDominios.add(dominio);
-        
-                            const checkbox = document.createElement('input');
-                            checkbox.type = 'checkbox';
-                            checkbox.id = `dominio${index}`;
-                            checkbox.name = 'dominios';
-                            checkbox.value = dominio;
-        
-                            checkbox.checked = previouslyCheckedDominios.includes(dominio);
-        
-                            checkbox.addEventListener('change', updateSubdominios);
-        
-                            const label = document.createElement('label');
-                            label.setAttribute('for', `dominio${index}`);
-                            label.textContent = dominio;
-        
-                            dominiosContainer.appendChild(checkbox);
-                            dominiosContainer.appendChild(label);
-                            dominiosContainer.appendChild(document.createElement('br'));
-                        }
-                    });
-        
-                    updateSubdominios();
-                })
-                .catch(error => console.error('Error fetching dominios:', error));
-        }
-        
-        function updateSubdominios() {
-            const selectedDominios = Array.from(document.querySelectorAll('input[name="dominios"]:checked'))
-                .map(checkbox => checkbox.value);
-        
-            const previouslyCheckedSubdominios = Array.from(document.querySelectorAll('input[name="subdominios"]:checked'))
-                .map(checkbox => checkbox.value);
-        
-            if (selectedDominios.length === 0) {
-                document.getElementById('subdominiosContainer').innerHTML = '';
-                document.getElementById('conceitosContainer').innerHTML = '';
-                return;
-            }
-        
-            fetch(`/fetch_subdominios?dominios=${selectedDominios.join(',')}`)
-                .then(response => response.json())
-                .then(subdominios => {
-                    const subdominiosContainer = document.getElementById('subdominiosContainer');
-                    const uniqueSubdominios = new Set();
-        
-                    subdominios.forEach((subdominio, index) => {
-                        if (!uniqueSubdominios.has(subdominio)) {
-                            uniqueSubdominios.add(subdominio);
-        
-                            const checkbox = document.createElement('input');
-                            checkbox.type = 'checkbox';
-                            checkbox.id = `subdominio${index}`;
-                            checkbox.name = 'subdominios';
-                            checkbox.value = subdominio;
-        
-                            checkbox.checked = previouslyCheckedSubdominios.includes(subdominio);
-        
-                            checkbox.addEventListener('change', updateConceitos);
-        
-                            const label = document.createElement('label');
-                            label.setAttribute('for', `subdominio${index}`);
-                            label.textContent = subdominio;
-        
-                            subdominiosContainer.appendChild(checkbox);
-                            subdominiosContainer.appendChild(label);
-                            subdominiosContainer.appendChild(document.createElement('br'));
-                        }
-                    });
-        
-                    updateConceitos();
-                })
-                .catch(error => console.error('Error fetching subdominios:', error));
-        }
-        
-        function updateConceitos() {
-            const selectedSubdominios = Array.from(document.querySelectorAll('input[name="subdominios"]:checked'))
-                .map(checkbox => checkbox.value);
-        
-            const previouslyCheckedConceitos = Array.from(document.querySelectorAll('input[name="conceitos"]:checked'))
-                .map(checkbox => checkbox.value);
-        
-            if (selectedSubdominios.length === 0) {
-                document.getElementById('conceitosContainer').innerHTML = '';
-                return;
-            }
-        
-            fetch(`/fetch_conceitos?subdominios=${selectedSubdominios.join(',')}`)
-                .then(response => response.json())
-                .then(conceitos => {
-                    const conceitosContainer = document.getElementById('conceitosContainer');
-                    const uniqueConceitos = new Set();
-        
-                    conceitos.forEach((conceito, index) => {
-                        if (!uniqueConceitos.has(conceito)) {
-                            uniqueConceitos.add(conceito);
-        
-                            const checkbox = document.createElement('input');
-                            checkbox.type = 'checkbox';
-                            checkbox.id = `conceito_${conceito}`;
-                            checkbox.name = 'conceitos';
-                            checkbox.value = conceito;
-        
-                            checkbox.checked = previouslyCheckedConceitos.includes(conceito);
-        
-                            const label = document.createElement('label');
-                            label.setAttribute('for', checkbox.id);
-                            label.textContent = conceito;
-        
-                            conceitosContainer.appendChild(checkbox);
-                            conceitosContainer.appendChild(label);
-                            conceitosContainer.appendChild(document.createElement('br'));
-                        }
-                    });
-                })
-                .catch(error => console.error('Error fetching conceitos:', error));
-        }
     </script>
     <script>
-        function checkEnterKey(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default action (like form submission)
-                addKeyword(); // Trigger the same function as the "Adicionar" button
-            }
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const keywordsContainer = document.getElementById("keywordsContainer");
+            const keywordInput = document.getElementById("keywordInput");
+            const keywordsHiddenInput = document.getElementById("hiddenKeywords");
     
-        // Initialize the keywords array with selected tags from the backend
-        let keywords = [{% for tag in selected_tags %}"{{ tag }}"{% if not loop.last %}, {% endif %}{% endfor %}]; 
-
-        // Function to display existing keywords on page load
-        function displayKeywords() {
-            const keywordsContainer = document.getElementById('keywordsContainer');
-            keywords.forEach(keyword => {
-                const keywordSpan = document.createElement('span');
-                keywordSpan.className = 'keyword';
-                keywordSpan.textContent = keyword;
-
-                const removeButton = document.createElement('button');
-                removeButton.textContent = 'x'; // Button to remove the keyword
-                removeButton.onclick = function() {
-                    keywordSpan.remove(); // Remove the keyword span from DOM
-                    keywords = keywords.filter(k => k !== keyword); // Remove from array
-                    updateHiddenInput(); // Update hidden input field
-                };
-
-                keywordSpan.appendChild(removeButton);
-                keywordsContainer.appendChild(keywordSpan);
-            });
-            updateHiddenInput(); // Update hidden input field with initial list of keywords
-        }
-
-        // Function to add a new keyword
-        function addKeyword() {
-            const keywordInput = document.getElementById('keywordInput');
-            const keywordsContainer = document.getElementById('keywordsContainer');
-            const keyword = keywordInput.value.trim();
-
-            if (keyword === '' || keywords.includes(keyword)) {
-                return; // Exit if no keyword entered or if it's a duplicate
+            // Initialize keywords from preselected values
+            let keywords = {{ selected_tags | tojson }} || [];
+    
+            // Function to populate the keywords container
+            function populateKeywords() {
+                keywordsContainer.innerHTML = ''; // Clear existing keywords
+                keywords.forEach(keyword => {
+                    const keywordSpan = document.createElement('span');
+                    keywordSpan.className = 'keyword';
+                    keywordSpan.textContent = keyword;
+    
+                    const removeButton = document.createElement('button');
+                    removeButton.textContent = 'x';
+                    removeButton.className = 'remove-button';
+                    removeButton.onclick = function () {
+                        removeKeyword(keyword);
+                    };
+    
+                    keywordSpan.appendChild(removeButton);
+                    keywordsContainer.appendChild(keywordSpan);
+                });
+    
+                // Update the hidden input
+                keywordsHiddenInput.value = keywords.join(',');
             }
-
-            keywords.push(keyword);
-            keywordInput.value = ''; // Clear the input
-
-            // Create the keyword span with remove button
-            const keywordSpan = document.createElement('span');
-            keywordSpan.className = 'keyword';
-            keywordSpan.textContent = keyword;
-
-            const removeButton = document.createElement('button');
-            removeButton.textContent = 'x';
-            removeButton.onclick = function() {
-                keywordSpan.remove();
+    
+            // Function to add a new keyword
+            function addKeyword() {
+                const newKeyword = keywordInput.value.trim();
+                if (newKeyword && !keywords.includes(newKeyword)) {
+                    keywords.push(newKeyword);
+                    populateKeywords();
+                }
+                keywordInput.value = ''; // Clear the input field
+            }
+    
+            // Function to remove a keyword
+            function removeKeyword(keyword) {
                 keywords = keywords.filter(k => k !== keyword);
-                updateHiddenInput();
-            };
-
-            keywordSpan.appendChild(removeButton);
-            keywordsContainer.appendChild(keywordSpan);
-
-            updateHiddenInput();
-        }
-
-        // Function to update the hidden input field with the list of keywords
-        function updateHiddenInput() {
-            const hiddenKeywordsInput = document.getElementById('keywords');
-            hiddenKeywordsInput.value = keywords.join(',');
-        }
-
-        // Function to handle Enter key press
-        function checkEnterKey(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                addKeyword();
+                populateKeywords();
             }
-        }
-
-        // Call displayKeywords on page load to show initial tags
-        document.addEventListener("DOMContentLoaded", displayKeywords);
+    
+            // Event listener for the input field (handle Enter key)
+            keywordInput.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    addKeyword();
+                }
+            });
+    
+            // Initial population of keywords
+            populateKeywords();
+    
+            // Add button click event
+            document.getElementById('addKeywordButton').addEventListener('click', addKeyword);
+        });
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const anoCheckboxes = document.querySelectorAll(".ano-checkbox");
+            const disciplinasList = document.getElementById("disciplinasList");
+            const dominiosList = document.getElementById("dominiosList");
+            const subdominiosList = document.getElementById("subdominiosList");
+            const conceitosList = document.getElementById("conceitosList");
+            const form = document.querySelector("form");
+    
+            const loadingIndicator = document.getElementById("loading");
+    
+            let selectedDisciplinas = {{ selected_disciplinas | tojson }};
+            let selectedDominios = {{ selected_dominios | tojson }};
+            let selectedSubdominios = {{ selected_subdominios | tojson }};
+            let selectedConceitos = {{ selected_conceitos | tojson }};
+    
+            function fetchDisciplinas() {
+                const selectedAnos = Array.from(anoCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value)
+                    .join(";");
+    
+                // Clear fields if no years are selected
+                if (!selectedAnos) {
+                    disciplinasList.innerHTML = "<li>Nenhuma disciplina selecionada.</li>";
+                    dominiosList.innerHTML = "";
+                    subdominiosList.innerHTML = "";
+                    conceitosList.innerHTML = "";
+                    selectedDisciplinas = [];
+                    selectedDominios = [];
+                    selectedSubdominios = [];
+                    selectedConceitos = [];
+                    return;
+                }
+    
+                if (loadingIndicator) loadingIndicator.style.display = "block";
+    
+                fetch(`/fetch_disciplinas?ano=${selectedAnos}`)
+                    .then(response => response.json())
+                    .then(disciplinas => {
+                        if (loadingIndicator) loadingIndicator.style.display = "none";
+                        updateList(disciplinasList, disciplinas, selectedDisciplinas, "disciplina", attachDisciplinaListeners);
+                    })
+                    .catch(() => {
+                        if (loadingIndicator) loadingIndicator.style.display = "none";
+                        disciplinasList.innerHTML = "<li>Erro ao carregar disciplinas.</li>";
+                    });
+            }
+    
+            function fetchDominios() {
+                const selectedDisciplinasString = selectedDisciplinas.join(";");
+                if (loadingIndicator) loadingIndicator.style.display = "block";
+    
+                fetch(`/fetch_dominios?disciplinas=${selectedDisciplinasString}`)
+                    .then(response => response.json())
+                    .then(dominios => {
+                        if (loadingIndicator) loadingIndicator.style.display = "none";
+                        updateList(dominiosList, dominios, selectedDominios, "dominio", attachDominioListeners);
+                    })
+                    .catch(() => {
+                        if (loadingIndicator) loadingIndicator.style.display = "none";
+                        dominiosList.innerHTML = "<li>Erro ao carregar domínios.</li>";
+                    });
+            }
+    
+            function fetchSubdominios() {
+                const selectedDominiosString = selectedDominios.join(";");
+                if (loadingIndicator) loadingIndicator.style.display = "block";
+    
+                fetch(`/fetch_subdominios?dominios=${selectedDominiosString}`)
+                    .then(response => response.json())
+                    .then(subdominios => {
+                        if (loadingIndicator) loadingIndicator.style.display = "none";
+                        updateList(subdominiosList, subdominios, selectedSubdominios, "subdominio", attachSubdominioListeners);
+                    })
+                    .catch(() => {
+                        if (loadingIndicator) loadingIndicator.style.display = "none";
+                        subdominiosList.innerHTML = "<li>Erro ao carregar subdomínios.</li>";
+                    });
+            }
+    
+            function fetchConceitos() {
+                const selectedSubdominiosString = selectedSubdominios.join(";");
+                if (loadingIndicator) loadingIndicator.style.display = "block";
+    
+                fetch(`/fetch_conceitos?subdominios=${selectedSubdominiosString}`)
+                    .then(response => response.json())
+                    .then(conceitos => {
+                        if (loadingIndicator) loadingIndicator.style.display = "none";
+                        updateList(conceitosList, conceitos, selectedConceitos, "conceito", attachConceitoListeners);
+                    })
+                    .catch(() => {
+                        if (loadingIndicator) loadingIndicator.style.display = "none";
+                        conceitosList.innerHTML = "<li>Erro ao carregar conceitos.</li>";
+                    });
+            }
+    
+            function updateList(listElement, newItems, selectedItems, itemType, attachListenersCallback) {
+                listElement.innerHTML = newItems
+                    .map(item => `
+                        <li>
+                            <input type="checkbox" value="${item}" class="${itemType}-checkbox"
+                                   ${selectedItems.includes(item) ? "checked" : ""}> 
+                            ${item}
+                        </li>
+                    `)
+                    .join("");
+            
+                attachListenersCallback();
+            }
+    
+            function attachDisciplinaListeners() {
+                const disciplinaCheckboxes = document.querySelectorAll(".disciplina-checkbox");
+                disciplinaCheckboxes.forEach(checkbox => {
+                    checkbox.checked = selectedDisciplinas.includes(checkbox.value);
+                    checkbox.addEventListener("change", function () {
+                        if (checkbox.checked) {
+                            if (!selectedDisciplinas.includes(checkbox.value)) {
+                                selectedDisciplinas.push(checkbox.value);
+                            }
+                        } else {
+                            selectedDisciplinas = selectedDisciplinas.filter(d => d !== checkbox.value);
+                        }
+                        fetchDominios();
+                    });
+                });
+            }
+    
+            function attachDominioListeners() {
+                const dominioCheckboxes = document.querySelectorAll(".dominio-checkbox");
+                dominioCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener("change", function () {
+                        if (checkbox.checked) {
+                            if (!selectedDominios.includes(checkbox.value)) {
+                                selectedDominios.push(checkbox.value);
+                            }
+                        } else {
+                            selectedDominios = selectedDominios.filter(d => d !== checkbox.value);
+                        }
+                        fetchSubdominios();
+                    });
+                });
+            }
+    
+            function attachSubdominioListeners() {
+                const subdominioCheckboxes = document.querySelectorAll(".subdominio-checkbox");
+                subdominioCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener("change", function () {
+                        if (checkbox.checked) {
+                            if (!selectedSubdominios.includes(checkbox.value)) {
+                                selectedSubdominios.push(checkbox.value);
+                            }
+                        } else {
+                            selectedSubdominios = selectedSubdominios.filter(s => s !== checkbox.value);
+                        }
+                        fetchConceitos();
+                    });
+                });
+            }
+    
+            function attachConceitoListeners() {
+                const conceitoCheckboxes = document.querySelectorAll(".conceito-checkbox");
+                conceitoCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener("change", function () {
+                        if (checkbox.checked) {
+                            if (!selectedConceitos.includes(checkbox.value)) {
+                                selectedConceitos.push(checkbox.value);
+                            }
+                        } else {
+                            selectedConceitos = selectedConceitos.filter(c => c !== checkbox.value);
+                        }
+                    });
+                });
+            }
+    
+            anoCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", fetchDisciplinas);
+            });
+    
+            form.addEventListener("submit", function () {
+                const existingInputs = form.querySelectorAll("input[name='disciplinas'], input[name='dominios'], input[name='subdominios'], input[name='conceitos']");
+                existingInputs.forEach(input => input.remove());
+    
+                selectedDisciplinas.forEach(disciplina => {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "disciplinas";
+                    input.value = disciplina;
+                    form.appendChild(input);
+                });
+    
+                selectedDominios.forEach(dominio => {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "dominios";
+                    input.value = dominio;
+                    form.appendChild(input);
+                });
+    
+                selectedSubdominios.forEach(subdominio => {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "subdominios";
+                    input.value = subdominio;
+                    form.appendChild(input);
+                });
+    
+                selectedConceitos.forEach(conceito => {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "conceitos";
+                    input.value = conceito;
+                    form.appendChild(input);
+                });
+            });
+            document.getElementById("cancelButton").addEventListener("click", function(event) {
+                const resource_id = event.target.getAttribute("data-resource-id");
+                window.location.href = `/resources/details/${resource_id}`;
+            });
+        });
+    </script>
+    
 </body>
 </html>

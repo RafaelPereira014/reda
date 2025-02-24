@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disciplinas, Domínios, Subdomínios e Conceitos</title>
+    <title>Nova proposta de operacionalização</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/new_resource.css') }}">
@@ -326,7 +326,7 @@
     <main>
         <div class="container">
     
-            <form id="resource-form"  action="{{ url_for('novo_recurso2') }}" method="POST" enctype="multipart/form-data">
+            <form id="proposta-form"  action="/novaproposta/{{slug}}" method="POST" enctype="multipart/form-data">
                 <div class="ano-selection">
                     {% for ano in anos %}
                         <input type="checkbox" id="ano{{ loop.index }}" name="anos" value="{{ ano }}" class="ano-checkbox">
@@ -401,7 +401,7 @@
                 </div>
                 
                 <div class="accept-terms">
-                    <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+                    <input type="checkbox" id="acceptTerms" name="acceptTerms" >
                     <label for="acceptTerms">Aceito os Termos e Condições</label>
                 </div>
                 <small class="small-text">
@@ -453,133 +453,119 @@
             const subdominiosList = document.getElementById("subdominiosList");
             const conceitosList = document.getElementById("conceitosList");
             const form = document.querySelector("form");
-        
+    
             const loadingIndicator = document.getElementById("loading");
-        
+    
             let selectedDisciplinas = [];
             let selectedDominios = [];
             let selectedSubdominios = [];
             let selectedConceitos = [];
-        
+    
             function fetchDisciplinas() {
                 const selectedAnos = Array.from(anoCheckboxes)
                     .filter(checkbox => checkbox.checked)
                     .map(checkbox => checkbox.value)
                     .join(";");
-        
-                disciplinasList.innerHTML = "";
-                selectedDisciplinas = [];
-                selectedDominios = [];
-                selectedSubdominios = [];
-                selectedConceitos = [];
+    
+                // Clear fields if no years are selected
+                if (!selectedAnos) {
+                    disciplinasList.innerHTML = "<li>Nenhuma disciplina selecionada.</li>";
+                    dominiosList.innerHTML = "";
+                    subdominiosList.innerHTML = "";
+                    conceitosList.innerHTML = "";
+                    selectedDisciplinas = [];
+                    selectedDominios = [];
+                    selectedSubdominios = [];
+                    selectedConceitos = [];
+                    return;
+                }
+    
                 if (loadingIndicator) loadingIndicator.style.display = "block";
-        
+    
                 fetch(`/fetch_disciplinas?ano=${selectedAnos}`)
                     .then(response => response.json())
                     .then(disciplinas => {
                         if (loadingIndicator) loadingIndicator.style.display = "none";
-                        if (disciplinas.length) {
-                            disciplinasList.innerHTML = disciplinas
-                                .map(d => `<li><input type="checkbox" value="${d}" class="disciplina-checkbox"> ${d}</li>`)
-                                .join("");
-                            attachDisciplinaListeners();
-                        } else {
-                            disciplinasList.innerHTML = "<li>Nenhuma disciplina encontrada.</li>";
-                        }
+                        updateList(disciplinasList, disciplinas, selectedDisciplinas, "disciplina", attachDisciplinaListeners);
                     })
                     .catch(() => {
                         if (loadingIndicator) loadingIndicator.style.display = "none";
                         disciplinasList.innerHTML = "<li>Erro ao carregar disciplinas.</li>";
                     });
             }
-        
+    
             function fetchDominios() {
                 const selectedDisciplinasString = selectedDisciplinas.join(";");
-                dominiosList.innerHTML = "";
-                subdominiosList.innerHTML = "";
-                conceitosList.innerHTML = "";
-                selectedDominios = [];
-                selectedSubdominios = [];
-                selectedConceitos = [];
                 if (loadingIndicator) loadingIndicator.style.display = "block";
-        
+    
                 fetch(`/fetch_dominios?disciplinas=${selectedDisciplinasString}`)
                     .then(response => response.json())
                     .then(dominios => {
                         if (loadingIndicator) loadingIndicator.style.display = "none";
-                        if (dominios.length) {
-                            dominiosList.innerHTML = dominios
-                                .map(d => `<li><input type="checkbox" value="${d}" class="dominio-checkbox"> ${d}</li>`)
-                                .join("");
-                            attachDominioListeners();
-                        } else {
-                            dominiosList.innerHTML = "<li>Nenhum domínio encontrado.</li>";
-                        }
+                        updateList(dominiosList, dominios, selectedDominios, "dominio", attachDominioListeners);
                     })
                     .catch(() => {
                         if (loadingIndicator) loadingIndicator.style.display = "none";
                         dominiosList.innerHTML = "<li>Erro ao carregar domínios.</li>";
                     });
             }
-        
+    
             function fetchSubdominios() {
                 const selectedDominiosString = selectedDominios.join(";");
-                subdominiosList.innerHTML = "";
-                conceitosList.innerHTML = "";
-                selectedSubdominios = [];
-                selectedConceitos = [];
                 if (loadingIndicator) loadingIndicator.style.display = "block";
-        
+    
                 fetch(`/fetch_subdominios?dominios=${selectedDominiosString}`)
                     .then(response => response.json())
                     .then(subdominios => {
                         if (loadingIndicator) loadingIndicator.style.display = "none";
-                        if (subdominios.length) {
-                            subdominiosList.innerHTML = subdominios
-                                .map(s => `<li><input type="checkbox" value="${s}" class="subdominio-checkbox"> ${s}</li>`)
-                                .join("");
-                            attachSubdominioListeners();
-                        } else {
-                            subdominiosList.innerHTML = "<li>Nenhum subdomínio encontrado.</li>";
-                        }
+                        updateList(subdominiosList, subdominios, selectedSubdominios, "subdominio", attachSubdominioListeners);
                     })
                     .catch(() => {
                         if (loadingIndicator) loadingIndicator.style.display = "none";
                         subdominiosList.innerHTML = "<li>Erro ao carregar subdomínios.</li>";
                     });
             }
-        
+    
             function fetchConceitos() {
                 const selectedSubdominiosString = selectedSubdominios.join(";");
-                conceitosList.innerHTML = "";
                 if (loadingIndicator) loadingIndicator.style.display = "block";
-            
+    
                 fetch(`/fetch_conceitos?subdominios=${selectedSubdominiosString}`)
                     .then(response => response.json())
                     .then(conceitos => {
-                        console.log(conceitos); // Log the fetched conceitos
                         if (loadingIndicator) loadingIndicator.style.display = "none";
-                        if (conceitos.length) {
-                            conceitosList.innerHTML = conceitos
-                                .map(c => `<li><input type="checkbox" value="${c}" class="conceito-checkbox"> ${c}</li>`)
-                                .join("");
-                            attachConceitoListeners();
-                        } else {
-                            conceitosList.innerHTML = "<li>Nenhum conceito encontrado.</li>";
-                        }
+                        updateList(conceitosList, conceitos, selectedConceitos, "conceito", attachConceitoListeners);
                     })
                     .catch(() => {
                         if (loadingIndicator) loadingIndicator.style.display = "none";
                         conceitosList.innerHTML = "<li>Erro ao carregar conceitos.</li>";
                     });
             }
-        
+    
+            function updateList(listElement, newItems, selectedItems, itemType, attachListenersCallback) {
+                // Filter out items that are no longer relevant
+                selectedItems = selectedItems.filter(item => newItems.includes(item));
+    
+                listElement.innerHTML = newItems
+                    .map(
+                        item =>
+                            `<li><input type="checkbox" value="${item}" class="${itemType}-checkbox" ${
+                                selectedItems.includes(item) ? "checked" : ""
+                            }> ${item}</li>`
+                    )
+                    .join("");
+    
+                attachListenersCallback();
+            }
+    
             function attachDisciplinaListeners() {
                 const disciplinaCheckboxes = document.querySelectorAll(".disciplina-checkbox");
                 disciplinaCheckboxes.forEach(checkbox => {
                     checkbox.addEventListener("change", function () {
                         if (checkbox.checked) {
-                            selectedDisciplinas.push(checkbox.value);
+                            if (!selectedDisciplinas.includes(checkbox.value)) {
+                                selectedDisciplinas.push(checkbox.value);
+                            }
                         } else {
                             selectedDisciplinas = selectedDisciplinas.filter(d => d !== checkbox.value);
                         }
@@ -587,13 +573,15 @@
                     });
                 });
             }
-        
+    
             function attachDominioListeners() {
                 const dominioCheckboxes = document.querySelectorAll(".dominio-checkbox");
                 dominioCheckboxes.forEach(checkbox => {
                     checkbox.addEventListener("change", function () {
                         if (checkbox.checked) {
-                            selectedDominios.push(checkbox.value);
+                            if (!selectedDominios.includes(checkbox.value)) {
+                                selectedDominios.push(checkbox.value);
+                            }
                         } else {
                             selectedDominios = selectedDominios.filter(d => d !== checkbox.value);
                         }
@@ -601,13 +589,15 @@
                     });
                 });
             }
-        
+    
             function attachSubdominioListeners() {
                 const subdominioCheckboxes = document.querySelectorAll(".subdominio-checkbox");
                 subdominioCheckboxes.forEach(checkbox => {
                     checkbox.addEventListener("change", function () {
                         if (checkbox.checked) {
-                            selectedSubdominios.push(checkbox.value);
+                            if (!selectedSubdominios.includes(checkbox.value)) {
+                                selectedSubdominios.push(checkbox.value);
+                            }
                         } else {
                             selectedSubdominios = selectedSubdominios.filter(s => s !== checkbox.value);
                         }
@@ -615,26 +605,30 @@
                     });
                 });
             }
+    
             function attachConceitoListeners() {
                 const conceitoCheckboxes = document.querySelectorAll(".conceito-checkbox");
                 conceitoCheckboxes.forEach(checkbox => {
                     checkbox.addEventListener("change", function () {
                         if (checkbox.checked) {
-                            selectedConceitos.push(checkbox.value);
+                            if (!selectedConceitos.includes(checkbox.value)) {
+                                selectedConceitos.push(checkbox.value);
+                            }
                         } else {
                             selectedConceitos = selectedConceitos.filter(c => c !== checkbox.value);
                         }
                     });
                 });
             }
-        
-            // Add hidden input fields for selected disciplinas, dominios, subdominios, and conceitos before form submission
-            form.addEventListener("submit", function (event) {
-                // Remove previous hidden inputs
+    
+            anoCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", fetchDisciplinas);
+            });
+    
+            form.addEventListener("submit", function () {
                 const existingInputs = form.querySelectorAll("input[name='disciplinas'], input[name='dominios'], input[name='subdominios'], input[name='conceitos']");
                 existingInputs.forEach(input => input.remove());
-        
-                // Add new hidden input fields for each selected item
+    
                 selectedDisciplinas.forEach(disciplina => {
                     const input = document.createElement("input");
                     input.type = "hidden";
@@ -642,7 +636,7 @@
                     input.value = disciplina;
                     form.appendChild(input);
                 });
-        
+    
                 selectedDominios.forEach(dominio => {
                     const input = document.createElement("input");
                     input.type = "hidden";
@@ -650,7 +644,7 @@
                     input.value = dominio;
                     form.appendChild(input);
                 });
-        
+    
                 selectedSubdominios.forEach(subdominio => {
                     const input = document.createElement("input");
                     input.type = "hidden";
@@ -658,7 +652,6 @@
                     input.value = subdominio;
                     form.appendChild(input);
                 });
-        
     
                 selectedConceitos.forEach(conceito => {
                     const input = document.createElement("input");
@@ -668,16 +661,10 @@
                     form.appendChild(input);
                 });
             });
-        
-            anoCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener("change", fetchDisciplinas);
+            document.getElementById("cancelButton").addEventListener("click", function(event) {
+                const resource_id = event.target.getAttribute("data-resource-id");
+                window.location.href = `/resources/details/${resource_id}`;
             });
-        });
-
-        // Cancel button functionality
-        document.getElementById("cancelButton").addEventListener("click", function(event) {
-            const resource_id = event.target.getAttribute("data-resource-id");
-            window.location.href = `/resources/details/${resource_id}`;
         });
     </script>
     <script>
@@ -709,46 +696,57 @@
             counterEle.innerHTML = `${currentLength}/${maxLength}`;
         }
 
-        document.getElementById('resource-form').addEventListener('submit', function (event) {
-            // Update the textarea content with Quill's HTML content before form submission
-            document.getElementById('descricao').value = quill.root.innerHTML;
         
-            // Get all checkboxes for each group
-            const anos = document.querySelectorAll('input[name="anos"]');
-            const disciplinas = document.querySelectorAll('#disciplinasContainer input[type="checkbox"]:checked');
-            const dominios = document.querySelectorAll('#dominiosContainer input[type="checkbox"]:checked');
-            const subdominios = document.querySelectorAll('#subdominiosContainer input[type="checkbox"]:checked');
-            const conceitos = document.querySelectorAll('#conceitosContainer input[type="checkbox"]:checked');
-        
-            // Validate textarea for descricao
-            const descricao = document.getElementById('descricao').value.trim();
-            const minDescricaoLength = 20; // Minimum length for descricao
-            const maxDescricaoLength = 2000; // Maximum length for descricao
-        
-            // Helper function to check if at least one checkbox is checked
-            function isChecked(checkboxes) {
-                return checkboxes.length > 0; // Now using the `:checked` selector ensures we count only selected checkboxes
-            }
-        
-            // Validate if at least one checkbox is checked for each group
-            if (!isChecked(anos)) {
-                alert('Para avançar, selecione pelo menos um "Ano de Escolaridade".');
-                event.preventDefault(); // Prevent form submission
-                return; // Exit the function
-            }
-            
-        
-            // Validate descricao
-            if (descricao.length < minDescricaoLength || descricao.length > maxDescricaoLength) {
-                alert(`Descrição deve ter entre ${minDescricaoLength} e ${maxDescricaoLength} caracteres.`);
-                event.preventDefault(); // Prevent form submission
-                return; // Exit the function
-            }
-        });
         
         
     </script>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById('proposta-form');
+            const descricaoField = document.getElementById('descricao');
+            const quillEditor = quill; // Assuming quill is defined elsewhere
+    
+            // Function to check if at least one checkbox is selected
+            function isChecked(checkboxes) {
+                return Array.from(checkboxes).some(checkbox => checkbox.checked);
+            }
+    
+            form.addEventListener('submit', function (event) {
+                // Update the textarea with Quill's HTML content
+                if (quillEditor) {
+                    descricaoField.value = quillEditor.root.innerHTML;
+                }
+    
+                // Get the selected checkboxes
+                const anos = document.querySelectorAll('input[name="anos"]');
+                const disciplinas = document.querySelectorAll('#disciplinasContainer input[type="checkbox"]:checked');
+                const dominios = document.querySelectorAll('#dominiosContainer input[type="checkbox"]:checked');
+                const subdominios = document.querySelectorAll('#subdominiosContainer input[type="checkbox"]:checked');
+                const conceitos = document.querySelectorAll('#conceitosContainer input[type="checkbox"]:checked');
+    
+                // Validate descricao length
+                const descricao = descricaoField.value.trim();
+                const minDescricaoLength = 20;
+                const maxDescricaoLength = 2000;
+    
+                // Check if at least one checkbox is selected in each group
+                if (!isChecked(anos)) {
+                    alert('Para avançar, selecione pelo menos um "Ano de Escolaridade".');
+                    event.preventDefault(); // Prevent form submission
+                    return;
+                }
+    
+                // Validate descricao field
+                if (descricao.length < minDescricaoLength || descricao.length > maxDescricaoLength) {
+                    alert(`Descrição deve ter entre ${minDescricaoLength} e ${maxDescricaoLength} caracteres.`);
+                    event.preventDefault(); // Prevent form submission
+                    return;
+                }
+    
+                // If all checks pass, the form will be submitted
+            });
+        });
+    </script>
     <script>
         // Function to update the character counter
         function updateCounter(editor) {
