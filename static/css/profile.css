@@ -74,12 +74,12 @@ nav ul li button {
 .search-container input[type=text] {
     padding: 10px;
     margin-right: 10px; /* Adjust spacing between input and button */
-    width: 50%; /* Adjust width of input */
+    width: 80%; /* Adjust width of input */
     box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 12px;
-    margin-left: 250px;
+    margin-left: 150px;
     margin-bottom: 10px;
 }
 
@@ -93,6 +93,7 @@ nav ul li button {
     color: white;
     font-size: 12px;
     margin-bottom: 20px;
+    margin-top:10px;
 }
 
 .search-container button:hover {
@@ -106,7 +107,10 @@ nav ul li button {
 
 .filter-dropdown {
     padding: 8px;
-    font-size: 14px;
+    font-size: 12px;
+    border-color: white;
+    border-radius: 5px;
+    margin-bottom: 8px;
 }
 
 .search-button, .clear-button {
@@ -369,7 +373,7 @@ nav ul li a:hover {
 
 /* Header styles */
 .header-profile {
-    background-color: #afc03fb0;
+    background-color: #afc03fe3;
     background-image: none;
     color: #fff;
     padding: 20px 0;
