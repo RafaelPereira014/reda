@@ -326,6 +326,7 @@
         <div class="container">
     
             <form id="resource-form"  action="{{ url_for('novo_recurso2') }}" method="POST" enctype="multipart/form-data">
+                <h2>Ano de escolaridade:</h2>
                 <div class="ano-selection">
                     {% for ano in anos %}
                         <input type="checkbox" id="ano{{ loop.index }}" name="anos" value="{{ ano }}" class="ano-checkbox">
@@ -714,15 +715,24 @@
                 const dominios = document.querySelectorAll('#dominiosContainer input[type="checkbox"]:checked');
                 const subdominios = document.querySelectorAll('#subdominiosContainer input[type="checkbox"]:checked');
                 const conceitos = document.querySelectorAll('#conceitosContainer input[type="checkbox"]:checked');
+                const keywordsInput = document.getElementById('keywords'); // Hidden input that stores keywords
+
     
                 // Validate descricao length
                 const descricao = descricaoField.value.trim();
                 const minDescricaoLength = 20;
                 const maxDescricaoLength = 2000;
-    
+                const keywords = keywordsInput.value.trim().split(',').filter(keyword => keyword); // Get the keywords as an array
+
                 // Check if at least one checkbox is selected in each group
                 if (!isChecked(anos)) {
                     alert('Para avançar, selecione pelo menos um "Ano de Escolaridade".');
+                    event.preventDefault(); // Prevent form submission
+                    return;
+                }
+                // Validate keywords (at least 5 keywords)
+                if (keywords.length < 5) {
+                    alert('Deve escrever no mínimo 5 palavras-chave ou expressões.');
                     event.preventDefault(); // Prevent form submission
                     return;
                 }
@@ -733,7 +743,9 @@
                     event.preventDefault(); // Prevent form submission
                     return;
                 }
-    
+                
+               
+                
                 // If all checks pass, the form will be submitted
             });
         });
