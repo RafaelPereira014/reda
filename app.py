@@ -594,6 +594,7 @@ def nova_proposta(slug):
     subdominios = []
     conceitos = []
     
+    
     for disciplina in disciplinas:
         current_dominios = get_filtered_terms(level=3, parent_level=2, parent_term=disciplina) if ano else []
         for dominio in current_dominios:
@@ -1338,6 +1339,7 @@ def my_account():
 
     my_resources = get_resources_from_user(user_id, search_term)
     
+    disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)
         
     resource_ids = [resource['id'] for resource in my_resources]
     highlighted_resources = get_highlighted_status_for_resources(resource_ids)
@@ -1408,7 +1410,8 @@ def my_account():
         total_pages_tools=total_pages_tools,
         admin=admin,
         search_term=search_term,
-        is_logged_in=is_logged_in
+        is_logged_in=is_logged_in,
+        disciplinas=disciplinas
     )
 
 @app.route('/resources/highlight_on/<int:resource_id>', methods=['POST'])

@@ -157,8 +157,22 @@
                     <i class="fa fa-plus"></i> Introduzir recurso
                 </button>
                 <div class="search-container">
+                    <!-- Dropdown Filter -->
+                    <select id="filterDropdown" class="filter-dropdown">
+                        <option value="">Escolher disciplina...</option>
+                        {% for disciplina in disciplinas %}
+                            <option value="{{ disciplina}}">{{ disciplina }}</option>
+                        {% endfor %}
+                    </select>
+                    <!-- Search Input -->
                     <input type="text" id="searchInput" placeholder="Palavras-chave..." value="{{ search_term }}">
+                
+                    
+                
+                    <!-- Search Button -->
                     <button class="search-button" onclick="searchResources()">Filtrar palavras</button>
+                
+                    <!-- Clear Filters Button -->
                     <button class="clear-button" onclick="clearSearch()">Limpar Filtros</button>
                 </div>
             
