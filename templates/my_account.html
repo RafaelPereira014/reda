@@ -178,7 +178,9 @@
             
                 {% for resource in my_resources %}
                     <div class="resource-card">
-                        <h2>{{ resource['title'] | strip_html }}</h2>
+                        <small>{{ resource['areas_resources'] | join(', ') }}</small> <!-- Render as a comma-separated list -->
+
+                        <h1>{{ resource['title'] | strip_html }}</h1>
                         <p><em>Criado a {{ resource['created_at'] }}</em></p>
                         
                         <p>{{ resource['description'] | strip_html }}</p>
@@ -310,6 +312,10 @@
         </div>
     </main>
 
+    <div id="loadingModal" class="loading-modal">
+        <div class="loading-spinner"></div>
+        <p>A carregar...</p>
+    </div>
 
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
@@ -522,6 +528,20 @@
             }
     
             document.querySelector('.menu-button').addEventListener('click', toggleMenu);
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Hide the modal when the page finishes loading
+            const loadingModal = document.getElementById('loadingModal');
+            loadingModal.style.display = 'none';
+        });
+    
+        // Show the modal before the page starts loading
+        window.addEventListener("beforeunload", function () {
+            const loadingModal = document.getElementById('loadingModal');
+            loadingModal.style.display = 'flex'; // Show the modal
         });
     </script>
     

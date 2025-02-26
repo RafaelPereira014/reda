@@ -8,13 +8,14 @@ import datetime  # Imports the datetime module
 import random
 import bcrypt
 import re
-import redis
+from flask_caching import Cache
 from flask import Flask, flash, jsonify, redirect, render_template, request
 from flask_wtf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from markupsafe import Markup
 import mysql.connector
+from config import REDIS_CONFIG
 from db_operations.resources import *
 from db_operations.apps import *
 from db_operations.tools import *
@@ -33,6 +34,9 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Needed for session management
 UPLOAD_FOLDER = 'static/files/resources/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif','doc','pdf','docx'}
+
+
+
 
 # Ensure the upload folder exists
 if not os.path.exists(UPLOAD_FOLDER):
@@ -58,14 +62,9 @@ limiter = Limiter(
     default_limits=["200 per minute"]  # Default rate limit for the entire app
 )
 
-config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'passroot',
-    'database': 'redav5'
-}
-
-connection = mysql.connector.connect(**config)
+app.config.from_mapping(**REDIS_CONFIG)
+cache = Cache(app)
+connection = mysql.connector.connect(**DB_CONFIG)
 
 admin_emails = get_emails_admins()
 
@@ -1332,71 +1331,85 @@ def edit_tool(resource_id):
 @app.route('/myaccount')
 def my_account():
     user_id = session.get('user_id')  # Retrieve user ID from session
-    # Check if the user is logged in
-    is_logged_in = user_id is not None
-
-    # Determine if the user is an admin
-    admin = is_admin(user_id) if is_logged_in else False
-    
+    is_logged_in = user_id is not None  # Check if the user is logged in
+    admin = is_admin(user_id) if is_logged_in else False  # Determine if the user is an admin
     search_term = request.args.get('search', '')
 
-    my_resources = get_resources_from_user(user_id, search_term)
-    
+    choosen_disciplina = request.args.get('disciplina')
+    print(choosen_disciplina)
+
     disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)
+
+    # Generate a cache key for user resources
+    cache_key_resources = f"user_resources_{user_id}_{search_term}"
+    my_resources = cache.get(cache_key_resources)
+    
+    if my_resources is None:
+        my_resources = get_resources_from_user(user_id, search_term)
+        cache.set(cache_key_resources, my_resources, timeout=3600)  # Cache for 1 hour
 
     resource_ids = [resource['id'] for resource in my_resources]
     highlighted_resources = get_highlighted_status_for_resources(resource_ids)
     approved_resources = get_approved_status_for_resources(resource_ids)
-      
+
     for resource in my_resources:
         resource['highlighted'] = highlighted_resources.get(resource['id'], False)
         resource['approved'] = approved_resources.get(resource['id'], False)
-        #resource['details'] = get_combined_details(resource['id'])
-        # script_id = get_script_id_by_resource_id(resource['id'])
-        # print(script_id)
+
+        # Generate a cache key for areas_resources
+        cache_key_areas = f"areas_resources_{resource['id']}"
+        areas_resources = cache.get(cache_key_areas)
+
+        if areas_resources is None:
+            resource_details = get_combined_details(resource['id'])
+            scripts_by_id = resource_details.get('scripts_by_id', {})
+            areas_resources = list(
+                set(
+                    area.strip()
+                    for script_data in scripts_by_id.values()
+                    for area in script_data.get('areas_resources', [])
+                )
+            )
+            cache.set(cache_key_areas, areas_resources, timeout=3600)
+
+        resource['areas_resources'] = [str(area) for area in areas_resources]  # Ensure it's a list of strings
+        print(f"Resource ID: {resource['id']} - Areas Resources: {resource['areas_resources']}")
         
-        # # areas_resources = resource['details'].get('scripts_by_id', {}).get(script_id, {}).get('areas_resources', [])
-        # # # Print areas_resources
-        # # print(areas_resources)
-        
-        
-    #apps_user, apps_count = get_apps_from_user(user_id, search_term)
+
+    # Fetch apps, tools, scripts, and other details
     apps_user, apps_count = get_apps_from_user(user_id)
-    #tools_user, tools_count = get_tools_from_user(user_id, search_term)
     tools_user, tools_count = get_tools_from_user(user_id)
     user_details = get_details(user_id)
     resources_count = no_resources(user_id)
-    scripts_user, scripts_count = get_script_details_by_user(user_id,search_term)
+    scripts_user, scripts_count = get_script_details_by_user(user_id, search_term)
     scripts_user_with_titles = add_titles_to_scripts(scripts_user)
 
-
-    
     per_page = 10  # Number of items per page
 
-    # Pagination for resources
+    # Pagination logic for resources
     page_resources = request.args.get('page_resources', 1, type=int)
     total_resources = len(my_resources)
     total_pages_resources = math.ceil(total_resources / per_page)
     paginated_resources = my_resources[(page_resources - 1) * per_page:page_resources * per_page]
-    
-    # Pagination for proposals
+
+    # Pagination logic for proposals
     page_proposals = request.args.get('page_proposals', 1, type=int)
     total_proposals = scripts_count
     total_pages_proposals = math.ceil(total_proposals / per_page)
     paginated_proposals = scripts_user[(page_proposals - 1) * per_page:page_proposals * per_page]
-    
-    # Pagination for apps
+
+    # Pagination logic for apps
     page_apps = request.args.get('page_apps', 1, type=int)
     total_apps = apps_count
     total_pages_apps = math.ceil(total_apps / per_page)
     paginated_apps = apps_user[(page_apps - 1) * per_page:page_apps * per_page]
-    
-    # Pagination for tools
+
+    # Pagination logic for tools
     page_tools = request.args.get('page_tools', 1, type=int)
     total_tools = tools_count
     total_pages_tools = math.ceil(total_tools / per_page)
     paginated_tools = tools_user[(page_tools - 1) * per_page:page_tools * per_page]
-    
+
     return render_template(
         'my_account.html',
         my_resources=paginated_resources,
@@ -1421,7 +1434,7 @@ def my_account():
         is_logged_in=is_logged_in,
         disciplinas=disciplinas
     )
-
+    
 @app.route('/resources/highlight_on/<int:resource_id>', methods=['POST'])
 def highlight_on_resource(resource_id):
     success = set_on_highlight_resources(resource_id)
