@@ -1343,15 +1343,21 @@ def my_account():
     my_resources = get_resources_from_user(user_id, search_term)
     
     disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)
-        
+
     resource_ids = [resource['id'] for resource in my_resources]
     highlighted_resources = get_highlighted_status_for_resources(resource_ids)
     approved_resources = get_approved_status_for_resources(resource_ids)
-    
+      
     for resource in my_resources:
         resource['highlighted'] = highlighted_resources.get(resource['id'], False)
         resource['approved'] = approved_resources.get(resource['id'], False)
         #resource['details'] = get_combined_details(resource['id'])
+        # script_id = get_script_id_by_resource_id(resource['id'])
+        # print(script_id)
+        
+        # # areas_resources = resource['details'].get('scripts_by_id', {}).get(script_id, {}).get('areas_resources', [])
+        # # # Print areas_resources
+        # # print(areas_resources)
         
         
     #apps_user, apps_count = get_apps_from_user(user_id, search_term)

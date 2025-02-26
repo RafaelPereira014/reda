@@ -182,5 +182,27 @@ def get_script_id_by_description(description):
     finally:
         cursor.close()
         conn.close()
+        
+def get_script_id_by_resource_id(resource_id):
+    conn = connect_to_database()  # Connect to the database
+    cursor = conn.cursor(dictionary=True)
+    
+    try:
+        # Execute the SQL query to find the script ID by description
+        query = "SELECT id FROM Scripts WHERE resource_id = %s"
+        cursor.execute(query, (resource_id,))
+        result = cursor.fetchone()
+        
+        # If a result is found, return the script ID
+        if result:
+            return result['script_id']
+        else:
+            return None  # Return None if no matching script is found
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
 
 
