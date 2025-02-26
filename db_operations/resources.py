@@ -986,7 +986,7 @@ def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=N
         conn = connect_to_database()
         cursor = conn.cursor(dictionary=True)
 
-        # Base query for retrieving resources
+        # Base query
         query = """
             SELECT SQL_CALC_FOUND_ROWS DISTINCT r.*
             FROM Resources r
@@ -999,10 +999,9 @@ def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=N
             AND r.hidden = 0
             AND r.type_id = '2'
         """
-        
         params = []
 
-        # Handle 'ano' filtering unless 'ano' is 'all'
+        # Handle 'ano'
         if ano and ano != 'all':
             query += """
             AND tx.slug = 'anos_resources' 
@@ -1010,7 +1009,7 @@ def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=N
             """
             params.append(ano)
 
-        # Handle `disciplinas` as a list directly
+        # Handle 'disciplinas'
         if disciplinas:
             query += """
             AND s.id IN (
@@ -1021,10 +1020,10 @@ def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=N
                 WHERE tx2.slug = 'areas_resources'
                 AND t2.title IN ({})
             )
-            """.format(','.join(['%s'] * len(disciplinas)))  # Create placeholders for IN clause
+            """.format(','.join(['%s'] * len(disciplinas)))
             params.extend(disciplinas)
 
-        # Handle `dominios` as a list
+        # Handle 'dominios'
         if dominios:
             query += """
             AND s.id IN (
@@ -1035,10 +1034,10 @@ def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=N
                 WHERE tx3.slug = 'dominios_resources'
                 AND t3.title IN ({})
             )
-            """.format(','.join(['%s'] * len(dominios)))  # Create placeholders for IN clause
+            """.format(','.join(['%s'] * len(dominios)))
             params.extend(dominios)
 
-        # Handle `subdominios` as a list
+        # Handle 'subdominios'
         if subdominios:
             query += """
             AND s.id IN (
@@ -1049,17 +1048,19 @@ def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=N
                 WHERE tx4.slug = 'subdominios'
                 AND t4.title IN ({})
             )
-            """.format(','.join(['%s'] * len(subdominios)))  # Create placeholders for IN clause
+            """.format(','.join(['%s'] * len(subdominios)))
             params.extend(subdominios)
 
         # Add ordering and pagination
         query += " ORDER BY r.id DESC LIMIT %s OFFSET %s"
         params.extend([per_page, offset])
 
+        
+
         # Execute the query
         cursor.execute(query, params)
         resources = cursor.fetchall()
-    
+
         # Get the total number of results
         cursor.execute("SELECT FOUND_ROWS() AS total_count")
         total_results = cursor.fetchone()["total_count"]

@@ -325,9 +325,11 @@ def resources():
     # Filter the subdominios based on the selected `dominio`
     subdominios = get_filtered_terms(level=4, parent_level=3, parent_term=dominio) if dominio else []
 
+    print(ano)
     if ano:
         paginated_resources, total_resources = advanced_search_resource(ano, disciplina, dominio, subdominio, page, per_page)
-    elif search_term:  # Handle the search terms as a list of terms
+        print("entrei")
+    elif search_term:  
         paginated_resources, total_resources = search_resources(search_term, page, per_page)
     else:
         paginated_resources = get_all_resources(page, per_page)
@@ -335,6 +337,7 @@ def resources():
 
     total_pages = math.ceil(total_resources / per_page)
 
+    
 
     for resource in paginated_resources:
         resource['image_url'] = get_resource_image_url(resource['slug'])
@@ -1663,22 +1666,20 @@ def disciplinas_page():
 
 @app.route('/fetch_disciplinas')
 def fetch_disciplinas():
-    # Fetch selected anos from query parameters
-    anos = request.args.get('ano', '').split(';')
+    anos = request.args.get('anos', '').split(',')
+    anos = [ano for ano in anos if ano]  # Remove any empty values from the list
 
-    # If 'all' is in the anos list, fetch all disciplinas without filtering
+    app.logger.info(f"Received anos: {anos}")  # Debugging
+
     if 'all' in anos:
-        disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)  # Fetch all disciplinas
+        disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)
     else:
         disciplinas_set = set()
-        # Collect all disciplines based on selected anos
         for ano in anos:
-            if ano:  # Ensure ano is not empty
+            if ano:
                 disciplinas_set.update(get_filtered_terms(level=2, parent_level=1, parent_term=ano))
-        
-        # Convert the set to a sorted list
         disciplinas = sorted(disciplinas_set)
-    
+
     return jsonify(disciplinas)
 
 
@@ -1687,7 +1688,8 @@ def fetch_dominios():
     # Fetch selected disciplinas from query parameters
     disciplinas = request.args.get('disciplinas', '')
     if disciplinas:
-        disciplinas_list = disciplinas.split(';')
+        # Split by comma instead of semicolon
+        disciplinas_list = disciplinas.split(',')
         dominios_set = set()
         
         # Collect all dominios based on selected disciplinas
@@ -1707,22 +1709,22 @@ def fetch_dominios():
 def fetch_subdominios():
     # Fetch selected dominios from query parameters
     dominios = request.args.get('dominios', '')
-    #print("Received Dominios:", dominios)  # Log the received dominios
+    # Log the received dominios for debugging
+    app.logger.info(f"Received Dominios: {dominios}")
     
     if dominios:
-        # Split by semicolon instead of comma
-        dominios_list = dominios.split(';')
+        # Split by comma instead of semicolon
+        dominios_list = dominios.split(',')
         subdominios_set = set()
         
         # Collect all subdominios based on selected dominios
         for dominio in dominios_list:
             if dominio:  # Ensure dominio is not empty
-                #print(dominio)
                 subdominios_set.update(get_filtered_terms(level=4, parent_level=3, parent_term=dominio))
         
         # Convert the set to a sorted list
         subdominios = sorted(subdominios_set)
-       #print(subdominios)
+        app.logger.info(f"Fetched Subdominios: {subdominios}")
         return jsonify(subdominios)
     
     # Return an empty list if no dominios are provided
