@@ -972,7 +972,7 @@ def search_resources(search_term, page=1, per_page=12):
     return resources, total_results
 
 
-def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=None, page=1, per_page=12):
+def advanced_search_resource(anos, disciplinas=None, dominios=None, subdominios=None, page=1, per_page=12):
     if disciplinas is None:
         disciplinas = []
     if dominios is None:
@@ -1001,13 +1001,13 @@ def advanced_search_resource(ano, disciplinas=None, dominios=None, subdominios=N
         """
         params = []
 
-        # Handle 'ano'
-        if ano and ano != 'all':
+        ## Handle 'anos'
+        if anos:
             query += """
             AND tx.slug = 'anos_resources' 
-            AND t.title = %s
-            """
-            params.append(ano)
+            AND t.title IN ({})
+            """.format(','.join(['%s'] * len(anos)))
+            params.extend(anos)
 
         # Handle 'disciplinas'
         if disciplinas:

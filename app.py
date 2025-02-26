@@ -306,16 +306,16 @@ def resources():
     is_logged_in = user_id is not None
     admin = is_admin(user_id) if is_logged_in else False
     anos = get_unique_terms(level=1)
-    ano = request.args.get('ano', '')
-    disciplina = request.args.getlist('disciplinas')    
+    ano = request.args.getlist('anos')  # Change 'ano' to 'anos'
+    disciplina = request.args.getlist('disciplinas')  # Change 'disciplina' to 'disciplinas'
     dominio = request.args.getlist('dominios')  
     subdominio = request.args.getlist('subdominios')  
     
-
+    print(ano)
+    print(disciplina)
     
-
     # If ano is "all", get all anos_resources, otherwise filter by the specific ano
-    if ano.lower() == "all":
+    if ano in ['1º.']:
         disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)  # No specific ano, fetch all
     else:
         disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=ano) if ano else []
@@ -325,12 +325,12 @@ def resources():
     # Filter the subdominios based on the selected `dominio`
     subdominios = get_filtered_terms(level=4, parent_level=3, parent_term=dominio) if dominio else []
 
-    print(ano)
-    if ano:
+    if ano and disciplina:
         paginated_resources, total_resources = advanced_search_resource(ano, disciplina, dominio, subdominio, page, per_page)
-        print("entrei")
-    elif search_term:  
-        paginated_resources, total_resources = search_resources(search_term, page, per_page)
+    elif ano:
+        paginated_resources, total_resources = advanced_search_resource(ano, '', dominio, subdominio, page, per_page)
+    elif disciplina:
+        paginated_resources, total_resources = advanced_search_resource('', disciplina, dominio, subdominio, page, per_page)
     else:
         paginated_resources = get_all_resources(page, per_page)
         total_resources = get_total_resource_count()
