@@ -316,7 +316,7 @@
                 return; // No anos selected, exit function
             }
         
-            $.get('/fetch_disciplinas', { ano: selectedAnos.join(',') }, function(data) {
+            $.get('/fetch_disciplinas_search', { ano: selectedAnos.join(',') }, function(data) {
                 let disciplinasContainer = $('#disciplinasContainer');
                 disciplinasContainer.empty();
         
@@ -347,7 +347,7 @@
                 return; // No disciplinas selected, exit function
             }
         
-            $.get('/fetch_dominios', { disciplinas: selectedDisciplinas.join(',') }, function(data) {
+            $.get('/fetch_dominios_search', { disciplinas: selectedDisciplinas.join(',') }, function(data) {
                 let dominiosContainer = $('#dominiosContainer');
                 dominiosContainer.empty();
         
@@ -377,7 +377,7 @@
                 return; // No dominios selected, exit function
             }
         
-            $.get('/fetch_subdominios', { dominios: selectedDominios.join(',') }, function(data) {
+            $.get('/fetch_subdominios_search', { dominios: selectedDominios.join(',') }, function(data) {
                 let subdominiosContainer = $('#subdominiosContainer');
                 subdominiosContainer.empty();
         
@@ -406,7 +406,7 @@
                 return; // No subdominios selected, exit function
             }
         
-            $.get('/fetch_conceitos', { subdominios: selectedSubdominios.join(',') }, function(data) {
+            $.get('/fetch_conceitos_serach', { subdominios: selectedSubdominios.join(',') }, function(data) {
                 let conceitosContainer = $('#conceitosContainer');
                 conceitosContainer.empty();
         
@@ -747,7 +747,7 @@
                 if (selectedAnos.length === 0) return;
 
                 // Fetch disciplinas for the selected anos
-                fetch(`/fetch_disciplinas?anos=${selectedAnos.join(',')}`)
+                fetch(`/fetch_disciplinas_search?anos=${selectedAnos.join(',')}`)
                     .then(response => response.json())
                     .then(data => {
                         data.forEach(disciplina => {
@@ -771,7 +771,7 @@
             if (selectedDisciplinas.length === 0) return;
         
             // Fetch dominios based on selected disciplinas
-            fetch(`/fetch_dominios?disciplinas=${selectedDisciplinas.join(',')}`)
+            fetch(`/fetch_dominios_search?disciplinas=${selectedDisciplinas.join(',')}`)
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(dominio => {
@@ -794,7 +794,7 @@
             if (selectedDominios.length === 0) return;
         
             // Fetch subdominios based on selected dominios
-            fetch(`/fetch_subdominios?dominios=${selectedDominios.join(',')}`)
+            fetch(`/fetch_subdominios_search?dominios=${selectedDominios.join(',')}`)
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(subdominio => {
@@ -815,8 +815,5 @@
             window.location.href = "{{ url_for('resources') }}";
         });
     </script>
-
-    
-    
 </body>
 </html>

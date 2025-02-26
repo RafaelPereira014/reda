@@ -1361,7 +1361,6 @@ def my_account():
     user_details = get_details(user_id)
     resources_count = no_resources(user_id)
     scripts_user, scripts_count = get_script_details_by_user(user_id,search_term)
-    print(scripts_count)
     scripts_user_with_titles = add_titles_to_scripts(scripts_user)
 
 
@@ -1666,6 +1665,81 @@ def disciplinas_page():
 
 @app.route('/fetch_disciplinas')
 def fetch_disciplinas():
+    # Fetch selected anos from query parameters
+    anos = request.args.get('ano', '').split(';')
+ 
+    # If 'all' is in the anos list, fetch all disciplinas without filtering
+    if 'all' in anos:
+        disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)  # Fetch all disciplinas
+    else:
+        disciplinas_set = set()
+        # Collect all disciplines based on selected anos
+        for ano in anos:
+            if ano:  # Ensure ano is not empty
+                disciplinas_set.update(get_filtered_terms(level=2, parent_level=1, parent_term=ano))
+        # Convert the set to a sorted list
+        disciplinas = sorted(disciplinas_set)
+    return jsonify(disciplinas)
+
+@app.route('/fetch_dominios')
+def fetch_dominios():
+    # Fetch selected disciplinas from query parameters
+    disciplinas = request.args.get('disciplinas', '')
+    if disciplinas:
+        disciplinas_list = disciplinas.split(';')
+        dominios_set = set()
+        # Collect all dominios based on selected disciplinas
+        for disciplina in disciplinas_list:
+            if disciplina:  # Ensure disciplina is not empty
+                dominios_set.update(get_filtered_terms(level=3, parent_level=2, parent_term=disciplina))
+        # Convert the set to a sorted list
+        dominios = sorted(dominios_set)
+        return jsonify(dominios)
+    # Return an empty list if no disciplinas are provided
+    return jsonify([])
+ 
+ 
+@app.route('/fetch_subdominios')
+def fetch_subdominios():
+    # Fetch selected dominios from query parameters
+    dominios = request.args.get('dominios', '')
+    #print("Received Dominios:", dominios)  # Log the received dominios
+    if dominios:
+        # Split by semicolon instead of comma
+        dominios_list = dominios.split(';')
+        subdominios_set = set()
+        # Collect all subdominios based on selected dominios
+        for dominio in dominios_list:
+            if dominio:  # Ensure dominio is not empty
+                #print(dominio)
+                subdominios_set.update(get_filtered_terms(level=4, parent_level=3, parent_term=dominio))
+        # Convert the set to a sorted list
+        subdominios = sorted(subdominios_set)
+       #print(subdominios)
+        return jsonify(subdominios)
+    # Return an empty list if no dominios are provided
+    return jsonify([])
+ 
+@app.route('/fetch_conceitos')
+def fetch_conceitos():
+    # Fetch selected subdominios from query parameters
+    subdominios = request.args.get('subdominios', '')
+    if subdominios:
+        subdominios_list = subdominios.split(';')
+        conceitos_set = set()
+ 
+        # Collect all conceitos based on selected subdominios
+        for subdominio in subdominios_list:
+            if subdominio:  # Ensure subdominio is not empty
+                conceitos_set.update(get_filtered_terms(level=5, parent_level=4, parent_term=subdominio))
+        # Convert the set to a sorted list
+        conceitos = sorted(conceitos_set)
+        return jsonify(conceitos)
+    # Return an empty list if no subdominios are provided
+    return jsonify([])
+
+@app.route('/fetch_disciplinas_search')
+def fetch_disciplinas_search():
     anos = request.args.get('anos', '').split(',')
     anos = [ano for ano in anos if ano]  # Remove any empty values from the list
 
@@ -1683,8 +1757,8 @@ def fetch_disciplinas():
     return jsonify(disciplinas)
 
 
-@app.route('/fetch_dominios')
-def fetch_dominios():
+@app.route('/fetch_dominios_search')
+def fetch_dominios_search():
     # Fetch selected disciplinas from query parameters
     disciplinas = request.args.get('disciplinas', '')
     if disciplinas:
@@ -1705,8 +1779,8 @@ def fetch_dominios():
     return jsonify([])
 
 
-@app.route('/fetch_subdominios')
-def fetch_subdominios():
+@app.route('/fetch_subdominios_search')
+def fetch_subdominio_search():
     # Fetch selected dominios from query parameters
     dominios = request.args.get('dominios', '')
     # Log the received dominios for debugging
@@ -1730,8 +1804,8 @@ def fetch_subdominios():
     # Return an empty list if no dominios are provided
     return jsonify([])
 
-@app.route('/fetch_conceitos')
-def fetch_conceitos():
+@app.route('/fetch_conceitos_search')
+def fetch_conceitos_search():
     # Fetch selected subdominios from query parameters
     subdominios = request.args.get('subdominios', '')
     if subdominios:
