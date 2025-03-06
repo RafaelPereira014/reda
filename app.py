@@ -1331,23 +1331,54 @@ def edit_tool(resource_id):
 @app.route('/myaccount')
 def my_account():
     user_id = session.get('user_id')  # Retrieve user ID from session
-    is_logged_in = user_id is not None  # Check if the user is logged in
-    admin = is_admin(user_id) if is_logged_in else False  # Determine if the user is an admin
-    search_term = request.args.get('search', '')
+    is_logged_in = user_id is not None
+    admin = is_admin(user_id) if is_logged_in else False
 
-    choosen_disciplina = request.args.get('disciplina')
-    print(choosen_disciplina)
+    # Retrieve query parameters
+    search_term = request.args.get('search', '').strip()
+    disciplina = request.args.get('disciplina', '').strip()
 
+    # Fetch available disciplinas
     disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)
 
-    # Generate a cache key for user resources
-    cache_key_resources = f"user_resources_{user_id}_{search_term}"
+    # Cache key to include user, search term, and disciplina
+    cache_key_resources = f"user_resources_{user_id}_{search_term}_{disciplina}"
     my_resources = cache.get(cache_key_resources)
-    
-    if my_resources is None:
-        my_resources = get_resources_from_user(user_id, search_term)
-        cache.set(cache_key_resources, my_resources, timeout=3600)  # Cache for 1 hour
 
+    if my_resources is None:
+        # Fetch resources based on search term
+        my_resources = get_resources_from_user(user_id, search_term)
+
+        # Filter resources by disciplina
+        filtered_resources = []
+        for resource in my_resources:
+            # Cache key for areas_resources
+            cache_key_areas = f"areas_resources_{resource['id']}"
+            areas_resources = cache.get(cache_key_areas)
+
+            if areas_resources is None:
+                # Fetch areas_resources if not cached
+                resource_details = get_combined_details(resource['id'])
+                scripts_by_id = resource_details.get('scripts_by_id', {})
+                areas_resources = list(
+                    set(
+                        area.strip()
+                        for script_data in scripts_by_id.values()
+                        for area in script_data.get('areas_resources', [])
+                    )
+                )
+                cache.set(cache_key_areas, areas_resources, timeout=3600)
+
+            resource['areas_resources'] = [str(area) for area in areas_resources]
+
+            # Apply disciplina filter if specified
+            if not disciplina or disciplina in resource['areas_resources']:
+                filtered_resources.append(resource)
+
+        my_resources = filtered_resources
+        cache.set(cache_key_resources, my_resources, timeout=3600)
+
+    # Fetch highlighted and approved statuses
     resource_ids = [resource['id'] for resource in my_resources]
     highlighted_resources = get_highlighted_status_for_resources(resource_ids)
     approved_resources = get_approved_status_for_resources(resource_ids)
@@ -1356,55 +1387,34 @@ def my_account():
         resource['highlighted'] = highlighted_resources.get(resource['id'], False)
         resource['approved'] = approved_resources.get(resource['id'], False)
 
-        # Generate a cache key for areas_resources
-        cache_key_areas = f"areas_resources_{resource['id']}"
-        areas_resources = cache.get(cache_key_areas)
-
-        if areas_resources is None:
-            resource_details = get_combined_details(resource['id'])
-            scripts_by_id = resource_details.get('scripts_by_id', {})
-            areas_resources = list(
-                set(
-                    area.strip()
-                    for script_data in scripts_by_id.values()
-                    for area in script_data.get('areas_resources', [])
-                )
-            )
-            cache.set(cache_key_areas, areas_resources, timeout=3600)
-
-        resource['areas_resources'] = [str(area) for area in areas_resources]  # Ensure it's a list of strings
-        print(f"Resource ID: {resource['id']} - Areas Resources: {resource['areas_resources']}")
-        
-
-    # Fetch apps, tools, scripts, and other details
-    apps_user, apps_count = get_apps_from_user(user_id)
-    tools_user, tools_count = get_tools_from_user(user_id)
-    user_details = get_details(user_id)
-    resources_count = no_resources(user_id)
-    scripts_user, scripts_count = get_script_details_by_user(user_id, search_term)
-    scripts_user_with_titles = add_titles_to_scripts(scripts_user)
-
-    per_page = 10  # Number of items per page
-
     # Pagination logic for resources
+    per_page = 10
     page_resources = request.args.get('page_resources', 1, type=int)
     total_resources = len(my_resources)
     total_pages_resources = math.ceil(total_resources / per_page)
     paginated_resources = my_resources[(page_resources - 1) * per_page:page_resources * per_page]
 
-    # Pagination logic for proposals
+    # Fetch other user details
+    apps_user, apps_count = get_apps_from_user(user_id)
+    tools_user, tools_count = get_tools_from_user(user_id)
+    user_details = get_details(user_id)
+    resources_count = len(my_resources)
+    scripts_user, scripts_count = get_script_details_by_user(user_id, search_term)
+    scripts_user_with_titles = add_titles_to_scripts(scripts_user)
+
+    # Pagination for proposals
     page_proposals = request.args.get('page_proposals', 1, type=int)
     total_proposals = scripts_count
     total_pages_proposals = math.ceil(total_proposals / per_page)
     paginated_proposals = scripts_user[(page_proposals - 1) * per_page:page_proposals * per_page]
 
-    # Pagination logic for apps
+    # Pagination for apps
     page_apps = request.args.get('page_apps', 1, type=int)
     total_apps = apps_count
     total_pages_apps = math.ceil(total_apps / per_page)
     paginated_apps = apps_user[(page_apps - 1) * per_page:page_apps * per_page]
 
-    # Pagination logic for tools
+    # Pagination for tools
     page_tools = request.args.get('page_tools', 1, type=int)
     total_tools = tools_count
     total_pages_tools = math.ceil(total_tools / per_page)
@@ -1432,7 +1442,8 @@ def my_account():
         admin=admin,
         search_term=search_term,
         is_logged_in=is_logged_in,
-        disciplinas=disciplinas
+        disciplinas=disciplinas,
+        selected_disciplina=disciplina  # Pass selected disciplina to template
     )
     
 @app.route('/resources/highlight_on/<int:resource_id>', methods=['POST'])

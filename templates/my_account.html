@@ -156,12 +156,13 @@
                 <button class="resource" onclick="location.href='/novorecurso'">
                     <i class="fa fa-plus"></i> Introduzir recurso
                 </button>
+                
                 <div class="search-container">
                     <!-- Dropdown Filter -->
                     <select id="filterDropdown" class="filter-dropdown">
                         <option value="">Escolher disciplina...</option>
                         {% for disciplina in disciplinas %}
-                            <option value="{{ disciplina}}">{{ disciplina }}</option>
+                            <option value="{{ disciplina }}" {% if disciplina == selected_disciplina %}selected{% endif %}>{{ disciplina }}</option>
                         {% endfor %}
                     </select>
                     <!-- Search Input -->
@@ -178,7 +179,7 @@
             
                 {% for resource in my_resources %}
                     <div class="resource-card">
-                        <small>{{ resource['areas_resources'] | join(', ') }}</small> <!-- Render as a comma-separated list -->
+                        <small>{{ resource['areas_resources'] | join(', ') }}</small> 
 
                         <h1>{{ resource['title'] | strip_html }}</h1>
                         <p><em>Criado a {{ resource['created_at'] }}</em></p>
@@ -200,13 +201,13 @@
             
                 <div class="pagination">
                     {% if page_resources > 1 %}
-                        <a href="?page_resources=1&search={{ search_term }}">&laquo; Inicio</a>
-                        <a href="?page_resources={{ page_resources - 1 }}&search={{ search_term }}">Anterior</a>
+                        <a href="?page_resources=1&search={{ search_term }}&disciplina={{ selected_disciplina }}">&laquo; Inicio</a>
+                        <a href="?page_resources={{ page_resources - 1 }}&search={{ search_term }}&disciplina={{ selected_disciplina }}">Anterior</a>
                     {% endif %}
                     <span class="current">Page {{ page_resources }} of {{ total_pages_resources }}</span>
                     {% if page_resources < total_pages_resources %}
-                        <a href="?page_resources={{ page_resources + 1 }}&search={{ search_term }}">Próximo</a>
-                        <a href="?page_resources={{ total_pages_resources }}&search={{ search_term }}">Fim &raquo;</a>
+                        <a href="?page_resources={{ page_resources + 1 }}&search={{ search_term }}&disciplina={{ selected_disciplina }}">Próximo</a>
+                        <a href="?page_resources={{ total_pages_resources }}&search={{ search_term }}&disciplina={{ selected_disciplina }}">Fim &raquo;</a>
                     {% endif %}
                 </div>
             </section>
@@ -474,15 +475,21 @@
                 showSection('my-resources');
             }
         
-            // Search functionality
             function searchResources() {
                 const searchTerm = document.getElementById('searchInput').value;
-                const queryString = new URLSearchParams({ search: searchTerm }).toString();
-                window.location.href = `/myaccount?${queryString}`;
+                const selectedDisciplina = document.getElementById('filterDropdown').value;
+        
+                const queryParams = new URLSearchParams({
+                    search: searchTerm,
+                    disciplina: selectedDisciplina
+                }).toString();
+        
+                window.location.href = `/myaccount?${queryParams}`;
             }
         
             function clearSearch() {
                 document.getElementById('searchInput').value = '';
+                document.getElementById('filterDropdown').value = '';
                 window.location.href = '/myaccount';
             }
         
