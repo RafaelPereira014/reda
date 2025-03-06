@@ -475,7 +475,7 @@
             updateHiddenKeywords();
         }
     
-        // Function to add a tag
+        /// Function to add a tag
         function addTag() {
             const keywordInput = document.getElementById('keywordInput');
             const newTag = keywordInput.value.trim();
@@ -485,6 +485,11 @@
                 renderTags();
                 keywordInput.value = ''; // Clear the input field
                 updateHiddenKeywords();  // Update the hidden input with the selected tags
+                
+                // Check if there are at least 5 keywords
+                if (selectedTags.length < 5) {
+                    alert('Deve escrever pelo menos 5 palavras ou expressões!');
+                }
             } else {
                 alert('Palavra-chave já adicionada ou inválida!');
             }
