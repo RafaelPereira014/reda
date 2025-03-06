@@ -827,7 +827,6 @@ def resource_edit2(script_id):
     is_logged_in = user_id is not None
     
     resource_id = get_resource_id_for_script(script_id)
-
     title = get_title(resource_id)
     slug = generate_slug(title)
 
@@ -841,12 +840,14 @@ def resource_edit2(script_id):
     initial_description = get_script_description(script_id)  
     print("Initial Description:", initial_description)  # Debugging output
     
-
     # Fetch all possible anos
     anos = get_unique_terms(level=1)
+    keywords = request.form.get('keywords', '').split(',')
+
+    print(f"Received keywords: {keywords}")  # Debugging output
 
     # Initialize lists for script-specific terms
-    selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos,selected_tags = [], [], [], [], [],[]
+    selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, selected_tags = [], [], [], [], [], []
 
     if resource_details:
         # Get only the specific script's details
@@ -857,10 +858,10 @@ def resource_edit2(script_id):
         selected_dominios = script.get('dominios_resources', [])
         selected_subdominios = script.get('subdominios', [])
         selected_conceitos = script.get('hashtags', [])
-        selected_tags = script.get('tags_resources',[])
+        selected_tags = script.get('tags_resources', [])
         print(selected_tags)
     else:
-        selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos,selected_tags = [], [], [], [], [], []
+        selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, selected_tags = [], [], [], [], [], []
     
     # Flatten and remove duplicates for lists (if needed)
     selected_anos = list(set(selected_anos))
@@ -917,7 +918,7 @@ def resource_edit2(script_id):
                     update_script(
                         resource_id, script_id, user_id, selected_anos, selected_disciplinas,
                         selected_dominios, selected_subdominios, selected_conceitos,
-                        descricao,selected_tags  # Pass the updated descricao
+                        descricao, selected_tags  # Pass the updated descricao
                     )
                     conn.commit()
         except Exception as e:
@@ -933,7 +934,7 @@ def resource_edit2(script_id):
         selected_disciplinas=selected_disciplinas, all_dominios=all_dominios, all_conceitos=all_conceitos,
         selected_dominios=selected_dominios, all_subdominios=all_subdominios,
         selected_subdominios=selected_subdominios, selected_conceitos=selected_conceitos, script_id=script_id,
-        resource_details=resource_details, admin=admin, is_logged_in=is_logged_in, slug=slug, descricao=initial_description,resource_id=resource_id,selected_tags=selected_tags
+        resource_details=resource_details, admin=admin, is_logged_in=is_logged_in, slug=slug, descricao=initial_description, resource_id=resource_id, selected_tags=selected_tags
     )
 @app.route('/apps', methods=['GET'])
 def apps():

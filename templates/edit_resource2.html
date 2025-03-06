@@ -367,7 +367,7 @@
                     <h2>Outros conceitos:</h2>
                     <div class="keyword-input-container">
                         <input type="text" id="keywordInput" placeholder="Digite uma palavra-chave" maxlength="100" onkeydown="checkEnterKey(event)">
-                        <button type="button" onclick="addKeyword()">Adicionar</button>
+                        <button type="button" id="addKeywordButton">Adicionar</button>
                     </div>
                     <div id="keywordsContainer"></div>
                     <input type="hidden" name="keywords" id="keywords">
@@ -451,6 +451,67 @@
         </div>
     </footer>
 
+    <script>
+        // Initialize selected_tags array (this can be populated dynamically from the backend)
+        var selectedTags = {{ selected_tags | tojson }};  // Pass the selected_tags from Flask to JavaScript
+    
+        function updateHiddenKeywords() {
+            document.getElementById('keywords').value = selectedTags.join(',');
+        }
+    
+        // Function to render the tags in the container
+        function renderTags() {
+            const container = document.getElementById('keywordsContainer');
+            container.innerHTML = ''; // Clear the container
+            selectedTags.forEach((tag, index) => {
+                const tagElement = document.createElement('div');
+                tagElement.classList.add('tag');
+                tagElement.innerHTML = `
+                    <span>${tag}</span>
+                    <button type="button" class="removeTagButton" onclick="removeTag(${index})">Remover</button>
+                `;
+                container.appendChild(tagElement);
+            });
+            updateHiddenKeywords();
+        }
+    
+        // Function to add a tag
+        function addTag() {
+            const keywordInput = document.getElementById('keywordInput');
+            const newTag = keywordInput.value.trim();
+
+            if (newTag && selectedTags.indexOf(newTag) === -1) {
+                selectedTags.push(newTag);
+                renderTags();
+                keywordInput.value = ''; // Clear the input field
+                updateHiddenKeywords();  // Update the hidden input with the selected tags
+            } else {
+                alert('Palavra-chave já adicionada ou inválida!');
+            }
+        }
+
+    
+        // Function to remove a tag
+        function removeTag(index) {
+            selectedTags.splice(index, 1);
+            renderTags();
+            updateHiddenKeywords();  // Update the hidden input after removal
+        }
+    
+        // Check if the Enter key is pressed in the input field
+        function checkEnterKey(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addTag();
+            }
+        }
+    
+        // Event listener for the Add Keyword button
+        document.getElementById('addKeywordButton').addEventListener('click', addTag);
+    
+        // Initialize the tag rendering on page load
+        renderTags();
+    </script>
    
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -506,24 +567,7 @@
             `).join("");
         });
     </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const selectedTags = {{ selected_tags | tojson }};
-            const keywordsContainer = document.getElementById("keywordsContainer");
-            const keywordsInput = document.getElementById("keywords");
     
-            // Populate the container with existing tags
-            selectedTags.forEach(tag => {
-                const tagElement = document.createElement("div");
-                tagElement.className = "keyword-tag";
-                tagElement.innerText = tag;
-                keywordsContainer.appendChild(tagElement);
-            });
-    
-            // Update hidden input with tags
-            keywordsInput.value = selectedTags.join(',');
-        });
-    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             
@@ -604,69 +648,7 @@
         
         
     </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const keywordsContainer = document.getElementById("keywordsContainer");
-            const keywordInput = document.getElementById("keywordInput");
-            const keywordsHiddenInput = document.getElementById("hiddenKeywords");
     
-            // Initialize keywords from preselected values
-            let keywords = {{ selected_tags | tojson }} || [];
-    
-            // Function to populate the keywords container
-            function populateKeywords() {
-                keywordsContainer.innerHTML = ''; // Clear existing keywords
-                keywords.forEach(keyword => {
-                    const keywordSpan = document.createElement('span');
-                    keywordSpan.className = 'keyword';
-                    keywordSpan.textContent = keyword;
-    
-                    const removeButton = document.createElement('button');
-                    removeButton.textContent = 'x';
-                    removeButton.className = 'remove-button';
-                    removeButton.onclick = function () {
-                        removeKeyword(keyword);
-                    };
-    
-                    keywordSpan.appendChild(removeButton);
-                    keywordsContainer.appendChild(keywordSpan);
-                });
-    
-                // Update the hidden input
-                keywordsHiddenInput.value = keywords.join(',');
-            }
-    
-            // Function to add a new keyword
-            function addKeyword() {
-                const newKeyword = keywordInput.value.trim();
-                if (newKeyword && !keywords.includes(newKeyword)) {
-                    keywords.push(newKeyword);
-                    populateKeywords();
-                }
-                keywordInput.value = ''; // Clear the input field
-            }
-    
-            // Function to remove a keyword
-            function removeKeyword(keyword) {
-                keywords = keywords.filter(k => k !== keyword);
-                populateKeywords();
-            }
-    
-            // Event listener for the input field (handle Enter key)
-            keywordInput.addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    addKeyword();
-                }
-            });
-    
-            // Initial population of keywords
-            populateKeywords();
-    
-            // Add button click event
-            document.getElementById('addKeywordButton').addEventListener('click', addKeyword);
-        });
-    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const anoCheckboxes = document.querySelectorAll(".ano-checkbox");
