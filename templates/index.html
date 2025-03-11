@@ -353,6 +353,15 @@
             </form>
         </div>
     </div>
+
+    <!-- Cookie Consent Modal -->
+  <div id="cookieModal" class="cookie-modal">
+    <p>Este site utiliza cookies para permitir uma melhor experiencia por parte do utilizador.</p>
+    <button id="acceptBtn" class="accept-btn">Aceitar</button>
+    <button id="rejectBtn" class="reject-btn">Recusar</button>
+    <a class="underline" href="/politica-privacidade">Política de Privacidade</a>
+
+</div>
     
     
     
@@ -480,6 +489,35 @@
 
 
     </script>
+    <script>
+        // Elements
+        const cookieModal = document.getElementById('cookieModal');
+        const acceptBtn = document.getElementById('acceptBtn');
+        const rejectBtn = document.getElementById('rejectBtn');
+        const closeBtn = document.getElementById('closeBtn');
+    
+        // Check if cookie consent was already given
+        if (!localStorage.getItem('cookieConsent')) {
+          cookieModal.style.display = 'block';
+        }
+    
+        // Accept cookies
+        acceptBtn.addEventListener('click', () => {
+          localStorage.setItem('cookieConsent', 'accepted');
+          cookieModal.style.display = 'none';
+        });
+    
+        // Reject cookies
+        rejectBtn.addEventListener('click', () => {
+          localStorage.setItem('cookieConsent', 'rejected');
+          cookieModal.style.display = 'none';
+        });
+    
+        // Close button functionality
+        closeBtn.addEventListener('click', () => {
+          cookieModal.style.display = 'none';
+        });
+      </script>
     
 </body>
 </html>

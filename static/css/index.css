@@ -706,3 +706,46 @@ li.active a {
     font-weight: bold;
     text-decoration:underline;
 }
+
+/* Modal Styles */
+.cookie-modal {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+  }
+
+  .cookie-modal button {
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
+
+  .accept-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .reject-btn {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .close-btn {
+    background-color: #808080;
+    color: white;
+  }
+  .underline {
+    text-decoration: underline;
+  }
