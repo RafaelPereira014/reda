@@ -549,19 +549,15 @@ def hide_resource_route(resource_id):
 @app.route('/delete_resource/<int:resource_id>', methods=['POST'])
 def delete_resource(resource_id):
     try:
-        # Construct cache keys
+        # Construct cache key for the resource
         cache_key_areas = f"areas_resources_{resource_id}"
-
-        # Delete resource and its scripts
-        delete_resource_and_scripts(resource_id)
         
-        # Delete resource-specific cache
+        # Delete from cache
         if cache.get(cache_key_areas):
             cache.delete(cache_key_areas)
         
-        
-        
-        print(f"Deleted resource {resource_id} and invalidated related caches.")
+        # Delete resource and its scripts
+        delete_resource_and_scripts(resource_id)
         
         # Prepare response
         response = jsonify(message='Resource deleted successfully')
@@ -1357,20 +1353,16 @@ def my_account():
     disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)
 
     # Cache key to include user, search term, and disciplina
-    cache_key_resources = f"user_resources_{user_id}"
+    cache_key_resources = f"user_resources_{user_id}_{search_term}_{disciplina}"
     my_resources = cache.get(cache_key_resources)
 
     if my_resources is None:
         # Fetch resources based on search term
         my_resources = get_resources_from_user(user_id, search_term)
 
-        # Filter resources by disciplina and delete status
+        # Filter resources by disciplina
         filtered_resources = []
         for resource in my_resources:
-            # Skip deleted resources entirely
-            if is_resource_deleted(resource['id']):
-                continue
-
             # Cache key for areas_resources
             cache_key_areas = f"areas_resources_{resource['id']}"
             areas_resources = cache.get(cache_key_areas)
@@ -1394,13 +1386,8 @@ def my_account():
             if not disciplina or disciplina in resource['areas_resources']:
                 filtered_resources.append(resource)
 
-        # Update resources with the filtered list
         my_resources = filtered_resources
         cache.set(cache_key_resources, my_resources, timeout=600)
-
-    else:
-        # Filter out deleted resources from cached data
-        my_resources = [resource for resource in my_resources if not is_resource_deleted(resource['id'])]
 
     # Fetch highlighted and approved statuses
     resource_ids = [resource['id'] for resource in my_resources]
