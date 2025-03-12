@@ -310,8 +310,7 @@ def resources():
     dominio = request.args.getlist('dominios')  
     subdominio = request.args.getlist('subdominios')  
     
-    print(ano)
-    print(disciplina)
+    
     
     # If ano is "all", get all anos_resources, otherwise filter by the specific ano
     if ano in ['1º.']:
@@ -550,10 +549,25 @@ def hide_resource_route(resource_id):
 @app.route('/delete_resource/<int:resource_id>', methods=['POST'])
 def delete_resource(resource_id):
     try:
+        # Construct cache keys
+        cache_key_areas = f"areas_resources_{resource_id}"
+
+        # Delete resource and its scripts
         delete_resource_and_scripts(resource_id)
+        
+        # Delete resource-specific cache
+        if cache.get(cache_key_areas):
+            cache.delete(cache_key_areas)
+        
+        
+        
+        print(f"Deleted resource {resource_id} and invalidated related caches.")
+        
+        # Prepare response
         response = jsonify(message='Resource deleted successfully')
         response.status_code = 200
     except Exception as e:
+        # Handle errors
         response = jsonify(message=f'Error occurred: {str(e)}')
         response.status_code = 500
     
@@ -1353,6 +1367,10 @@ def my_account():
         # Filter resources by disciplina
         filtered_resources = []
         for resource in my_resources:
+            # Skip deleted resources
+            if is_resource_deleted(resource['id']):
+                continue
+            
             # Cache key for areas_resources
             cache_key_areas = f"areas_resources_{resource['id']}"
             areas_resources = cache.get(cache_key_areas)
@@ -1377,7 +1395,7 @@ def my_account():
                 filtered_resources.append(resource)
 
         my_resources = filtered_resources
-        cache.set(cache_key_resources, my_resources, timeout=3600)
+        cache.set(cache_key_resources, my_resources, timeout=600)
 
     # Fetch highlighted and approved statuses
     resource_ids = [resource['id'] for resource in my_resources]

@@ -1189,6 +1189,20 @@ def get_active_users_with_usernames():
     else:
         return []
 
+def is_resource_deleted(resource_id):
+    conn = connect_to_database()  # Replace with your database connection function
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # Query the database to check if the resource exists and is visible
+        cursor.execute(
+            "SELECT 1 FROM Resources WHERE id = %s AND hidden = '0' AND type_id = '2' LIMIT 1",
+            (resource_id,)
+        )
+        result = cursor.fetchone()  # Fetch one result
+        return result is None  # If no result, the resource is deleted
+    finally:
+        cursor.close()
+        conn.close()
 
 
 
