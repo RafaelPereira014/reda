@@ -689,3 +689,13 @@ footer {
 .btn i {
     font-size: 16px; /* Icon size */
 }
+
+/* Specific styling for the red button */
+.btn-danger {
+    background-color: #dc3545; /* Bootstrap-like red */
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #a71d2a; /* Darker red for hover */
+}

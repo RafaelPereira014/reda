@@ -554,7 +554,7 @@
                     {%endif%}
 
                     <div class="report-error">
-                        <a href="/faleconnosco" class="btn-danger report-error">
+                        <a href="/faleconnosco" class="report-error">
                             <i class="fas fa-exclamation-triangle"></i> Encontrei um Erro
                         </a>
                     </div>
@@ -589,8 +589,8 @@
                                             <button class="btn">Editar proposta</button>
                                         </a>
                                     {% endif %}
-                                    <button onclick="deleteProposta({{ script_id }})" class="btn">
-                                        <i class="fas fa-trash"></i> 
+                                    <button onclick="deleteProposta({{ script_id }})" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> Eliminar
                                     </button>
                                     {% if admin and not script.approved %}
                                         <small>Proposta pendente de aprovação. (ID: {{ script_id }})</small>
