@@ -12,6 +12,7 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/gg-icons/compiled/icons.css" rel="stylesheet">
 </head>
 <style>
@@ -356,7 +357,7 @@
 
     
     
-    .report-error-btn {
+    .report-error {
         display: inline-flex;
         align-items: center;
         font-size: 12px;
@@ -367,13 +368,13 @@
         transition: background-color 0.3s, transform 0.2s;
     }
     
-    .report-error-btn i {
+    .report-error i {
         margin-right: 8px; /* Space between the icon and text */
     }
     
-    .report-error-btn:hover {
-        
-        transform: scale(1.05); /* Slight zoom effect */
+    .report-error:hover {
+        text-decoration: underline;
+        transform: scale(1.01); /* Slight zoom effect */
     }
 </style>
 
@@ -553,7 +554,7 @@
                     {%endif%}
 
                     <div class="report-error">
-                        <a href="/faleconnosco" class="btn btn-danger report-error-btn">
+                        <a href="/faleconnosco" class="btn-danger report-error">
                             <i class="fas fa-exclamation-triangle"></i> Encontrei um Erro
                         </a>
                     </div>
@@ -581,18 +582,20 @@
                         {% for script_id, script in resource_details.scripts_by_id.items() %}
                             {% if script.approved or admin %}
                                 <div class="button-container">
-                                    <button onclick="showProposta({{ loop.index }})">Proposta  {{ loop.index }} </button>
-                                    <button onclick="deleteProposta({{ script_id }})">Eliminar proposta</button>
-                                    
+                                    <!-- Buttons -->
+                                    <button onclick="showProposta({{ loop.index }})" class="btn">Proposta {{ loop.index }}</button>
                                     {% if admin %}
-                                        <a href="/resources/edit2/{{ script_id }}"><button>Editar proposta</button></a>
-                                        
+                                        <a href="/resources/edit2/{{ script_id }}">
+                                            <button class="btn">Editar proposta</button>
+                                        </a>
                                     {% endif %}
+                                    <button onclick="deleteProposta({{ script_id }})" class="btn">
+                                        <i class="fas fa-trash"></i> 
+                                    </button>
                                     {% if admin and not script.approved %}
-                                    
-                                        <!--<button onclick="aprovarProposta({{ script_id }})">Aprovar proposta de operacionalização {{script_id}}</button>-->                  
-                                        <small>Proposta pendente de aprovação.(ID:{{script_id}})</small>                  
+                                        <small>Proposta pendente de aprovação. (ID: {{ script_id }})</small>
                                     {% endif %}
+                        
                                 </div>
                             
                                 <div id="proposta{{ loop.index }}" class="proposta-content">
