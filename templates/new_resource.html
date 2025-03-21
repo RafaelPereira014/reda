@@ -406,11 +406,15 @@
             let errorMessage = '';
             let hasError = false;
         
+            // Update hidden textarea with editor content
+            const tituloEditorContent = document.getElementById('titulo-editor-container').innerText.trim();
+            document.getElementById('titulo').value = tituloEditorContent;
+
             // Validate "Título"
             const titulo = document.getElementById('titulo').value.trim();
             const minTituloLength = 5;
             const maxTituloLength = 50;
-        
+
             if (titulo.length < minTituloLength || titulo.length > maxTituloLength) {
                 hasError = true;
                 document.getElementById('titulo-error').style.display = 'block';
