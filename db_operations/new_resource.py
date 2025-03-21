@@ -45,7 +45,12 @@ def get_idiomas():
             Taxonomies tax ON t.taxonomy_id = tax.id
         WHERE
             tax.title = 'Idiomas'
-        ORDER BY t.title
+        ORDER BY 
+            CASE 
+                WHEN t.title = 'Português (PT)' THEN 0
+                ELSE 1
+            END,
+            t.title
     """)
     
     idiomas = cursor.fetchall()
