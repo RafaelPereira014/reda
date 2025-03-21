@@ -14,6 +14,16 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
     cursor = conn.cursor()
     current_date = datetime.now()
 
+    # Taxonomy ID mapping for levels
+    taxonomy_id_mapping = {
+        'anos_resources': 5,
+        'areas_resources': 7,
+        'dominios_resources': 8,
+        'subdominios': 21,
+        'hashtags': 22,
+        'tags_resources': 9  
+    }
+
     try:
         # Insert new script
         script_query = """
@@ -24,34 +34,38 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
         script_id = cursor.lastrowid
         print(f"Inserted script with ID: {script_id}")
 
-        def insert_terms(term_list, taxonomy_slug):
+        def insert_terms(term_list, taxonomy_key):
             term_insert_query = """
             INSERT INTO script_terms (script_id, term_id, created_at, updated_at)
             VALUES (%s, %s, NOW(), NOW())
             """
             
-            def get_or_create_term(term, taxonomy_slug):
-            # Use a separate cursor to avoid interference with inserts
+            def get_or_create_term(term, taxonomy_id):
                 with conn.cursor() as select_cursor:
                     get_term_id_query = """
-                        SELECT id FROM Terms WHERE title = %s AND taxonomy_id = (SELECT id FROM Taxonomies WHERE slug = %s)
+                        SELECT id FROM Terms WHERE title = %s AND taxonomy_id = %s
                     """
-                    select_cursor.execute(get_term_id_query, (term, taxonomy_slug))
-                    term_row = select_cursor.fetchone()  # Fetch the first result
-                    
+                    select_cursor.execute(get_term_id_query, (term, taxonomy_id))
+                    term_row = select_cursor.fetchone()
+
                 if term_row:
                     return term_row[0]  # Return existing term_id
                 else:
                     # Insert the new term
-                    insert_term_query = """
-                        INSERT INTO Terms (title, taxonomy_id, created_at, updated_at) 
-                        VALUES (%s, (SELECT id FROM Taxonomies WHERE slug = %s), NOW(), NOW())
-                    """
-                    cursor.execute(insert_term_query, (term, taxonomy_slug))
-                    return cursor.lastrowid  # Return the newly inserted term_id
+                    with conn.cursor() as insert_cursor:
+                        insert_term_query = """
+                            INSERT INTO Terms (title, taxonomy_id, created_at, updated_at) 
+                            VALUES (%s, %s, NOW(), NOW())
+                        """
+                        insert_cursor.execute(insert_term_query, (term, taxonomy_id))
+                        return insert_cursor.lastrowid  # Return the newly inserted term_id
+            
+            taxonomy_id = taxonomy_id_mapping.get(taxonomy_key)
+            if taxonomy_id is None:
+                raise ValueError(f"Invalid taxonomy key: {taxonomy_key}")
             
             for term in term_list:
-                term_id = get_or_create_term(term, taxonomy_slug)
+                term_id = get_or_create_term(term, taxonomy_id)
                 cursor.execute(term_insert_query, (script_id, term_id))
 
         # Insert associated terms
