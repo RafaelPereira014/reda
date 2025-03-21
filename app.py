@@ -1665,6 +1665,7 @@ def novo_recurso2():
         selected_disciplinas = list(set(data.getlist('disciplinas')))  # Get unique selected subjects (disciplinas)
         selected_dominios = list(set(data.getlist('dominios')))  # Get unique selected domains
         selected_subdominios = list(set(data.getlist('subdominios')))  # Get unique selected subdomains
+        print(selected_subdominios)
         selected_conceitos = list(set(data.getlist('conceitos')))  # Get unique selected concepts
         print(selected_conceitos)
         selected_tags = data.get('keywords').split(',') if data.get('keywords') else []  # Get keywords
@@ -1674,9 +1675,8 @@ def novo_recurso2():
         # Insert data into the database
         try:
             script_id = insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao, selected_tags)
-            print(f"Inserted script with ID: {script_id}")
             conn.commit()
-
+            print(f"Inserted script with ID: {script_id}")
             # Handle file upload (if provided)
             file = request.files.get('ficheiro')
             if file and allowed_file(file.filename):

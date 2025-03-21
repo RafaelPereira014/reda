@@ -31,13 +31,13 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
             """
             
             def get_or_create_term(term, taxonomy_slug):
-                # Use a separate cursor to avoid interference with inserts
+            # Use a separate cursor to avoid interference with inserts
                 with conn.cursor() as select_cursor:
                     get_term_id_query = """
                         SELECT id FROM Terms WHERE title = %s AND taxonomy_id = (SELECT id FROM Taxonomies WHERE slug = %s)
                     """
                     select_cursor.execute(get_term_id_query, (term, taxonomy_slug))
-                    term_row = select_cursor.fetchone()
+                    term_row = select_cursor.fetchone()  # Fetch the first result
                     
                 if term_row:
                     return term_row[0]  # Return existing term_id
