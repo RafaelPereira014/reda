@@ -400,22 +400,6 @@ def resource_details(resource_id):
     admin = is_admin(user_id) if is_logged_in else False
     resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
     
-
-
-    # Handle comment submission
-    if request.method == 'POST' and is_logged_in:
-        comment_text = request.form.get('comment')
-        if comment_text:
-            success, error = add_comment(resource_id=resource_id, user_id=user_id, text=comment_text)
-            if success:
-                flash('Comentário adicionado com sucesso!', 'success')
-                recipients=["rafaelpereira0808@gmail.com"]
-                send_email_on_comment_received(resource_id,slug,resource_link,recipients)
-            else:
-                flash(f'Ocorreu um erro ao adicionar o comentário: {error}', 'danger')
-        else:
-            flash('O comentário não pode estar vazio.', 'warning')
-
     # Extract combined details
     resource_details = combined_details
 
@@ -458,7 +442,28 @@ def resource_details(resource_id):
                            is_logged_in=is_logged_in)
 
 
-
+@app.route('/submit_comment', methods=['POST'])
+def submit_comment():
+    user_id = session.get('user_id')  # Retrieve user ID from session
+    # Check if the user is logged in
+    is_logged_in = user_id is not None
+    
+    if request.method == 'POST' and is_logged_in:
+        comment_text = request.form.get('comment')
+        resource_id = request.form.get('resource_id')  # Retrieve the resource_id from the form
+        if not comment_text or not resource_id:
+            return jsonify({"success": False, "error": "Comentário ou recurso não fornecido."})
+        
+        # Add the comment to the database (assuming a function add_comment exists)
+        success, error = add_comment(resource_id=resource_id, user_id=user_id, text=comment_text)
+        
+        if success:
+            return jsonify({"success": True, "message": "Comentário adicionado com sucesso!Está agora a aguardar aprovação"})
+        else:
+            return jsonify({"success": False, "error": error})
+    
+    return jsonify({"success": False, "error": "Usuário não está logado."})
+        
 @app.route('/contact_user', methods=['POST'])
 def contact_user():
     user_id = session.get('user_id')  # Retrieve user ID from session
