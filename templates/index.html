@@ -145,7 +145,7 @@
                                 {% if resource.description|length > 150 %}
                                     {{ resource.description[:100] | safe }} ...
                                 {% else %}
-                                    {{ resource.description |safe }}
+                                    {{ resource.description | safe }}
                                 {% endif %}
                             </p>                            
                             <a href="/resources/details/{{ resource.id }}" class="button">Ler mais...</a>

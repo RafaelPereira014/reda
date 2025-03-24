@@ -329,6 +329,8 @@ def resources():
         paginated_resources, total_resources = advanced_search_resource(ano, '', dominio, subdominio, page, per_page)
     elif disciplina:
         paginated_resources, total_resources = advanced_search_resource('', disciplina, dominio, subdominio, page, per_page)
+    elif search_term:  # Handle the search terms as a list of terms
+        paginated_resources, total_resources = search_resources(search_term, page, per_page)
     else:
         paginated_resources = get_all_resources(page, per_page)
         total_resources = get_total_resource_count()
