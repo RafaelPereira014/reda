@@ -152,20 +152,6 @@ def get_filtered_terms(level, parent_level, parent_term):
     conn = connect_to_database()
     cursor = conn.cursor(dictionary=True)
 
-    # Define a mapping of levels to taxonomy IDs
-    taxonomy_id_mapping = {
-        1: 5,
-        2: 7,
-        3: 8,
-        4: 21,
-        5: 22
-    }
-
-    # Get the taxonomy_id for the given parent_level
-    parent_taxonomy_id = taxonomy_id_mapping.get(parent_level)
-    if parent_taxonomy_id is None:
-        raise ValueError(f"Invalid parent_level: {parent_level}")
-
     # Handle the case when parent_term is None (for "all" case)
     if parent_term is None:
         query = """
@@ -173,10 +159,10 @@ def get_filtered_terms(level, parent_level, parent_term):
             tx.title AS term_title
         FROM terms_relations trs
         INNER JOIN Terms tx ON tx.id = trs.term_id
-        WHERE trs.level = %s AND tx.taxonomy_id = %s
+        WHERE trs.level = %s
         ORDER BY tx.title
         """
-        params = [level, parent_taxonomy_id]
+        params = [level]
     elif isinstance(parent_term, list) and parent_term:
         # If parent_term is a list, use IN clause
         placeholders = ','.join(['%s'] * len(parent_term))
@@ -185,16 +171,16 @@ def get_filtered_terms(level, parent_level, parent_term):
             tx.title AS term_title
         FROM terms_relations trs
         INNER JOIN Terms tx ON tx.id = trs.term_id
-        WHERE trs.level = %s AND tx.taxonomy_id = %s AND
+        WHERE trs.level = %s AND
               trs.term_relationship_id IN (
                   SELECT trs_inner.term_relationship_id
                   FROM terms_relations trs_inner
                   INNER JOIN Terms tx_inner ON tx_inner.id = trs_inner.term_id
-                  WHERE trs_inner.level = %s AND tx_inner.title IN ({placeholders}) AND tx_inner.taxonomy_id = %s
+                  WHERE trs_inner.level = %s AND tx_inner.title IN ({placeholders})
               )
         ORDER BY tx.title
         """
-        params = [level, taxonomy_id_mapping.get(level), parent_level] + parent_term + [parent_taxonomy_id]
+        params = [level, parent_level] + parent_term  # Flatten list of parent terms
     else:
         # Handle single parent term
         query = """
@@ -202,20 +188,20 @@ def get_filtered_terms(level, parent_level, parent_term):
             tx.title AS term_title
         FROM terms_relations trs
         INNER JOIN Terms tx ON tx.id = trs.term_id
-        WHERE trs.level = %s AND tx.taxonomy_id = %s AND
+        WHERE trs.level = %s AND
               trs.term_relationship_id IN (
                   SELECT trs_inner.term_relationship_id
                   FROM terms_relations trs_inner
                   INNER JOIN Terms tx_inner ON tx_inner.id = trs_inner.term_id
-                  WHERE trs_inner.level = %s AND tx_inner.title = %s AND tx_inner.taxonomy_id = %s
+                  WHERE trs_inner.level = %s AND tx_inner.title = %s
               )
         ORDER BY tx.title
         """
-        params = [level, taxonomy_id_mapping.get(level), parent_level, parent_term, parent_taxonomy_id]
+        params = [level, parent_level, parent_term]
 
     cursor.execute(query, params)
     result = cursor.fetchall()
-
+    
     conn.close()
 
     return [row['term_title'] for row in result]

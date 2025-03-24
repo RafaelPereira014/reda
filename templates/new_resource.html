@@ -30,17 +30,16 @@
             color: #fff;
             height: 80px;
         }
-        .required {
-            position: relative;
+        .required h2 {
+            display: flex;
+            align-items: center;
         }
-        .required::after {
-            content: '*';
-            position: absolute;
-            top: 0;
-            right: absolute;
+    
+        .required h2::before {
+            content: ' *';
             color: red;
-            font-size: 1.4rem;
-            line-height: 0.3;
+            font-weight: bold;
+            margin-right: 4px;
         }
         .hidden {
             display: none;
@@ -246,42 +245,44 @@
                 <div class="input-group required">
                     <h2>Título:</h2>
                     <div id="titulo-editor-container" style="height: 100px;"></div>
-                    <textarea id="titulo" name="titulo" style="display: none;" ></textarea>
+                    <textarea id="titulo" name="titulo" style="display: none;"></textarea>
                     <div id="titulo-counter"></div>
                     <small class="small-text">Deve ter no mínimo 5 caracteres e no máximo 50</small>
                     <div id="titulo-error" style="color: red; display: none;">O título deve ter no mínimo 5 caracteres.</div>
                 </div>
-                
+    
                 <div class="input-group-aut required">
                     <h2>Autor/fonte:</h2>
-                    <input type="text" id="autor" name="autor" placeholder="Nome do autor/fonte do recurso" >
+                    <input type="text" id="autor" name="autor" placeholder="Nome do autor/fonte do recurso">
                 </div>
+    
                 <div class="input-group-org required">
                     <h2>Organização:</h2>
-                    <input type="text" id="organizacao" name="organizacao" placeholder="Escola/organização/nome do sítio do autor do recurso" >
+                    <input type="text" id="organizacao" name="organizacao"
+                           placeholder="Escola/organização/nome do sítio do autor do recurso">
                 </div>
+    
                 <div class="input-group-format required">
                     <h2>Formato (MAX. 2):</h2>
                     {% for formato in formatos %}
-                        <input type="checkbox" id="formato{{ loop.index }}" name="formato" value="{{ formato }}" onchange="checkVideoAnimation(this)">
+                        <input type="checkbox" id="formato{{ loop.index }}" name="formato" value="{{ formato }}"
+                               onchange="checkVideoAnimation(this)">
                         <label for="formato{{ loop.index }}">{{ formato }}</label>
                     {% endfor %}
                 </div>
-
+    
                 <div id="duration-box" class="hidden">
                     <h2>Duração :</h2>
                     <input type="text" id="duration" name="duration" min="1" placeholder="ex: 01:02:00">
                 </div>
+    
                 <div class="input-group-local required">
                     <h2>Localização do recurso:</h2>
                     <input type="radio" id="localizacao1" name="localizacao" value="Opção 1">
                     <label for="localizacao1">Endereço e/ou código de incorporação</label>
                     <input type="radio" id="localizacao2" name="localizacao" value="Opção 2">
                     <label for="localizacao2">Ficheiro</label>
-                    
-                    <!-- Small message hidden initially -->
                     <small>Formatos permitidos para ficheiros: pdf, docx, xlsx, doc</small>
-                
                     <div id="enderecoInput" style="display: none;">
                         <input type="text" id="endereco" name="endereco" placeholder="Digite o endereço">
                     </div>
@@ -292,26 +293,26 @@
                         <input type="file" id="file" name="file">
                     </div>
                 </div>
+    
                 <div class="input-group-use required">
                     <h2>Modos de Utilização:</h2>
                     {% for modo in use_mode %}
-                        <input type="checkbox" id="modo{{ loop.index }}" name="use_mode" value="{{ modo }}" class="use-mode-checkbox">
+                        <input type="checkbox" id="modo{{ loop.index }}" name="use_mode" value="{{ modo }}"
+                               class="use-mode-checkbox">
                         <label for="modo{{ loop.index }}">{{ modo }}</label>
                     {% endfor %}
                     <span id="checkbox-error" style="display:none; color:red;">Selecione um modo de utilização.</span>
-
                 </div>
-                
-
-                <div class="input-group-req ">
+    
+                <div class="input-group-req">
                     <h2>Requisitos Técnicos:</h2>
                     {% for requirement in requirements %}
-                        <input type="checkbox" class="requirements-checkbox" id="requirement{{ loop.index }}" name="requirements" value="{{ requirement }}">
+                        <input type="checkbox" class="requirements-checkbox" id="requirement{{ loop.index }}"
+                               name="requirements" value="{{ requirement }}">
                         <label for="requirement{{ loop.index }}">{{ requirement }}</label>
                     {% endfor %}
                 </div>
-
-                
+    
                 <div class="input-group-descricao-proposta required">
                     <h2>Descrição do recurso:</h2>
                     <div id="editor-container" style="height: 300px;"></div>
@@ -319,14 +320,17 @@
                     <div id="counter"></div>
                     <small class="small-text">Deve ter no mínimo 20 caracteres e no máximo 1500</small>
                 </div>
+    
                 <div class="input-group-lang required">
                     <h2>Idiomas:</h2>
                     {% for idioma in idiomas %}
-                        <input type="checkbox" class="idiomas-checkbox" id="idioma{{ loop.index }}" name="idiomas" value="{{ idioma }}">
+                        <input type="checkbox" class="idiomas-checkbox" id="idioma{{ loop.index }}" name="idiomas"
+                               value="{{ idioma }}">
                         <label for="idioma{{ loop.index }}">{{ idioma }}</label>
                     {% endfor %}
                     <span id="idiomas-error" style="display:none; color:red;">Selecione um idioma.</span>
                 </div>
+    
                 <div class="input-group-fich">
                     <h2>Imagem de destaque:</h2>
                     <label class="file-label" for="ficheiro">
@@ -335,12 +339,11 @@
                         <span class="file-name">Nenhum arquivo selecionado</span>
                     </label>
                 </div>
-
+    
                 <small class="small-text">
-                    <span class="text-danger">*</span>
-                    Campo obrigatório
+                    <span class="text-danger">*</span> Campo obrigatório
                 </small>
-                
+    
                 <button type="submit">Continuar</button>
                 <button type="button" onclick="window.location.href='/'">Cancelar</button>
             </form>

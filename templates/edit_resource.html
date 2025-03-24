@@ -51,17 +51,16 @@
             text-decoration: none;
             cursor: pointer;
         }
-        .required {
-            position: relative;
+        .required h2 {
+            display: flex;
+            align-items: center;
         }
-        .required::after {
-            content: '*';
-            position: absolute;
-            top: 0;
-            right: absolute;
+    
+        .required h2::before {
+            content: ' *';
             color: red;
-            font-size: 1.4rem;
-            line-height: 0.3;
+            font-weight: bold;
+            margin-right: 4px;
         }
     </style>
     
