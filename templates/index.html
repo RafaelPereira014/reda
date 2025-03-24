@@ -219,7 +219,7 @@
                             <strong>
                                 <a href="/resources/details/{{ resource.id }}">
                                     {% if resource.title|length > 25 %}
-                                        {{ resource.title}}
+                                        {{ resource.title | strip_html }}
                                     {% else %}
                                         {{ resource.title | strip_html }}
                                     {% endif %}
