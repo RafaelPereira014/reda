@@ -24,21 +24,70 @@
             padding: 40px 0; /* Add padding for better spacing */
             color: #fff; /* Change text color to white for better contrast */
         }
-        .required {
-            position: relative;
+        .required h2 {
+            display: flex;
+            align-items: center;
         }
-        
-        .required::after {
-            content: '*';
-            position: absolute;
-            top: 0;
-            right:absolute;
+    
+        .required h2::before {
+            content: ' *';
             color: red;
-            font-size: 1.4rem;
-            line-height: 0.3;
+            font-weight: bold;
+            margin-right: 4px;
         }
         
     </style>
+    <style>
+        /* Modal background */
+        #error-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+    
+        /* Modal content */
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            margin: 15% auto;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            border-radius: 10px;
+        }
+    
+        /* Modal message */
+        #modal-message {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+    
+        /* Close button */
+        #close-modal {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    
+        #close-modal:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+    
+
+    
 
     
 </head>
@@ -93,26 +142,24 @@
     </div>
     <main>
         <div class="container">
-            <form  method="POST" enctype="multipart/form-data">
+            <form id="app-form" method="POST" enctype="multipart/form-data">
                 <div class="input-group required">
                     <h2>Título:</h2>
-                    <textarea id="titulo" name="titulo" rows="1" placeholder="Nome da aplicação" required></textarea>
+                    <textarea id="titulo" name="titulo" rows="1" placeholder="Nome da aplicação"></textarea>
+                    <div id="titulo-error" style="color: red; display: none;">O título deve ter no mínimo 5 caracteres.</div>
                 </div>
                 
                 <div class="input-group required">
                     <h2>Descrição:</h2>
-                    <textarea id="descricao" name="descricao" placeholder="Descreva esta aplicação sucintamente" maxlength="1500" required></textarea>
+                    <textarea id="descricao" name="descricao" placeholder="Descreva esta aplicação sucintamente" maxlength="1500"></textarea>
                     <div id="counter"></div>
-    
-                    <small class="small-text">
-                        Deve ter no mínimo 20 caracteres e no máximo 1500
-                    </small>
+                    <small class="small-text">Deve ter no mínimo 20 caracteres e no máximo 1500</small>
                 </div>
+            
                 <div class="input-group required">
                     <h2>Endereço</h2>
                     <input type="text" name="endereco" id="endereco-input" placeholder="Endereço de ligação">
                 </div>
-                
                 
                 <div class="input-group-system required">
                     <h2>Sistemas:</h2>
@@ -124,7 +171,6 @@
                     <label for="sistema3">Windows</label>
                 </div>
                 
-                
                 <div class="input-group-fich">
                     <h2>Imagem de destaque:</h2>
                     <label class="file-label" for="ficheiro">
@@ -133,18 +179,22 @@
                         <span class="file-name">Nenhum arquivo selecionado</span>
                     </label>
                 </div>
-                <small class="small-text">
-                    <span class="text-danger">*</span>
-                    Campo obrigatório
-                </small>
+            
+                <small class="small-text"><span class="text-danger">*</span> Campo obrigatório</small>
                 
                 <button type="submit">Criar aplicação</button>
                 <button onclick="window.location.href='/'">Cancelar</button>
-    
             </form>
             
         </div>
     </main>
+    <!-- Error Modal -->
+    <div id="error-modal" style="display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center;">
+        <div style="background: white; padding: 20px; margin: 15% auto; width: 80%; max-width: 500px; text-align: center;" class="modal-content" id="modal-content">
+            <p id="modal-message"></p>
+            <button id="close-modal">Fechar</button>
+        </div>
+    </div>
      <!-- Footer -->
      <footer class="footer">
         <div class="container footer-container">
@@ -253,6 +303,77 @@
             }
         });
 
+    </script>
+
+    <script>
+        document.getElementById('app-form').addEventListener('submit', function (event) {
+            let errorMessage = '';
+            let hasError = false;
+        
+            // Get the values of the input fields
+            const titulo = document.getElementById('titulo').value.trim();
+            const descricao = document.getElementById('descricao').value.trim();
+            const endereco = document.getElementById('endereco-input').value.trim();
+            
+            // Check if at least one "Sistema" checkbox is selected
+            const sistemas = document.getElementsByName('sistema');
+            let sistemaSelected = false;
+            for (let i = 0; i < sistemas.length; i++) {
+                if (sistemas[i].checked) {
+                    sistemaSelected = true;
+                    break;
+                }
+            }
+        
+            // Validate the 'titulo' field
+            if (titulo === '') {
+                hasError = true;
+                errorMessage += "O título é obrigatório.\n";
+            }
+        
+            // Validate the 'descricao' field
+            if (descricao === '') {
+                hasError = true;
+                errorMessage += "A descrição é obrigatória.\n";
+            }
+        
+            // Validate the 'endereco' field
+            if (endereco === '') {
+                hasError = true;
+                errorMessage += "O endereço é obrigatório.\n";
+            }
+            
+            // Validate the 'sistema' field (at least one checkbox should be selected)
+            if (!sistemaSelected) {
+                hasError = true;
+                errorMessage += "Pelo menos um sistema deve ser selecionado.\n";
+            }
+        
+            // If there are any errors, show the modal with the error messages and prevent form submission
+            if (hasError) {
+                event.preventDefault();  // Prevent the form from being submitted
+                showModal(errorMessage);  // Display the modal with the error messages
+            }
+        });
+        
+        // Function to display the modal with the error messages
+        function showModal(message) {
+            const modal = document.getElementById('error-modal');
+            const modalMessage = document.getElementById('modal-message');
+            modalMessage.textContent = message;  // Set the message in the modal
+            modal.style.display = 'flex';  // Show the modal
+        }
+        
+        // Close the modal when the close button is clicked
+        document.getElementById('close-modal').addEventListener('click', function () {
+            document.getElementById('error-modal').style.display = 'none'; // Hide the modal
+        });
+    
+        // Prevent form submission and modal display when Cancel button is clicked
+        document.querySelector('button[onclick="window.location.href=\'/\'"]').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent the form submission
+            window.location.href = '/'; // Redirect the user to the homepage
+        });
     </script>
     
 </body>

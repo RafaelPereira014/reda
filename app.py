@@ -410,9 +410,6 @@ def resource_details(resource_id):
             if success:
                 flash('Comentário adicionado com sucesso!', 'success')
                 recipients=["rafaelpereira0808@gmail.com"]
-                #recipients=[admin_emails]
-                #username=get_username(user_id)
-                #resource_link = "www.google.com"
                 send_email_on_comment_received(resource_id,slug,resource_link,recipients)
             else:
                 flash(f'Ocorreu um erro ao adicionar o comentário: {error}', 'danger')
@@ -426,9 +423,7 @@ def resource_details(resource_id):
     
     # Fetch and append additional details
     resource_details['image_url'] = get_resource_image_url(slug)
-   
     resource_details['embed'] = get_resource_embed(resource_id)
-    print(resource_details['embed'])
     resource_details['files'] = get_resource_files(slug)
     resource_details['link'] = get_resource_link(resource_id)
     resource_details['operations'] = get_propostasOp(resource_id)
