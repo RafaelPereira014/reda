@@ -20,17 +20,16 @@
             background-color: #f1f0f0;
             color: #333;
         }
-        .required {
-            position: relative;
+        .required h2 {
+            display: flex;
+            align-items: center;
         }
-        .required::after {
-            content: '*';
-            position: absolute;
-            top: 0;
-            right: absolute;
+    
+        .required h2::before {
+            content: ' *';
             color: red;
-            font-size: 1.4rem;
-            line-height: 0.3;
+            font-weight: bold;
+            margin-right: 4px;
         }
     </style>
     <style>
@@ -126,17 +125,7 @@
             background-color: #a0af3b;
         }
         
-        /* Required Fields */
-        .required::after {
-            content: "*";
-            color: #e74c3c;
-            margin-left: 5px;
-        }
         
-        /* Error and Small Text */
-        .text-danger {
-            color: #e74c3c;
-        }
         
     
     </style>
@@ -233,12 +222,12 @@
                     <input type="text" id="autor" name="autor" placeholder="O seu nome" required>
                 </div>
 
-                <div class="input-group-email">
+                <div class="input-group-email required">
                     <h2>Email:</h2>
                     <small class="small-text">
                         Deixe o seu endereço de correiro eletrónico se pretender que o contactemos
                     </small>
-                    <input type="text" id="email" name="email" placeholder="O seu email" required>
+                    <input type="text" id="email" name="email" placeholder="O seu email"required>
                 </div>
 
                 <div class="input-group-data required">

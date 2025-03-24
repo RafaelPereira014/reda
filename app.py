@@ -398,7 +398,6 @@ def resource_details(resource_id):
     user_id = session.get('user_id')  # Retrieve user ID from session
     is_logged_in = user_id is not None
     admin = is_admin(user_id) if is_logged_in else False
-    resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
     
     # Extract combined details
     resource_details = combined_details
@@ -1622,12 +1621,12 @@ def novo_recurso():
             insert_taxonomy_details(cursor, resource_id, taxonomy_details)
             conn.commit()
             # After commit, send the email
-            # recipients = ["rafaelpereira0808@gmail.com"]
+            recipients = ["rafaelpereira0808@gmail.com"]
             #                 #recipients=[admin_emails]
 
-            # resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
-            # #resource_link = "www.google.com"
-            # send_email_on_resource_create(resource_id, autor, resource_link, recipients)
+            resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
+            #resource_link = "www.google.com"
+            send_email_on_resource_create(resource_id, autor, resource_link, recipients)
             # print("Email sent successfully after resource creation")
             
             # Store resource_id in session
