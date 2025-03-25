@@ -89,6 +89,72 @@
             text-decoration: none; /* Ensures no underline on hover */
             color: inherit; /* Prevents color change on hover */
         }
+
+        .welcome-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f9f9f9; /* Softer background color */
+            padding: 30px;
+            border-radius: 12px; /* Slightly more rounded corners */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+            z-index: 1000;
+            text-align: center;
+            width: 90%; /* Responsive width for smaller screens */
+            max-width: 400px; /* Limit width on larger screens */
+            font-family: 'Arial', sans-serif;
+            animation: fadeIn 0.3s ease-in-out; /* Smooth fade-in effect */
+        }
+        
+        .welcome-popup p {
+            font-size: 16px;
+            color: #333; /* Darker text color for better contrast */
+            margin-bottom: 20px; /* Space between text and button */
+            line-height: 1.5; /* Better readability */
+        }
+        
+        .welcome-popup button {
+            margin-top: 10px;
+            padding: 10px 20px; /* Larger padding for better usability */
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 8px; /* Softer button corners */
+            cursor: pointer;
+            font-size: 16px; /* Larger font size for accessibility */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+        }
+        
+        .welcome-popup button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05); /* Slight zoom effect on hover */
+        }
+        
+        /* Add a fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        
+        /* Optional: Add responsiveness for very small screens */
+        @media (max-width: 480px) {
+            .welcome-popup {
+                padding: 20px;
+                font-size: 14px;
+            }
+        
+            .welcome-popup button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
        
 
         
@@ -291,6 +357,12 @@
                 {% endfor %}
 
             </div>
+            {% if welcome_message %}
+                <div id="welcomePopup" class="welcome-popup">
+                    <p>{{ welcome_message }}</p>
+                    <button onclick="closeWelcomePopup()">Fechar</button>
+                </div>
+            {% endif %}
         </div>
         
         <!-- Testimonial Carousel -->
@@ -333,27 +405,7 @@
     
 
     <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeLoginModal()">&times;</span>
-            <i class="fas fa-user user-icon"></i>
-            <h2>Login</h2>
-            <form>
-                <div class="login-input">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="login-input">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="button-container">
-                    <button type="submit">Login</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
+    
     <!-- Cookie Consent Modal -->
     <div id="cookieModal" class="cookie-modal">
         <p>Este site utiliza cookies para permitir uma melhor experiencia por parte do utilizador.</p>
@@ -518,6 +570,13 @@
           cookieModal.style.display = 'none';
         });
       </script>
+      <script>
+        // Close the welcome popup
+        function closeWelcomePopup() {
+            const popup = document.getElementById('welcomePopup');
+            popup.style.display = 'none';
+        }
+    </script>
     
 </body>
 </html>

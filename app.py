@@ -94,6 +94,7 @@ def login():
             if bcrypt.checkpw(password.encode('utf-8'), stored_password):
                 session['user_id'] = user_data[0]  # Store user ID in session
                 session['user_type'] = user_data[1]  # Store user type in session
+                session['welcome_user'] = True  # Set a flag for the welcome message
                 session.permanent = True
                 return redirect('/')  # Redirect to dashboard on success
             else:
@@ -105,6 +106,7 @@ def login():
 
 @app.route('/logout')
 def logout():
+    session['bye_message'] = True
     session.clear()
     return redirect('/')
 
@@ -248,9 +250,16 @@ def homepage():
     
     # Check if the user is logged in
     is_logged_in = user_id is not None
+    welcome_message = None
+
 
     # Determine if the user is an admin
     admin = is_admin(user_id) if is_logged_in else False
+    if 'welcome_user' in session:
+        welcome_message = 'Bem-vindo(a) à Reda!'
+        session.pop('welcome_user')  # Remove the flag after displaying the message
+    
+    
 
     # Modify recent_resources to include image_url and embed
     for resource in recent_resources:
@@ -282,7 +291,8 @@ def homepage():
         recent_resources=recent_resources, 
         highlighted_resources=highlighted_resources, 
         admin=admin, 
-        is_logged_in=is_logged_in  # Pass the login status to the template
+        is_logged_in=is_logged_in  ,
+        welcome_message=welcome_message
     )
 
 
@@ -1557,9 +1567,6 @@ def meu_perfil():
 
 
     user_details = get_details(user_id)
-    print(user_details)
-
-    
 
     return render_template(
         'myaccount/my_profile.html',
