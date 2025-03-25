@@ -138,144 +138,21 @@
                         <p>{{ tools_count }} Ferramentas</p>
                     </div>
                     <!-- Progress Tracking Section -->
-                    
-
                 </div>
                 <!-- Options Menu -->
-                <div class="options-menu">
-                    <a href="#my-resources">Meus recursos</a>
-                    <a href="#my-proposals">Minhas propostas de op.</a>
-                    <a href="#my-apps">Minhas aplicações</a>
-                    <a href="#my-tools">Minhas ferramentas</a>
-                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/myaccount">Meus Recursos</a></li>
+                        <li><a href="/myaccount/minhas_propostas">Minhas Propostas</a></li>
+                        <li><a href="/myaccount/minhas_aplicacoes">Minhas Aplicações</a></li>
+                        <li><a href="/myaccount/minhas_ferramentas">Minhas Ferramentas</a></li>
+                        <li><a href="/myaccount/meu_perfil">Meu perfil</a></li>
+
+                    </ul>
+                </nav>
             </div>
     
-            <section id="my-resources" class="content-section">
-                <h1>Os meus recursos</h1>
-                <p>{{ resources_count }} resultados</p>
-                <button class="resource" onclick="location.href='/novorecurso'">
-                    <i class="fa fa-plus"></i> Introduzir recurso
-                </button>
-                
-                <div class="search-container">
-                    <!-- Dropdown Filter -->
-                    <select id="filterDropdown" class="filter-dropdown">
-                        <option value="">Escolher disciplina...</option>
-                        {% for disciplina in disciplinas %}
-                            <option value="{{ disciplina }}" {% if disciplina == selected_disciplina %}selected{% endif %}>{{ disciplina }}</option>
-                        {% endfor %}
-                    </select>
-                    <!-- Search Input -->
-                    <input type="text" id="searchInput" placeholder="Palavras-chave..." value="{{ search_term }}">
-                
-                    
-                
-                    <!-- Search Button -->
-                    <button class="search-button" onclick="searchResources()">Filtrar palavras</button>
-                
-                    <!-- Clear Filters Button -->
-                    <button class="clear-button" onclick="clearSearch()">Limpar Filtros</button>
-                </div>
-            
-                {% for resource in my_resources %}
-                    <div class="resource-card">
-                        <small>{{ resource['areas_resources'] | join(', ') }}</small> 
-
-                        <h1>{{ resource['title'] | strip_html }}</h1>
-                        <p><em>Criado a {{ resource['created_at'] }}</em></p>
-                        
-                        <p>{{ resource['description'] | strip_html }}</p>
-
-
-                        <div class="resource-status-icons">
-                            <i class="fas fa-flag highlight-flag" style="color: {{ 'green' if resource.highlighted else 'black' }};"
-                            title="{{ 'Recurso do mês' if resource.highlighted else 'Destacar para recurso do mês' }}"
-                            data-id="{{ resource.id }}" data-highlighted="{{ 'true' if resource.highlighted else 'false' }}"></i>
-                            <i class="fas fa-circle" style="color: {{ 'green' if resource.approved else 'orange' }};"
-                            title="{{ 'Aprovado' if resource.approved else 'Aguarda aprovação' }}"></i>
-                        </div>
-                        <a href="/resources/details/{{ resource.id }}"><button>Ver recurso</button></a>
-                        <a href="/resources/edit/{{ resource.id }}"><button>Editar recurso</button></a>
-                    </div>
-                {% endfor %}
-            
-                <div class="pagination">
-                    {% if page_resources > 1 %}
-                        <a href="?page_resources=1&search={{ search_term }}&disciplina={{ selected_disciplina }}">&laquo; Inicio</a>
-                        <a href="?page_resources={{ page_resources - 1 }}&search={{ search_term }}&disciplina={{ selected_disciplina }}">Anterior</a>
-                    {% endif %}
-                    <span class="current">Page {{ page_resources }} of {{ total_pages_resources }}</span>
-                    {% if page_resources < total_pages_resources %}
-                        <a href="?page_resources={{ page_resources + 1 }}&search={{ search_term }}&disciplina={{ selected_disciplina }}">Próximo</a>
-                        <a href="?page_resources={{ total_pages_resources }}&search={{ search_term }}&disciplina={{ selected_disciplina }}">Fim &raquo;</a>
-                    {% endif %}
-                </div>
-            </section>
-            
-            
-            
-            <section id="my-proposals" class="content-section" style="display: none;">
-                <h1>Recursos com a minha contribuição</h1>
-                <h3>{{ scripts_count }} resultados</h3>
-                <!--
-                <div class="search-container">
-                    <input type="text" id="searchInputProposals" placeholder="Search...">
-                    <button onclick="searchProposals()">Search</button>
-                </div>
-                -->
-                {% for script in scripts_user %}
-                    <div class="proposta-card">
-                        <h3> {{script.title | strip_html}}</h3>
-                        <p>{{ script.created_at }}</p>
-                        <p>{{ script.operation | strip_html}}</p>
-                        <a href="/resources/details/{{ script.resource_id }}"><button>Ver recurso</button></a>
-                        
-                    </div>
-                {% endfor %}
-                
-                <div class="pagination">
-                    {% if page_proposals > 1 %}
-                        <a href="?page_proposals=1">&laquo; Inicio</a>
-                        <a href="?page_proposals={{ page_proposals - 1 }}">Anterior</a>
-                    {% endif %}
-                    
-                    <span class="current">Page {{ page_proposals }} of {{ total_pages_proposals }}</span>
-                    
-                    {% if page_proposals < total_pages_proposals %}
-                        <a href="?page_proposals={{ page_proposals + 1 }}">Próximo</a>
-                        <a href="?page_proposals={{ total_pages_proposals }}">Fim &raquo;</a>
-                    {% endif %}
-                </div>
-            </section>
-
-            <!-- Apps Section -->
-            <section id="my-apps" class="content-section" style="display: none;">
-                <h1>Aplicações</h1>
-                <h3>{{ apps_count }} resultados</h3>
-                {% for app in apps_user %}
-                <div class="tool-card">
-                    <h3>{{ app.title | safe }}</h3>
-                    <p>{{ app.description | safe }}</p>
-                    <a href="/resources/edit_app/{{ app.id }}"><button>Editar</button></a>
-                    <button class="eliminar" data-id="{{ app.id }}" onclick="openDeleteModal(this)">Eliminar</button>
-                </div>
-                {% endfor %}
-                
-                <div class="pagination">
-                    {% if page_apps > 1 %}
-                        <a href="?page_apps=1">&laquo; Inicio</a>
-                        <a href="?page_apps={{ page_apps - 1 }}">Anterior</a>
-                    {% endif %}
-                    <span class="current">Page {{ page_apps }} of {{ total_pages_apps }}</span>
-                    {% if page_apps < total_pages_apps %}
-                        <a href="?page_apps={{ page_apps + 1 }}">Próximo</a>
-                        <a href="?page_apps={{ total_pages_apps }}">Fim &raquo;</a>
-                    {% endif %}
-                </div>
-            </section>
-
-            <!-- Tools Section -->
-            <section id="my-tools" class="content-section" style="display: none;">
+            <section id="my-tools" class="content-section">
                 <h1>Ferramentas</h1>
                 <h3>{{ tools_count }} resultados</h3>
                 {% for tool in tools_user %}
@@ -299,6 +176,12 @@
                     {% endif %}
                 </div>
             </section>
+            
+
+            
+            
+            
+            
 
             <!-- Delete resource modal -->
             <div id="deleteModal" class="modal">
@@ -399,49 +282,13 @@
                 resourceIdToDelete = null;
             }
         
-            // Delete resource
-            function deleteResource() {
-                if (!resourceIdToDelete) {
-                    alert('Resource ID not found');
-                    return;
-                }
+            
         
-                fetch(`/delete_resource/${resourceIdToDelete}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json().then(data => ({
-                    status: response.status,
-                    body: data
-                })))
-                .then(response => {
-                    if (response.status === 200) {
-                        alert(response.body.message);
-                        window.location.reload();
-                    } else {
-                        alert("Error deleting the resource: " + response.body.message);
-                    }
-                    closeDeleteModal();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("Error deleting the resource: " + error.message);
-                    closeDeleteModal();
-                });
-            }
-        
-            // Event listeners for modals
-            document.querySelectorAll('.eliminar').forEach(button => {
-                button.addEventListener('click', () => openDeleteModal(button));
-            });
         
             document.querySelectorAll('.close').forEach(span => {
                 span.addEventListener('click', () => closeModal(span.closest('.modal')));
             });
         
-            document.getElementById('confirmDeleteButton').addEventListener('click', deleteResource);
         
             // Show specific section
             function showSection(sectionId) {
@@ -463,68 +310,10 @@
                 });
             });
         
-            // Handle section visibility based on URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('page_proposals')) {
-                showSection('my-proposals');
-            } else if (urlParams.has('page_apps')) {
-                showSection('my-apps');
-            } else if (urlParams.has('page_tools')) {
-                showSection('my-tools');
-            } else {
-                showSection('my-resources');
-            }
+           
         
-            function searchResources() {
-                const searchTerm = document.getElementById('searchInput').value;
-                const selectedDisciplina = document.getElementById('filterDropdown').value;
-        
-                const queryParams = new URLSearchParams({
-                    search: searchTerm,
-                    disciplina: selectedDisciplina
-                }).toString();
-        
-                window.location.href = `/myaccount?${queryParams}`;
-            }
-        
-            function clearSearch() {
-                document.getElementById('searchInput').value = '';
-                document.getElementById('filterDropdown').value = '';
-                window.location.href = '/myaccount';
-            }
-        
-            document.querySelector('.search-button').addEventListener('click', searchResources);
-            document.querySelector('.clear-button').addEventListener('click', clearSearch);
+            
     
-            // Highlight functionality
-            const highlightFlags = document.querySelectorAll('.highlight-flag');
-            highlightFlags.forEach(flag => {
-                flag.addEventListener('click', function() {
-                    const resourceId = this.getAttribute('data-id');
-                    const isHighlighted = this.getAttribute('data-highlighted') === 'true';
-                    toggleHighlight(this, resourceId, isHighlighted);
-                });
-            });
-    
-            function toggleHighlight(flagElement, resourceId, isHighlighted) {
-                const action = isHighlighted ? 'highlight_off' : 'highlight_on';
-                fetch(`/resources/${action}/${resourceId}`, {
-                    method: 'POST'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        flagElement.setAttribute('data-highlighted', !isHighlighted);
-                        flagElement.style.color = !isHighlighted ? 'green' : 'black';
-                        flagElement.title = !isHighlighted ? 'Recurso do mês' : 'Destacar para recurso do mês';
-                    } else {
-                        alert('Failed to toggle highlight: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    alert('Something went wrong. Please try again later.');
-                });
-            }
     
             // Event listener for the hamburger menu
             function toggleMenu() {

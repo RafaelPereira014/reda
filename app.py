@@ -1433,7 +1433,7 @@ def my_account():
     paginated_tools = tools_user[(page_tools - 1) * per_page:page_tools * per_page]
 
     return render_template(
-        'my_account.html',
+        '/myaccount/my_account.html',
         my_resources=paginated_resources,
         apps_user=paginated_apps,
         tools_user=paginated_tools,
@@ -1456,6 +1456,115 @@ def my_account():
         is_logged_in=is_logged_in,
         disciplinas=disciplinas,
         selected_disciplina=disciplina  # Pass selected disciplina to template
+    )
+
+
+
+@app.route('/myaccount/minhas_propostas')
+def minhas_propostas():
+    user_id = session.get('user_id')  # Retrieve user ID from session
+    is_logged_in = user_id is not None
+    if not is_logged_in:
+        return redirect('/login')
+
+    # Fetch user's scripts (proposals)
+    search_term = request.args.get('search', '').strip()
+    scripts_user, scripts_count = get_script_details_by_user(user_id, search_term)
+    scripts_user_with_titles = add_titles_to_scripts(scripts_user)
+    user_details = get_details(user_id)
+    # Pagination
+    per_page = 10
+    # Pagination for proposals
+    page_proposals = request.args.get('page_proposals', 1, type=int)
+    total_proposals = scripts_count
+    total_pages_proposals = math.ceil(total_proposals / per_page)
+    paginated_proposals = scripts_user[(page_proposals - 1) * per_page:page_proposals * per_page]
+
+    return render_template(
+        'myaccount/my_proposals.html',
+        scripts_user=paginated_proposals,
+        page_proposals=page_proposals,
+        total_pages_proposals=total_pages_proposals,
+        search_term=search_term,
+        is_logged_in=is_logged_in,
+        user_details=user_details
+    )
+
+
+@app.route('/myaccount/minhas_aplicacoes')
+def minhas_aplicacoes():
+    user_id = session.get('user_id')  # Retrieve user ID from session
+    is_logged_in = user_id is not None
+    if not is_logged_in:
+        return redirect('/login')
+
+    # Fetch user's apps
+    apps_user, apps_count = get_apps_from_user(user_id)
+    user_details = get_details(user_id)
+
+    # Pagination
+    per_page = 10
+    # Pagination for apps
+    page_apps = request.args.get('page_apps', 1, type=int)
+    total_apps = apps_count
+    total_pages_apps = math.ceil(total_apps / per_page)
+    paginated_apps = apps_user[(page_apps - 1) * per_page:page_apps * per_page]
+
+    return render_template(
+        'myaccount/my_apps.html',
+        apps_user=paginated_apps,
+        page_apps=page_apps,
+        user_details=user_details,
+        total_pages_apps=total_pages_apps,
+        is_logged_in=is_logged_in
+    )
+
+
+@app.route('/myaccount/minhas_ferramentas')
+def minhas_ferramentas():
+    user_id = session.get('user_id')  # Retrieve user ID from session
+    is_logged_in = user_id is not None
+    if not is_logged_in:
+        return redirect('/login')
+
+    # Fetch user's tools
+    tools_user, tools_count = get_tools_from_user(user_id)
+    user_details = get_details(user_id)
+
+    # Pagination
+    per_page = 10
+    page_tools = request.args.get('page_tools', 1, type=int)
+    total_tools = tools_count
+    total_pages_tools = math.ceil(total_tools / per_page)
+    paginated_tools = tools_user[(page_tools - 1) * per_page:page_tools * per_page]
+
+
+    return render_template(
+        'myaccount/my_tools.html',
+        tools_user=paginated_tools,
+        page_tools=page_tools,
+        total_pages_tools=total_pages_tools,
+        user_details=user_details,
+        is_logged_in=is_logged_in
+    )
+    
+@app.route('/myaccount/meu_perfil')
+def meu_perfil():
+    user_id = session.get('user_id')  # Retrieve user ID from session
+    is_logged_in = user_id is not None
+    if not is_logged_in:
+        return redirect('/login')
+
+
+    user_details = get_details(user_id)
+    print(user_details)
+
+    
+
+    return render_template(
+        'myaccount/my_profile.html',
+        user_details=user_details,
+        is_logged_in=is_logged_in
     )
     
 @app.route('/resources/highlight_on/<int:resource_id>', methods=['POST'])
