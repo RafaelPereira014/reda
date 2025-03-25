@@ -158,9 +158,9 @@
                 
                 {% for script in scripts_user %}
                     <div class="proposta-card">
-                        <h3>{{ script.title }}</h3>
+                        <h3>{{ script.title | strip_html }}</h3>
                         <p>{{ script.created_at }}</p>
-                        <p>{{ script.operation }}</p>
+                        <p>{{ script.operation | strip_html}}</p>
                         <a href="/resources/details/{{ script.resource_id }}"><button>Ver recurso</button></a>
                     </div>
                 {% endfor %}
