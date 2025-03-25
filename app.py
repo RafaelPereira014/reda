@@ -640,7 +640,7 @@ def nova_proposta(slug):
         
         insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao,selected_tags)
         conn.commit()
-        recipients=["rafaelpereira0808@gmail.com"]
+        recipients=["rafael.b.pereira@azores.gov.pt"]
         #recipients=[admin_emails]
 
         resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
@@ -794,7 +794,7 @@ def resource_edit(resource_id):
             update_resource_details(cursor, resource_id, resource_details_update)
             update_taxonomy_details(cursor, resource_id, idiomas_selected, formatos_selected, use_mode_selected, requirements_selected)
 
-            recipients = ["rafaelpereira0808@gmail.com"]
+            recipients = ["rafael.b.pereira@azores.gov.pt"]
             #recipients=[admin_emails]
 
             resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
@@ -1147,7 +1147,7 @@ def edit_app(resource_id):
         print(embebed)
         
         update_app(resource_id, titulo, descricao, link, embebed)
-        recipients=["rafaelpereira0808@gmail.com"]
+        recipients=["rafael.b.pereira@azores.gov.pt"]
                         #recipients=[admin_emails]
 
         resource_link = url_for('apps', resource_id=resource_id, _external=True)
@@ -1296,7 +1296,7 @@ def newtool():
 
             conn.commit()
             
-            recipients=["rafaelpereira0808@gmail.com"]
+            recipients=["rafael.b.pereira@azores.gov.pt"]
                             #recipients=[admin_emails]
 
             resource_link = url_for('tools', resource_id=resource_id, _external=True)
@@ -1339,7 +1339,7 @@ def edit_tool(resource_id):
         embebed = request.form.get('sistema')
         
         update_tool(resource_id, titulo, descricao, link, embebed)
-        recipients=["rafaelpereira0808@gmail.com"]
+        recipients=["rafael.b.pereira@azores.gov.pt"]
                         #recipients=[admin_emails]
 
         resource_link = url_for('tools', resource_id=resource_id, _external=True)
@@ -1737,7 +1737,7 @@ def novo_recurso():
             insert_taxonomy_details(cursor, resource_id, taxonomy_details)
             conn.commit()
             # After commit, send the email
-            recipients = ["rafaelpereira0808@gmail.com"]
+            recipients = ["rafael.b.pereira@azores.gov.pt"]
             #                 #recipients=[admin_emails]
 
             resource_link = url_for('resource_details', resource_id=resource_id, _external=True)
@@ -2084,7 +2084,7 @@ def speakwus():
         mensagem = data.get('descricao')
         nome = data.get('autor')
         email = data.get('email')
-        recipients = ["rafaelpereira0808@gmail.com"]
+        recipients = ["rafael.b.pereira@azores.gov.pt"]
                         #recipients=[admin_emails]
 
 
