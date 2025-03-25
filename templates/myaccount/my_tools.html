@@ -62,6 +62,7 @@
         }
     </style>
     
+    
 
    
 </head>
@@ -177,7 +178,9 @@
                 </div>
             </section>
             
-
+            <button id="backToTop" class="back-to-top">
+                <i class="fas fa-arrow-up"></i>
+            </button>
             
             
             
@@ -195,6 +198,7 @@
             </div>
         </div>
     </main>
+    
 
     <div id="loadingModal" class="loading-modal">
         <div class="loading-spinner"></div>
@@ -338,6 +342,28 @@
         window.addEventListener("beforeunload", function () {
             const loadingModal = document.getElementById('loadingModal');
             loadingModal.style.display = 'flex'; // Show the modal
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backToTopButton = document.getElementById('backToTop');
+    
+            // Show or hide the button based on scroll position
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTopButton.style.display = 'flex';
+                } else {
+                    backToTopButton.style.display = 'none';
+                }
+            });
+    
+            // Scroll smoothly to the top when the button is clicked
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                });
+            });
         });
     </script>
     

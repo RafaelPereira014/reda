@@ -654,6 +654,30 @@ footer {
     }
 }
 
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color:rgba(80, 81, 82, 0.79);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    z-index: 1000;
+    transition: opacity 0.3s, transform 0.3s;
+}
 
+.back-to-top:hover {
+    background-color:rgb(15, 15, 15);
+    transform: scale(1.1);
+}
 
-
+.back-to-top i {
+    font-size: 18px;
+}
