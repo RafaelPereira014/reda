@@ -349,10 +349,10 @@ def send_email_on_speakwus_received(assunto, mensagem, nome, email,recipient_ema
             <div class="header">Novo formulário de contacto recebido</div>
             <div class="content">
                 <p>Foi recebida uma nova mensagem no formulário "Fale connosco".</p>
-                <p>Nome: {nome} </p>
+                <p>Utilizador: {nome} </p>
                 <p>Email: {email} </p>
-                <p>Assunto:<strong>{assunto}</p>
-                <p>Mensagem: {mensagem} </p>
+                <p>Assunto: <strong>{assunto}</strong></p>
+                <p>Mensagem: <strong>{mensagem}</strong> </p>
                 
             </div>
             <div class="footer">
@@ -384,7 +384,7 @@ def send_email_on_password_recovery(username, recipient_email, reset_link):
                 <p>Olá <strong>{username}</strong>,</p>
                 <p>Recebemos um pedido para recuperar a sua password. Para redefinir a sua password, por favor clique no link abaixo:</p>
                 <p><a href="{reset_link}">Redefinir Password</a></p>
-                <p>Se não fez este pedido, pode ignorar este email.</p>
+                <p>Se não fez este pedido, deve ignorar este email.</p>
             </div>
             <div class="footer">
                 <p>Obrigado,<br>A Equipa REDA</p>
