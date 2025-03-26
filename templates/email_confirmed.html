@@ -3,11 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmação Completa</title>
+    <title>Confirmação completa!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    
 </head>
 <body>
-    <h1>Email confirmado com sucesso!</h1>
-    <p>Obrigado por confirmar o seu registo. Pode agora fazer login na plataforma.</p>
-    <a href="/login">Ir para o Login</a>
+    <div class="login-container">
+        <a href="/"> <!-- Link to the home page -->
+            <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="Platform Logo">
+        </a>
+        <h1>Email confirmado com sucesso!</h1>
+        <p>Obrigado por confirmar o seu registo. Pode agora fazer login na plataforma.</p>
+        <a href="/login">Ir para o Login</a>
+        
+        <a href="/" class="home-link">Voltar para a Página Inicial</a>
+    </div>
 </body>
 </html>

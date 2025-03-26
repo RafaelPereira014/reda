@@ -411,13 +411,36 @@ def send_confirmation_email(email):
     confirm_url = url_for('confirm_email', token=token, _external=True)
     print(confirm_url)
     subject = "Confirmação de registo!"
-    html = f"""
-    <p>Obrigado por se registar na nossa plataforma!</p>
-    <p>Clique no link abaixo para confirmar o seu email:</p>
-    <a href="{confirm_url}">{confirm_url}</a>
+    message= f"""
+        <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; }}
+            .email-container {{ padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9; }}
+            .header {{ font-size: 18px; font-weight: bold; color: #333; }}
+            .content {{ margin-top: 10px; }}
+            .footer {{ margin-top: 20px; font-size: 12px; color: #666; }}
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <div class="content">
+                <p>Obrigado por se registar na nossa plataforma!</p>
+                <p>Clique no link abaixo para confirmar o seu email:</p>
+                <a href="{confirm_url}">{confirm_url}</a>
+            </div>
+            <div class="footer">
+                <p>Obrigado,<br>A Equipa REDA</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+    
     """
     
-    send_email(email,subject,html)
+    
+    send_email(email,subject,message)
     
 
 
