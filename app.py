@@ -930,7 +930,6 @@ def resource_edit2(script_id):
         selected_tags = data.get('keywords').split(',') if data.get('keywords') else []
                 
         descricao = data.get('descricao', '')  # Fetch updated descricao from form
-        print("Submitted Descricao:", descricao)  # Debugging output
 
         try:
             with connect_to_database() as conn:
@@ -1782,9 +1781,7 @@ def novo_recurso2():
         selected_disciplinas = list(set(data.getlist('disciplinas')))  # Get unique selected subjects (disciplinas)
         selected_dominios = list(set(data.getlist('dominios')))  # Get unique selected domains
         selected_subdominios = list(set(data.getlist('subdominios')))  # Get unique selected subdomains
-        print(selected_subdominios)
         selected_conceitos = list(set(data.getlist('conceitos')))  # Get unique selected concepts
-        print(selected_conceitos)
         selected_tags = data.get('keywords').split(',') if data.get('keywords') else []  # Get keywords
     
         descricao = data.get('descricao', '')  # Get the description
@@ -2183,7 +2180,6 @@ def po_pendentes():
         script['title'] = get_title(resource_id)  # Add 'title' key to each script dictionary
         script['author'] = get_username(script['user_id'])
         script['operation'] = get_propostasOp(resource_id)
-        
 
     return render_template('admin/recursos/po_pendentes.html', scripts=scripts, scripts_count=scripts_count)
 
