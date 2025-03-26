@@ -31,7 +31,7 @@ body {
 .register-container input[type="text"],
 .register-container input[type="email"],
 .register-container input[type="password"] {
-    width: calc(100% - 20px);
+    width: calc(85%);
     padding: 12px;
     margin: 10px 10px 20px 10px;
     border: none;
@@ -74,6 +74,7 @@ body {
     margin-top: 10px; /* Add some space above the link */
     color: #a0af3b; /* Change the text color to a blue shade */
     text-decoration: none; /* Remove underline */
+    margin-top: 5px;
 }
 
 .login-link:hover {

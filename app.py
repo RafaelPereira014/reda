@@ -136,7 +136,11 @@ def register():
             return jsonify({'success': False, 'message': 'Please fill in all fields'})
         
         if password != confirmPassword:
-            return jsonify({'success': False, 'message': 'Passwords do not match'})
+            return jsonify({'success': False, 'message': 'As passwords são diferentes.'})
+        
+        # Check if the email is already registered
+        if is_email_registered(email):
+            return jsonify({'success': False, 'message': 'Este email já se encontra registado na plataforma!'})
         
         success, message = create_user(email, password, username, role_id)
         if success:

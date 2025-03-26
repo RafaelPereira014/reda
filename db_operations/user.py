@@ -216,3 +216,21 @@ def get_emails_admins():
     finally:
         cursor.close()
         conn.close()
+        
+def is_email_registered(email):
+    try:
+        conn = connect_to_database()
+        cursor = conn.cursor(dictionary=True)
+        
+        sql = "SELECT COUNT(*) AS count FROM Users WHERE email = %s"
+        cursor.execute(sql, (email,))
+        result = cursor.fetchone()
+        return result['count'] > 0  # Access the 'count' key from the dictionary
+    except Exception as e:
+        logging.error(f"Error retrieving users from the database: {e}")
+        return False  # Return False to indicate the email check failed
+    finally:
+        cursor.close()
+        conn.close()
+        
+    
