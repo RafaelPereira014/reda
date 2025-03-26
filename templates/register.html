@@ -77,56 +77,51 @@
     <script>
         document.getElementById('registerForm').addEventListener('submit', function(event) {
             event.preventDefault();
-        
-            var username = document.getElementById('username').value;
-            var email = document.getElementById('email').value;
-            var password = document.getElementById('password').value;
-            var confirmPassword = document.getElementById('confirmPassword').value;
-            var userType = document.querySelector('input[name="userType"]:checked')?.value;
-            var terms = document.getElementById('terms').checked;
-        
-            // Client-side validation
-            if (!username || !email || !password || !confirmPassword || !userType) {
-                displayError('Please fill in all fields');
-            } else if (password !== confirmPassword) {
-                displayError('Passwords do not match');
-            } else if (!terms) {
-                displayError('You must accept the terms and conditions');
-            } else {
-                // Make an AJAX call to register the user
-                fetch('/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username: username,
-                        email: email,
-                        password: password,
-                        confirmPassword: confirmPassword,
-                        userType: userType
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = '/confirmar_registo';
-                    } else if (data.message) {
-                        displayError(data.message);
-                    } else {
-                        displayError('An unknown error occurred.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    displayError('An error occurred. Please try again.');
-                });
+    
+            const formData = new FormData(this);
+    
+            // Validate input fields
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirmPassword');
+    
+            if (password !== confirmPassword) {
+                displayError('As passwords são diferentes.');
+                return;
             }
+    
+            if (!formData.get('terms')) {
+                displayError('É necessário aceitar os termos e condições.');
+                return;
+            }
+    
+            // Hide any previous error
+            const errorDiv = document.getElementById('error');
+            errorDiv.style.display = 'none';
+    
+            // Send data securely
+            fetch('/register', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro na rede');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/confirmar_registo';
+                } else if (data.message) {
+                    displayError(data.message);
+                } else {
+                    displayError('Ocorreu um erro desconhecido.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                displayError('Ocorreu um erro. Tente novamente.');
+            });
         });
-        
+    
         function displayError(message) {
             const errorDiv = document.getElementById('error');
             errorDiv.style.display = 'block';

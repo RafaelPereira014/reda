@@ -115,41 +115,43 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        # Handle POST request
-        data = request.get_json()
-        username = data.get('username')
-        email = data.get('email')
-        password = data.get('password')
-        confirmPassword = data.get('confirmPassword')
-        userType = data.get('userType')
+        try:
+            username = request.form.get('username')
+            email = request.form.get('email')
+            password = request.form.get('password')
+            confirm_password = request.form.get('confirmPassword')
+            user_type = request.form.get('userType')
 
-        # Map userType to role_id
-        role_id = 3
-        if userType == 'colaborador':
-            role_id = 4
-        elif userType == 'docente':
-            role_id = 2
-        elif userType == 'outro':
-            role_id = 3
-        
-        if not username or not email or not password or not confirmPassword:
-            return jsonify({'success': False, 'message': 'Please fill in all fields'})
-        
-        if password != confirmPassword:
-            return jsonify({'success': False, 'message': 'As passwords são diferentes.'})
-        
-        # Check if the email is already registered
-        if is_email_registered(email):
-            return jsonify({'success': False, 'message': 'Este email já se encontra registado na plataforma!'})
-        
-        success, message = create_user(email, password, username, role_id)
-        if success:
-            send_confirmation_email([email])
-            return jsonify({'success': True})
-        else:
-            return jsonify({'success': False, 'message': message})
-    
-    # Handle GET request
+            # Map userType to role_id
+            role_id = {
+                'colaborador': 4,
+                'docente': 2,
+                'outro': 3,
+            }.get(user_type, 3)
+
+            # Basic input validation
+            if not all([username, email, password, confirm_password, user_type]):
+                return jsonify({'success': False, 'message': 'Preencha todos os campos.'})
+
+            if password != confirm_password:
+                return jsonify({'success': False, 'message': 'As passwords são diferentes.'})
+
+            # Check if email is already registered
+            if is_email_registered(email):
+                return jsonify({'success': False, 'message': 'Este email já está registado na plataforma!'})
+
+            # Create the user
+            success, message = create_user(email, password, username, role_id)
+            if success:
+                send_confirmation_email([email])
+                return jsonify({'success': True})
+            else:
+                return jsonify({'success': False, 'message': 'Erro ao criar o utilizador.'})
+        except Exception as e:
+            # Log the exception for debugging purposes
+            app.logger.error(f'Erro no registo: {e}')
+            return jsonify({'success': False, 'message': 'Ocorreu um erro no servidor. Tente novamente.'})
+
     return render_template('register.html')
 
 @app.route('/confirmar_registo')
