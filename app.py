@@ -1,6 +1,7 @@
 import datetime
 from datetime import date, timedelta
 import hashlib
+import html
 from itertools import islice
 from mailbox import Message
 import math
@@ -116,11 +117,32 @@ def logout():
 def register():
     if request.method == 'POST':
         try:
-            username = request.form.get('username')
-            email = request.form.get('email')
-            password = request.form.get('password')
-            confirm_password = request.form.get('confirmPassword')
-            user_type = request.form.get('userType')
+            # Sanitize inputs to prevent XSS and SQL injection
+            username = html.escape(request.form.get('username', '').strip())
+            email = html.escape(request.form.get('email', '').strip())
+            password = request.form.get('password', '').strip()
+            confirm_password = request.form.get('confirmPassword', '').strip()
+            user_type = html.escape(request.form.get('userType', '').strip())
+
+            # Validation: Ensure no disallowed characters
+            if not username.isalnum():
+                return jsonify({'success': False, 'message': 'O nome só pode conter letras e números.'})
+            if not email.replace('@', '').replace('.', '').isalnum():
+                return jsonify({'success': False, 'message': 'O email contém caracteres inválidos.'})
+            if '<' in password or '>' in password or "'" in password:
+                return jsonify({'success': False, 'message': 'A password contém caracteres inválidos.'})
+
+            # Ensure password matches
+            if password != confirm_password:
+                return jsonify({'success': False, 'message': 'As passwords são diferentes.'})
+
+            # Check if email is already registered
+            if is_email_registered(email):
+                return jsonify({'success': False, 'message': 'Este email já está registado na plataforma!'})
+
+            # Hash the password for security
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=10))
+
 
             # Map userType to role_id
             role_id = {
@@ -129,26 +151,14 @@ def register():
                 'outro': 3,
             }.get(user_type, 3)
 
-            # Basic input validation
-            if not all([username, email, password, confirm_password, user_type]):
-                return jsonify({'success': False, 'message': 'Preencha todos os campos.'})
-
-            if password != confirm_password:
-                return jsonify({'success': False, 'message': 'As passwords são diferentes.'})
-
-            # Check if email is already registered
-            if is_email_registered(email):
-                return jsonify({'success': False, 'message': 'Este email já está registado na plataforma!'})
-
             # Create the user
-            success, message = create_user(email, password, username, role_id)
+            success, message = create_user(email, hashed_password, username, role_id)
             if success:
                 send_confirmation_email([email])
                 return jsonify({'success': True})
             else:
                 return jsonify({'success': False, 'message': 'Erro ao criar o utilizador.'})
         except Exception as e:
-            # Log the exception for debugging purposes
             app.logger.error(f'Erro no registo: {e}')
             return jsonify({'success': False, 'message': 'Ocorreu um erro no servidor. Tente novamente.'})
 

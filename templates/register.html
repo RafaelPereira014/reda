@@ -128,6 +128,23 @@
             errorDiv.textContent = message;
         }
     </script>
+    <script>
+        document.getElementById('registerForm').addEventListener('input', function(event) {
+            const target = event.target;
+    
+            // Define allowed characters for each input
+            const allowedPatterns = {
+                username: /^[a-zA-Z0-9]*$/, // Alphanumeric and spaces
+                email: /^[a-zA-Z0-9@.\-_]*$/, // Alphanumeric, @, ., -, and _
+                password: /^[^\s<>]*$/, // No spaces, <, or >
+            };
+    
+            const fieldPattern = allowedPatterns[target.name];
+            if (fieldPattern && !fieldPattern.test(target.value)) {
+                target.value = target.value.replace(/[^a-zA-Z0-9\s@.\-_]/g, '');
+            }
+        });
+    </script>
     
     
 

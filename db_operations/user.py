@@ -110,14 +110,13 @@ def create_user(email, password, name, role_id):
         cursor = conn.cursor(dictionary=True)
         
         # Hash the password with bcrypt
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=10))
 
         
         # Execute the SQL query to insert the new user
         cursor.execute("""
             INSERT INTO Users (email, password, name, role_id, created_at, updated_at) 
             VALUES (%s, %s, %s, %s, %s, %s)
-        """, (email, hashed_password.decode('utf-8'), name, role_id, datetime.now(), datetime.now()))
+        """, (email, password.decode('utf-8'), name, role_id, datetime.now(), datetime.now()))
         
         conn.commit()
         logging.info(f"User {name} created successfully.")
