@@ -134,7 +134,7 @@
     
             // Define allowed characters for each input
             const allowedPatterns = {
-                username: /^[a-zA-Z0-9]*$/, // Alphanumeric and spaces
+                username: /^[a-zA-Z0-9\s]*$/ // Alphanumeric and spaces
                 email: /^[a-zA-Z0-9@.\-_]*$/, // Alphanumeric, @, ., -, and _
                 password: /^[^\s<>]*$/, // No spaces, <, or >
             };

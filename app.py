@@ -124,9 +124,7 @@ def register():
             confirm_password = request.form.get('confirmPassword', '').strip()
             user_type = html.escape(request.form.get('userType', '').strip())
 
-            # Validation: Ensure no disallowed characters
-            if not username.isalnum():
-                return jsonify({'success': False, 'message': 'O nome só pode conter letras e números.'})
+    
             if not email.replace('@', '').replace('.', '').isalnum():
                 return jsonify({'success': False, 'message': 'O email contém caracteres inválidos.'})
             if '<' in password or '>' in password or "'" in password:
