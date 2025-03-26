@@ -10,11 +10,21 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 from email.mime.text import MIMEText
 from db_operations import *
+from app import serializer
 
 def connect_to_database():
     """Establishes a connection to the MySQL database."""
     return mysql.connector.connect(**DB_CONFIG)
 
+def generate_confirmation_token(email):
+    return serializer.dumps(email, salt='email-confirmation-salt')
+
+def confirm_token(token, expiration=3600):
+    try:
+        email = serializer.loads(token, salt='email-confirmation-salt', max_age=expiration)
+    except Exception:
+        return False
+    return email
 
 def send_email(to_emails, subject, message, attachments=[]):
     try:
@@ -395,5 +405,21 @@ def send_email_on_password_recovery(username, recipient_email, reset_link):
     """
     send_email(recipient_email, subject, message)
 
+
+def send_confirmation_email(email):
+    token = generate_confirmation_token(email)
+    print(token)
+    confirm_url = url_for('confirm_email', token=token)
+    print(confirm_url)
+    
+    subject = "Confirmação de registo!"
+    html = f"""
+    <p>Obrigado por se registar na nossa plataforma!</p>
+    <p>Clique no link abaixo para confirmar o seu email:</p>
+    <a href="{confirm_url}">{confirm_url}</a>
+    """
+    
+    send_email(email,subject,html)
+    
 
 

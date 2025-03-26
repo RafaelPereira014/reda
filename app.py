@@ -13,6 +13,7 @@ from flask import Flask, flash, jsonify, redirect, render_template, request
 from flask_wtf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from itsdangerous import URLSafeTimedSerializer
 from markupsafe import Markup
 import mysql.connector
 from config import REDIS_CONFIG
@@ -35,7 +36,7 @@ app.secret_key = 'your_secret_key'  # Needed for session management
 UPLOAD_FOLDER = 'static/files/resources/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif','doc','pdf','docx'}
 
-
+serializer = URLSafeTimedSerializer(app.secret_key)
 
 
 # Ensure the upload folder exists
@@ -139,12 +140,28 @@ def register():
         
         success, message = create_user(email, password, username, role_id)
         if success:
+            send_confirmation_email([email])
             return jsonify({'success': True})
         else:
             return jsonify({'success': False, 'message': message})
     
     # Handle GET request
     return render_template('register.html')
+
+@app.route('/confirmar_registo')
+def confirm_register():
+    
+    return render_template('/confirm_register.html')
+
+@app.route('/confirm/<token>')
+def confirm_email(token):
+    email = confirm_token(token)
+    if email:
+        # Mark user as confirmed in the database
+        # Example: update_user_confirmation(email)
+        return render_template('email_confirmed.html')  # Success page
+    else:
+        return render_template('email_confirmation_failed.html')  # Error page
 
 @app.route('/recoverpassword', methods=['GET', 'POST'])
 def recoverpassword():
@@ -195,6 +212,9 @@ def recoverpassword():
         return redirect('/recoverpassword')
 
     return render_template('recoverpassword.html')
+
+
+
 
 @app.route('/reset_password', methods=['GET', 'POST'])
 def reset_password():
@@ -1420,8 +1440,9 @@ def my_account():
     # Fetch other user details
     apps_user, apps_count = get_apps_from_user(user_id)
     tools_user, tools_count = get_tools_from_user(user_id)
-    user_details = get_details(user_id)
     resources_count = len(my_resources)
+    user_details = get_details(user_id)
+    
     scripts_user, scripts_count = get_script_details_by_user(user_id, search_term)
     scripts_user_with_titles = add_titles_to_scripts(scripts_user)
 
@@ -1483,6 +1504,8 @@ def minhas_propostas():
     scripts_user, scripts_count = get_script_details_by_user(user_id, search_term)
     scripts_user_with_titles = add_titles_to_scripts(scripts_user)
     user_details = get_details(user_id)
+    apps_user, apps_count = get_apps_from_user(user_id)
+    tools_user, tools_count = get_tools_from_user(user_id)
     # Pagination
     per_page = 10
     # Pagination for proposals
@@ -1498,7 +1521,9 @@ def minhas_propostas():
         total_pages_proposals=total_pages_proposals,
         search_term=search_term,
         is_logged_in=is_logged_in,
-        user_details=user_details
+        user_details=user_details,
+        apps_count=apps_count,
+        tools_count=tools_count
     )
 
 

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Registo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    
+</head>
+<body>
+    <div class="login-container">
+        <a href="/"> <!-- Link to the home page -->
+            <img src="{{ url_for('static', filename='images/REDA_logo.png') }}" alt="Platform Logo">
+        </a>
+        <h1>Obrigado por se registar na REDA!</h1>
+        <p>Enviámos um email para o endereço que forneceu. Por favor, verifique a sua caixa de entrada para confirmar o registo.</p>
+        <p>Se não encontrar o email, verifique a pasta de spam.</p>
+        
+        <a href="/" class="home-link">Voltar para a Página Inicial</a>
+    </div>
+</body>
+</html>
