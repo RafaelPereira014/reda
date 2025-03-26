@@ -85,6 +85,65 @@ def get_modos_utilizacao():
     
     return tuple(item['modo_utilizacao_title'] for item in modos_utilizacao)
 
+def get_temas():
+    conn = connect_to_database()
+    if conn is None:
+        return ()  # Return an empty tuple if connection fails
+    
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT DISTINCT
+            t.title AS temas_title
+        FROM
+            Terms t
+        JOIN
+            Taxonomies tax ON t.taxonomy_id = tax.id
+        WHERE
+            tax.title = 'Temas'
+        ORDER BY 
+            t.title ASC
+    """)
+    
+    temas = cursor.fetchall()
+    
+    # Filter out None or empty strings
+    temas_filtered = [item['temas_title'] for item in temas if item['temas_title']]
+
+    cursor.close()
+    conn.close()
+    
+    return tuple(temas_filtered)  # Return a tuple without None or empty values
+
+
+def get_categorias():
+    conn = connect_to_database()
+    if conn is None:
+        return ()  # Return an empty tuple if connection fails
+    
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT DISTINCT
+            t.title AS categorias_title
+        FROM
+            Terms t
+        JOIN
+            Taxonomies tax ON t.taxonomy_id = tax.id
+        WHERE
+            tax.title = 'Categorias'
+        ORDER BY 
+            t.title ASC
+    """)
+    
+    categorias = cursor.fetchall()
+    
+    # Filter out None or empty strings
+    categorias_filtered = [item['categorias_title'] for item in categorias if item['categorias_title']]
+
+    cursor.close()
+    conn.close()
+    
+    return tuple(categorias_filtered)  # Return a tuple without None or empty values
+
 def get_requisitos_tecnicos():
     conn = connect_to_database()
     cursor = conn.cursor(dictionary=True)

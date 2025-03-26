@@ -1034,6 +1034,8 @@ def novaapp():
 
     # Determine if the user is an admin
     admin = is_admin(user_id) if is_logged_in else False
+    temas = get_temas()
+    categorias = get_categorias()
 
     if request.method == 'POST':
         try:
@@ -1119,7 +1121,7 @@ def novaapp():
             cursor.close()
             conn.close()
 
-    return render_template('novaapp.html', admin=admin, is_logged_in=is_logged_in)
+    return render_template('novaapp.html', admin=admin, is_logged_in=is_logged_in,temas=temas,categorias=categorias)
 
 
 @app.route('/resources/edit_app/<int:resource_id>', methods=['GET', 'POST'])

@@ -170,6 +170,22 @@
                     <input type="checkbox" id="sistema3" name="sistema" value="Opção 3">
                     <label for="sistema3">Windows</label>
                 </div>
+
+                <div class="input-group-system required">
+                    <h2>Temas:</h2>
+                    {% for tema in temas %}
+                    <input type="checkbox" id="tema{{ loop.index }}" name="tema">
+                    <label for="tema{{ loop.index }}">{{ tema }}</label>
+                    {% endfor %}
+                </div>
+
+                <div class="input-group-system required">
+                    <h2>Categorias:</h2>
+                    {% for categoria in categorias %}
+                    <input type="checkbox" id="categoria{{ loop.index }}" name="categoria">
+                    <label for="categoria{{ loop.index }}">{{ categoria }}</label>
+                    {% endfor %}
+                </div>
                 
                 <div class="input-group-fich">
                     <h2>Imagem de destaque:</h2>
@@ -324,6 +340,24 @@
                     break;
                 }
             }
+
+            const temas = document.getElementsByName('tema');
+            let temaSelected = false;
+            for (let i = 0; i < temas.length; i++) {
+                if (temas[i].checked) {
+                    temaSelected = true;
+                    break;
+                }
+            }
+
+            const categorias = document.getElementsByName('categoria');
+            let categoriaSelected = false;
+            for (let i = 0; i < categorias.length; i++) {
+                if (categorias[i].checked) {
+                    categoriaSelected = true;
+                    break;
+                }
+            }
         
             // Validate the 'titulo' field
             if (titulo === '') {
@@ -348,6 +382,19 @@
                 hasError = true;
                 errorMessage += "Pelo menos um sistema deve ser selecionado.\n";
             }
+
+            // Validate the 'sistema' field (at least one checkbox should be selected)
+            if (!temaSelected) {
+                hasError = true;
+                errorMessage += "Pelo menos um tema deve ser selecionado.\n";
+            }
+            // Validate the 'sistema' field (at least one checkbox should be selected)
+            if (!categoriaSelected) {
+                hasError = true;
+                errorMessage += "Pelo menos uma categoria deve ser selecionada.\n";
+            }
+
+            
         
             // If there are any errors, show the modal with the error messages and prevent form submission
             if (hasError) {
