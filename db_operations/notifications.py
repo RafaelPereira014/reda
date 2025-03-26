@@ -408,10 +408,8 @@ def send_email_on_password_recovery(username, recipient_email, reset_link):
 
 def send_confirmation_email(email):
     token = generate_confirmation_token(email)
-    print(token)
-    confirm_url = url_for('confirm_email', token=token)
+    confirm_url = url_for('confirm_email', token=token, _external=True)
     print(confirm_url)
-    
     subject = "Confirmação de registo!"
     html = f"""
     <p>Obrigado por se registar na nossa plataforma!</p>
