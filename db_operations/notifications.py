@@ -425,8 +425,8 @@ def send_confirmation_email(email):
     <body>
         <div class="email-container">
             <div class="content">
-                <p>Obrigado por se registar na nossa plataforma!</p>
-                <p>Clique no link abaixo para confirmar o seu email:</p>
+                <p>Obrigado por se registar na REDA!</p>
+                <p>Clique no link abaixo para concluir o seu:</p>
                 <a href="{confirm_url}">{confirm_url}</a>
             </div>
             <div class="footer">
