@@ -26,7 +26,7 @@ def create_user(name, email, password, role_id):
         
         # SQL query to insert the new user
         insert_query = """
-        INSERT INTO users (name, email, password, role_id, created_at, updated_at)
+        INSERT INTO Users (name, email, password, role_id, created_at, updated_at)
         VALUES (%s, %s, %s, %s, %s, %s)
         """
         current_time = datetime.now()
@@ -124,6 +124,19 @@ def create_user(email, password, name, role_id):
     except Exception as e:
         logging.error(f"Error creating user: {e}")
         return False, str(e)  # Return failure with error message
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def update_user_acceptance(email):
+    try:
+        conn = connect_to_database()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("UPDATE Users set acceptance='1' where email=%s",(email,))
+        conn.commit()
+    except Exception as e:
+        logging.error(f"Error deleting user: {e}")
     finally:
         cursor.close()
         conn.close()

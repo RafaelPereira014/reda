@@ -86,13 +86,14 @@ def login():
 
         conn = connect_to_database()
         cursor = conn.cursor()
-        cursor.execute("SELECT id, role_id, password FROM Users WHERE email = %s", (email,))
+        cursor.execute("SELECT id, role_id,acceptance password FROM Users WHERE email = %s", (email,))
         user_data = cursor.fetchone()
         cursor.close()
 
         if user_data:
             stored_password = user_data[2].encode('utf-8')
-            
+            if user_data[2] != 1:  
+                error = 'O seu registo ainda nao foi confirmado.'
             if bcrypt.checkpw(password.encode('utf-8'), stored_password):
                 session['user_id'] = user_data[0]  # Store user ID in session
                 session['user_type'] = user_data[1]  # Store user type in session
@@ -171,7 +172,8 @@ def confirm_register():
 def confirm_email(token):
     email = confirm_token(token)
     if email:
-        # Mark user as confirmed in the database
+        update_user_acceptance(email)
+        
         # Example: update_user_confirmation(email)
         return render_template('email_confirmed.html')  # Success page
     else:
