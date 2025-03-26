@@ -92,8 +92,11 @@ def login():
 
         if user_data:
             stored_password = user_data[3].encode('utf-8')
-            if user_data[2] != 1:  # Check if the user has not been accepted
-                error = 'Your account has not been accepted yet.'
+            # Check if the user has not been accepted
+            if user_data[2] != 1:
+                error = 'A sua conta ainda não foi confirmada.'
+                return render_template('login.html', error=error)  # Stop further execution
+            
             if bcrypt.checkpw(password.encode('utf-8'), stored_password):
                 session['user_id'] = user_data[0]  # Store user ID in session
                 session['user_type'] = user_data[1]  # Store user type in session

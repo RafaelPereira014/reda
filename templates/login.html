@@ -17,12 +17,16 @@
             <input type="text" id="username" name="username" placeholder="Email" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
             {% if error %}
-                <p>{{ error }}</p>
+                <p class="error-message">{{ error }}</p>
             {% endif %}
             <button type="submit">Login</button>
-            <a href="/register" class="register-link">Ainda não está registado? Registe-se aqui!</a> <!-- Added link to register page -->
-            <a href="/recoverpassword" class="forgot-password-link">Esqueceu-se da sua password?</a>
+            <a href="/register" class="register-link">Ainda não está registado? Registe-se aqui!</a> <!-- Link to register page -->
+            <a href="/recoverpassword" class="forgot-password-link">Esqueceu-se da sua password?</a> <!-- Link to recover password page -->
         </form>
+        <div class="contact-admin">
+            <p>Problemas com a sua conta?</p>
+            <a href="mailto:s0204.nit@gmail.com" class="contact-link">Contacte o administrador</a>
+        </div>
     </div>
 
     
