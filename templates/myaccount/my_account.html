@@ -190,9 +190,12 @@
 
 
                         <div class="resource-status-icons">
-                            <i class="fas fa-flag highlight-flag" style="color: {{ 'green' if resource.highlighted else 'black' }};"
+                            <i class="fas fa-flag highlight-flag" 
+                            style="color: {{ 'green' if resource.highlighted else 'black' }}; cursor: pointer;"
                             title="{{ 'Recurso do mês' if resource.highlighted else 'Destacar para recurso do mês' }}"
-                            data-id="{{ resource.id }}" data-highlighted="{{ 'true' if resource.highlighted else 'false' }}"></i>
+                            data-id="{{ resource.id }}" 
+                            data-highlighted="{{ 'true' if resource.highlighted else 'false' }}">
+                            </i>
                             <i class="fas fa-circle" style="color: {{ 'green' if resource.approved else 'orange' }};"
                             title="{{ 'Aprovado' if resource.approved else 'Aguarda aprovação' }}"></i>
                         </div>
