@@ -402,8 +402,7 @@ nav ul li a:hover {
 }
 
 .comment-form textarea {
-    width: 100%;
-    padding: 10px;
+    padding: 10px 20px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     resize: none;
@@ -609,10 +608,9 @@ footer {
 
 .related h2{
     font-size: 19px;
-    color: #000000;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    margin-top: 20px;
     text-align: center;
+    font-family: "Lato", sans-serif;
 
 }
 
@@ -622,6 +620,7 @@ footer {
     margin-bottom: 5px;
     margin-top: 5px;
     text-align: center;
+    font-family: "Lato", sans-serif;
 }
 .rectangle p {
     font-size: 14px;
