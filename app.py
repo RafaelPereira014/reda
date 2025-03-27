@@ -677,8 +677,17 @@ def nova_proposta(slug):
         selected_tags = data.get('keywords').split(',') if data.get('keywords') else []
         descricao = data.get('descricao', '')
         
-        insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao,selected_tags)
-        conn.commit()
+       # Insert the script and get the script_id
+        script_id = insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao, selected_tags)
+
+        # Check if script insertion was successful
+        if script_id:
+            # Insert selected tags for the created script
+            insert_selected_tags(script_id, selected_tags)
+
+            print(f"Script {script_id} created and tags inserted successfully.")
+        else:
+            print("Error: Script creation failed.")
         recipients=["rafael.b.pereira@azores.gov.pt"]
         #recipients=[admin_emails]
 
@@ -1834,8 +1843,17 @@ def novo_recurso2():
 
         # Insert data into the database
         try:
+            # Insert the script and get the script_id
             script_id = insert_script(resource_id, user_id, selected_anos, selected_disciplinas, selected_dominios, selected_subdominios, selected_conceitos, descricao, selected_tags)
-            conn.commit()
+
+            # Check if script insertion was successful
+            if script_id:
+                # Insert selected tags for the created script
+                insert_selected_tags(script_id, selected_tags)
+
+                print(f"Script {script_id} created and tags inserted successfully.")
+            else:
+                print("Error: Script creation failed.")
             print(f"Inserted script with ID: {script_id}")
             # Handle file upload (if provided)
             file = request.files.get('ficheiro')

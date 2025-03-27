@@ -21,7 +21,7 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
         'dominios_resources': 8,
         'subdominios': 21,
         'hashtags': 22,
-        'tags_resources': 9  
+        'tags_resources': 9
     }
 
     try:
@@ -41,7 +41,8 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
             """
             
             def get_or_create_term(term, taxonomy_id):
-                with conn.cursor() as select_cursor:
+                # Use a new cursor for each operation
+                with conn.cursor(dictionary=True) as select_cursor:
                     get_term_id_query = """
                         SELECT id FROM Terms WHERE title = %s AND taxonomy_id = %s
                     """
@@ -49,10 +50,10 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
                     term_row = select_cursor.fetchone()
 
                 if term_row:
-                    return term_row[0]  # Return existing term_id
+                    return term_row["id"]  # Return existing term_id
                 else:
                     # Insert the new term
-                    with conn.cursor() as insert_cursor:
+                    with conn.cursor(dictionary=True) as insert_cursor:
                         insert_term_query = """
                             INSERT INTO Terms (title, taxonomy_id, created_at, updated_at) 
                             VALUES (%s, %s, NOW(), NOW())
@@ -74,7 +75,6 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
         insert_terms(selected_dominios, 'dominios_resources')
         insert_terms(selected_subdominios, 'subdominios')
         insert_terms(selected_conceitos, 'hashtags')
-        insert_terms(selected_tags, 'tags_resources')
         
         # Commit the transaction
         conn.commit()
@@ -93,7 +93,6 @@ def insert_script(resource_id, user_id, selected_anos, selected_disciplinas, sel
             cursor.close()
         if conn and conn.is_connected():
             conn.close()
-
 
 def update_script(resource_id, script_id, user_id, selected_anos, selected_disciplinas, 
                  selected_dominios, selected_subdominios, selected_conceitos, descricao,selected_tags):
@@ -186,6 +185,53 @@ def update_script(resource_id, script_id, user_id, selected_anos, selected_disci
             cursor.close()
         if conn and conn.is_connected():
             conn.close()
+
+def insert_selected_tags(script_id, selected_tags):
+    conn = connect_to_database()
+    cursor = conn.cursor()
+
+    term_insert_query = """
+    INSERT INTO script_terms (script_id, term_id, created_at, updated_at)
+    VALUES (%s, %s, NOW(), NOW())
+    """
+    
+    def get_or_create_term(term, taxonomy_id):
+        # Use a new cursor for each operation
+        with conn.cursor(dictionary=True) as select_cursor:
+            get_term_id_query = """
+                SELECT id FROM Terms WHERE title = %s AND taxonomy_id = %s
+            """
+            select_cursor.execute(get_term_id_query, (term, taxonomy_id))
+            term_row = select_cursor.fetchone()
+
+        if term_row:
+            return term_row["id"]  # Return existing term_id
+        else:
+            # Insert the new term
+            with conn.cursor(dictionary=True) as insert_cursor:
+                insert_term_query = """
+                    INSERT INTO Terms (title, taxonomy_id, created_at, updated_at) 
+                    VALUES (%s, %s, NOW(), NOW())
+                """
+                insert_cursor.execute(insert_term_query, (term, taxonomy_id))
+                return insert_cursor.lastrowid  # Return the newly inserted term_id
+    
+    taxonomy_id = 9  # Assuming 9 is the taxonomy ID for 'tags_resources'
+    
+    for term in selected_tags:
+        term_id = get_or_create_term(term, taxonomy_id)
+        with conn.cursor() as cursor:
+            cursor.execute(term_insert_query, (script_id, term_id))
+    
+    # Commit the transaction to save changes
+    conn.commit()
+    
+    print(f"Inserted {len(selected_tags)} tags for script ID {script_id}")
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+
 
 def get_script_description(script_id):
     """
