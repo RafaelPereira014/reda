@@ -2188,6 +2188,7 @@ def rec_pendentes():
     
     return render_template('admin/recursos/pendentes.html', recursos_pendentes=recursos_pendentes)
 
+
 @app.route('/update_approved_scientific/<int:resource_id>', methods=['POST'])
 def update_approved_scientific(resource_id):
     result = update_approvedScientific(resource_id)
@@ -2364,8 +2365,10 @@ def search_users():
     cursor = conn.cursor(dictionary=True)
 
     query = """
-        SELECT id, email, name, organization, created_at, role_id FROM Users
-        WHERE (LOWER(name) LIKE %s OR LOWER(email) LIKE %s)
+        SELECT id, email, name, organization, created_at, role_id
+        FROM Users
+        WHERE hidden = '0'
+        AND (LOWER(name) LIKE %s OR LOWER(email) LIKE %s)
     """
     params = [f"%{search_name_email}%", f"%{search_name_email}%"]
 
@@ -2391,6 +2394,20 @@ def search_users():
             
     return jsonify(users)
 
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    data = request.get_json()
+    email = data.get('email')
+    date = datetime.now()
+    if email:
+        # Perform the deletion logic
+        try:
+            delete_user_by_email(date,email)  # Implement this function to delete the user in your database
+            return jsonify({"success": True}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({"error": "Email não fornecido."}), 400
 
 if __name__ == "__main__":
     app.run(debug=True,host='0.0.0.0',port=9000)

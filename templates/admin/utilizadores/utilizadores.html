@@ -181,16 +181,27 @@
                     <th>Organização</th>
                     <th>Criado a</th>
                     <th>Tipo de utilizador</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
                 {% for user in all_users %}
                 <tr>
-                    <td>{{ user.name }}</td>
+                    <td>
+                        {{ user.name }}
+                        {% if user.acceptance == 0 %}
+                            <span style="color: red;">(Não confirmado)</span>
+                        {% endif %}
+                    </td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.organization }}</td>
                     <td>{{ user.created_at }}</td>
-                    <td>{{ user.type }}</td>
+                    <td>{{ user.role_id }}</td>
+                    <td>
+                        <button class="delete-user" onclick="deleteUser('{{ user.email }}')">
+                            🗑️
+                        </button>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -295,30 +306,53 @@
                 .then(data => {
                     const tableBody = document.querySelector("#users_table tbody");
                     tableBody.innerHTML = ""; // Clear previous results
-            
+                
                     data.forEach(user => {
                         const row = document.createElement("tr");
-            
+                
                         const nameCell = document.createElement("td");
                         nameCell.textContent = user.name;
+                        if (user.acceptance === 0) {
+                            const unconfirmedText = document.createElement("span");
+                            unconfirmedText.textContent = " (Não confirmado)";
+                            unconfirmedText.style.color = "red";
+                            nameCell.appendChild(unconfirmedText);
+                        }
                         row.appendChild(nameCell);
-            
+                
                         const emailCell = document.createElement("td");
                         emailCell.textContent = user.email;
                         row.appendChild(emailCell);
-            
+                
                         const organizationCell = document.createElement("td");
                         organizationCell.textContent = user.organization;
                         row.appendChild(organizationCell);
-            
+                
                         const createdAtCell = document.createElement("td");
                         createdAtCell.textContent = user.created_at;
                         row.appendChild(createdAtCell);
-            
+                
                         const typeCell = document.createElement("td");
                         typeCell.textContent = user.type;
                         row.appendChild(typeCell);
-            
+                
+                        // Add delete button to "Ações"
+                        const actionsCell = document.createElement("td");
+                        const deleteButton = document.createElement("button");
+                        deleteButton.textContent = "🗑️"; // Trashcan icon
+                        deleteButton.style.color = "red";
+                        deleteButton.style.cursor = "pointer";
+                        deleteButton.title = "Delete user";
+                        
+                        deleteButton.addEventListener("click", () => {
+                            if (confirm(`Are you sure you want to delete ${user.name}?`)) {
+                                deleteUser(user.email);
+                            }
+                        });
+                
+                        actionsCell.appendChild(deleteButton);
+                        row.appendChild(actionsCell);
+                
                         tableBody.appendChild(row);
                     });
 
@@ -344,6 +378,31 @@
             url.searchParams.delete('name_email');
             url.searchParams.delete('user_type');
             window.location.href = url;
+        }
+    </script>
+    <script>
+        function deleteUser(email) {
+            if (confirm("Tem certeza que deseja eliminar este utilizador?")) {
+                fetch('/delete_user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Utilizador eliminado com sucesso.");
+                        location.reload(); // Reload the page to update the table
+                    } else {
+                        alert("Ocorreu um erro ao eliminar o utilizador.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro:", error);
+                    alert("Erro ao eliminar o utilizador.");
+                });
+            }
         }
     </script>
 </body>

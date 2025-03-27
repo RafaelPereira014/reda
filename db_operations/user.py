@@ -192,7 +192,7 @@ def get_all_users():
         cursor = conn.cursor(dictionary=True)
         
         query = """
-            SELECT name,email,organization,created_at,role_id FROM Users ORDER BY id DESC
+            SELECT name,email,organization,created_at,role_id,acceptance FROM Users where hidden='0' ORDER BY id DESC
         """
         cursor.execute(query)
         users = cursor.fetchall()
@@ -245,4 +245,11 @@ def is_email_registered(email):
         cursor.close()
         conn.close()
         
-    
+def delete_user_by_email(hora,email):
+    # Replace with your database interaction logic
+    connection = connect_to_database()  # Your DB connection function
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("UPDATE Users SET hidden='1', deleted_at=%s WHERE email = %s", (hora, email,))    
+    connection.commit()
+    cursor.close()
+    connection.close()
