@@ -409,7 +409,6 @@ def send_email_on_password_recovery(username, recipient_email, reset_link):
 def send_confirmation_email(email):
     token = generate_confirmation_token(email)
     confirm_url = url_for('confirm_email', token=token, _external=True)
-    print(confirm_url)
     subject = "Confirmação de registo!"
     message= f"""
         <html>
@@ -426,7 +425,7 @@ def send_confirmation_email(email):
         <div class="email-container">
             <div class="content">
                 <p>Obrigado por se registar na REDA!</p>
-                <p>Clique no link abaixo para concluir o seu:</p>
+                <p>Clique no link abaixo para concluir o mesmo:</p>
                 <a href="{confirm_url}">{confirm_url}</a>
             </div>
             <div class="footer">
