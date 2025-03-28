@@ -707,3 +707,21 @@ p {
     margin-bottom: 10px;   /* Adds space below each paragraph */
     text-align: justify;   /* Aligns the text to both the left and right edges */
   }
+
+  .seguir-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    padding: 8px 16px; /* Padding inside the button */
+    text-align: center; /* Center text inside the button */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Align button inline with other elements */
+    font-size: 8px; /* Set font size */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-left: 10px; /* Space between the text and button */
+}
+
+.seguir-button:hover {
+    background-color: #45a049; /* Darker green when hovered */
+}

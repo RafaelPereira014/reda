@@ -715,7 +715,9 @@
                 const subdominios = document.querySelectorAll('#subdominiosContainer input[type="checkbox"]:checked');
                 const conceitos = document.querySelectorAll('#conceitosContainer input[type="checkbox"]:checked');
                 const keywordsInput = document.getElementById('keywords'); // Hidden input that stores keywords
-
+                const disciplinaCheckboxes = document.querySelectorAll(".disciplina-checkbox");
+                const dominioCheckboxes = document.querySelectorAll(".dominio-checkbox");
+                const subdominioCheckboxes = document.querySelectorAll(".subdominio-checkbox");
     
                 // Validate descricao length
                 const descricao = descricaoField.value.trim();
@@ -728,8 +730,24 @@
                     event.preventDefault(); // Prevent form submission
                     return;
                 }
-                
 
+                if (!isChecked(disciplinaCheckboxes)) {
+                    alert('Para avançar, selecione pelo menos uma "Disciplina".');
+                    event.preventDefault(); // Prevent form submission
+                    return;
+                }
+                if (!isChecked(dominioCheckboxes)) {
+                    alert('Para avançar, selecione pelo menos um "Dominio".');
+                    event.preventDefault(); // Prevent form submission
+                    return;
+                }
+                
+                if (!isChecked(subdominioCheckboxes)) {
+                    alert('Para avançar, selecione pelo menos um "Subdominio".');
+                    event.preventDefault(); // Prevent form submission
+                    return;
+                }
+                
                 // Validate keywords (at least 5 keywords)
                 if (keywords.length < 5) {
                     alert('Deve escrever no mínimo 5 palavras-chave ou expressões.');
