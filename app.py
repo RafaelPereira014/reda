@@ -2027,7 +2027,7 @@ def fetch_subdominio_search():
     
     if dominios:
         # Split by comma instead of semicolon
-        dominios_list = dominios.split(',')
+        dominios_list = dominios.split(';')
         subdominios_set = set()
         
         # Collect all subdominios based on selected dominios
