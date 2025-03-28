@@ -588,10 +588,11 @@
                                         <a href="/resources/edit2/{{ script_id }}">
                                             <button class="btn">Editar proposta</button>
                                         </a>
+                                        <button onclick="deleteProposta({{ script_id }})" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </button>
                                     {% endif %}
-                                    <button onclick="deleteProposta({{ script_id }})" class="btn btn-danger">
-                                        <i class="fas fa-trash"></i> Eliminar
-                                    </button>
+                                    
                                     {% if admin and not script.approved %}
                                         <small>Proposta pendente de aprovação. (ID: {{ script_id }})</small>
                                     {% endif %}

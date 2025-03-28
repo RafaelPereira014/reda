@@ -598,25 +598,34 @@ def hide_resource_route(resource_id):
 
 @app.route('/delete_resource/<int:resource_id>', methods=['POST'])
 def delete_resource(resource_id):
+    user_id = session.get('user_id')  # Retrieve user ID from session
     try:
-        # Construct cache key for the resource
-        cache_key_areas = f"areas_resources_{resource_id}"
-        
-        # Delete from cache
+        # Construct cache keys
+        cache_key_areas = f"areas_resources_{user_id}_{resource_id}"
+        cache_key_pattern = f"areas_resources_{user_id}_*"
+
+        # Delete resource-specific cache
         if cache.get(cache_key_areas):
             cache.delete(cache_key_areas)
-        
+
         # Delete resource and its scripts
         delete_resource_and_scripts(resource_id)
-        
-        # Prepare response
+
+        # Update the cached list of resources
+        my_resources = cache.get(cache_key_pattern)
+        if my_resources:
+            # Remove the deleted resource from the list
+            updated_resources = [r for r in my_resources if r['id'] != resource_id]
+            cache.set(cache_key_pattern, updated_resources, timeout=600)
+
+        # Prepare success response
         response = jsonify(message='Resource deleted successfully')
         response.status_code = 200
     except Exception as e:
         # Handle errors
         response = jsonify(message=f'Error occurred: {str(e)}')
         response.status_code = 500
-    
+
     return response
 
 @app.route('/delete_script/<int:script_id>', methods=['POST'])
@@ -1413,8 +1422,8 @@ def my_account():
     disciplinas = get_filtered_terms(level=2, parent_level=1, parent_term=None)
 
     # Cache key to include user, search term, and disciplina
-    cache_key_resources = f"user_resources_{user_id}_{search_term}_{disciplina}"
-    my_resources = cache.get(cache_key_resources)
+    cache_key_pattern = f"areas_resources_{user_id}_*"
+    my_resources = cache.get(cache_key_pattern)
 
     if my_resources is None:
         # Fetch resources based on search term
@@ -1424,7 +1433,7 @@ def my_account():
         filtered_resources = []
         for resource in my_resources:
             # Cache key for areas_resources
-            cache_key_areas = f"areas_resources_{resource['id']}"
+            cache_key_areas = f"areas_resources_{user_id}_{resource['id']}"
             areas_resources = cache.get(cache_key_areas)
 
             if areas_resources is None:
@@ -1447,7 +1456,7 @@ def my_account():
                 filtered_resources.append(resource)
 
         my_resources = filtered_resources
-        cache.set(cache_key_resources, my_resources, timeout=600)
+        cache.set(cache_key_pattern, my_resources, timeout=600)
 
     # Fetch highlighted and approved statuses
     resource_ids = [resource['id'] for resource in my_resources]
@@ -1778,7 +1787,9 @@ def novo_recurso():
             }
 
             resource_id = insert_resource_details(cursor, resource_details)
-
+            
+            
+            
             taxonomy_details = {
                 'idiomas_title': idiomas_title[0] if idiomas_title else None,
                 'formato_title': formato_title[0] if formato_title else None,
