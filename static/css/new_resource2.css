@@ -174,7 +174,7 @@ input[type="checkbox"] {
 /* Checkbox checked state */
 input[type="checkbox"]:checked {
   background-color: #aec03f;
-  border-color: #8a8a8a; /* Darker blue */
+  border-color: #f3f3f3; /* Darker blue */
   position: relative;
 }
 
@@ -183,13 +183,15 @@ input[type="checkbox"]:checked::after {
   content: "";
   position: absolute;
   left: 5px;
-  top: 2px;
+  top: 0px;
   width: 8px;
-  height: 16px;
+  height: 12px;
   border: solid #fff;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
+
+
 
 /* Style the checkbox label */
 li label {

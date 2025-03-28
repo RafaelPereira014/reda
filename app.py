@@ -616,7 +616,7 @@ def delete_resource(resource_id):
         if my_resources:
             # Remove the deleted resource from the list
             updated_resources = [r for r in my_resources if r['id'] != resource_id]
-            cache.set(cache_key_pattern, updated_resources, timeout=600)
+            cache.set(cache_key_pattern, updated_resources, timeout=20)
 
         # Prepare success response
         response = jsonify(message='Resource deleted successfully')
@@ -1456,7 +1456,7 @@ def my_account():
                 filtered_resources.append(resource)
 
         my_resources = filtered_resources
-        cache.set(cache_key_pattern, my_resources, timeout=600)
+        cache.set(cache_key_pattern, my_resources, timeout=20)
 
     # Fetch highlighted and approved statuses
     resource_ids = [resource['id'] for resource in my_resources]
@@ -1787,7 +1787,7 @@ def novo_recurso():
             }
 
             resource_id = insert_resource_details(cursor, resource_details)
-            
+
             
             
             taxonomy_details = {
@@ -1861,6 +1861,17 @@ def novo_recurso2():
             if script_id:
                 # Insert selected tags for the created script
                 insert_selected_tags(script_id, selected_tags)
+                # Construct the cache key
+                cache_key_areas = f"areas_resources_{user_id}_{resource_id}"
+
+                # Attempt to add to the cache (only if the key doesn't already exist)
+                resource_data = selected_disciplinas
+
+                # Use cache.add instead of cache.set
+                if cache.add(cache_key_areas, resource_data, timeout=3600):
+                    print(f"Resource added to cache with key: {cache_key_areas}")
+                else:
+                    print(f"Cache already contains key: {cache_key_areas}")
 
                 print(f"Script {script_id} created and tags inserted successfully.")
             else:
