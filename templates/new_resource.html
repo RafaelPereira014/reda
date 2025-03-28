@@ -167,6 +167,12 @@
 
         #titulo-editor-container .ql-editor {
             text-transform: none; /* Ensure normal capitalization */
+            background-color: white; /* Sets a white background */
+        }
+
+        #editor-container .ql-editor {
+            text-transform: none; /* Ensure normal capitalization */
+            background-color: white; /* Sets a white background */
         }
 
         #error-modal {
@@ -581,19 +587,34 @@
                 fileNameSpan.textContent = 'Nenhum arquivo selecionado';
             }
         }
+        const checkboxesIdioma = document.querySelectorAll('input[name="idiomas"]');
+
+        checkboxesIdioma.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const selectedCheckboxesIdioma = document.querySelectorAll('input[name="idiomas"]:checked');
+                
+                // Check if more than 1 checkbox is selected
+                if (selectedCheckboxesIdioma.length > 1) {
+                    // Uncheck the current checkbox
+                    this.checked = false;
+                    alert("Pode selecionar no máximo 1 idioma.");
+                }
+            });
+        });
     </script>
     <script>
         function checkVideoAnimation(checkbox) {
             const durationBox = document.getElementById('duration-box');
             const videoAnimationCheckbox = document.querySelector('input[name="formato"][value="Vídeo/Animação"]');
             const selectedCheckboxes = document.querySelectorAll('input[name="formato"]:checked');
-        
-            // Check if more than 2 checkboxes are selected
+            
+
             if (selectedCheckboxes.length > 2) {
                 // Uncheck the current checkbox
                 checkbox.checked = false;
                 alert("Pode selecionar no máximo 2 formatos.");
             }
+            
         
             // Show or hide the duration box based on the "Vídeo/Animação" checkbox
             if (videoAnimationCheckbox.checked) {
@@ -602,6 +623,8 @@
                 durationBox.classList.add('hidden');
             }
         }
+
+        
     </script>
 </body>
 </html>

@@ -1679,6 +1679,7 @@ def novo_recurso():
 
         # Retrieving lists of selected items
         idiomas_title = request.form.getlist('idiomas')
+        print(idiomas_title)
         formato_title = request.form.getlist('formato')
         modo_utilizacao_title = request.form.getlist('use_mode')
         requisitos_tecnicos_title = request.form.getlist('requirements')
