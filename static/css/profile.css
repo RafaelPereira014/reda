@@ -682,3 +682,57 @@ footer {
     font-size: 18px;
 }
 
+.nav-container {
+    padding: 10px 20px; /* Padding around the navigation container */
+    border-radius: 8px; /* Rounded corners for the navigation container */
+    max-width: 1200px; /* Optional: Set a max width for the container */
+    margin: 20px auto; /* Centers the navigation container and adds space above/below */
+    text-align: center;
+}
+
+/* Style for the navigation (nav) */
+.nav-container nav {
+    display: flex;
+    justify-content: space-between; /* Space out the menu items */
+}
+
+/* Style for the unordered list */
+.nav-container ul {
+    list-style: none; /* Removes bullet points from the list */
+    padding: 0; /* Removes default padding */
+    margin: 0; /* Removes default margin */
+    display: flex; /* Display list items in a row */
+}
+
+/* Style for each list item */
+.nav-container ul li {
+    margin: 0 10px; /* Adds space between the list items */
+}
+
+/* Style for the links */
+.nav-container ul li a {
+    margin-left: 22px;
+    color: #ffffff; /* White text color */
+    text-decoration: none; /* Removes underline from links */
+    font-size: 20px; /* Font size */
+    font-weight: bold; /* Makes the text bold */
+    transition: color 0.3s ease; /* Smooth transition for color change on hover */
+}
+
+/* Hover effect for links */
+.nav-container ul li a:hover {
+    color: #849030; /* Yellow color on hover */
+}
+
+
+/* Optional: Add a responsive design for smaller screens */
+@media (max-width: 768px) {
+    .nav-container ul {
+        flex-direction: column; /* Stack the menu items vertically on small screens */
+        align-items: center; /* Center-align the items */
+    }
+
+    .nav-container ul li {
+        margin: 10px 0; /* Add space between items when stacked */
+    }
+}

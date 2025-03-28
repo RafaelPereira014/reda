@@ -1789,8 +1789,6 @@ def novo_recurso():
 
             resource_id = insert_resource_details(cursor, resource_details)
 
-            
-            
             taxonomy_details = {
                 'idiomas_title': idiomas_title[0] if idiomas_title else None,
                 'formato_title': formato_title[0] if formato_title else None,
